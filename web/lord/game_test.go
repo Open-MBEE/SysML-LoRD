@@ -47,8 +47,8 @@ func TestNewGameStartsADayInTheTownSquare(t *testing.T) {
 	s := snapshot(t, g)
 	want := Snapshot{
 		Name: "Sir Devin", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 10, MaxHitPoints: 10,
-		Strength: 10, Defense: 1, Gold: 500, Charm: 1, FavouredMove: "attack", ForestFightsLeft: 15,
-		PlayerFightsLeft: 3, Alive: true, Spouse: "nobody",
+		Strength: 10, Defense: 1, Weapon: "Fists", Armour: "Nothing!", Gold: 500, Charm: 1,
+		FavouredMove: "attack", ForestFightsLeft: 15, PlayerFightsLeft: 3, Alive: true, Spouse: "nobody",
 	}
 	if *s != want {
 		t.Fatalf("snapshot = %+v, want %+v", *s, want)
@@ -141,8 +141,8 @@ func TestInvokeBindsTypedArguments(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if o.After.Gold != 300 || o.After.Strength != 15 || o.After.WeaponTier != 1 {
-		t.Fatalf("after the stick: gold %d, strength %d, tier %d", o.After.Gold, o.After.Strength, o.After.WeaponTier)
+	if o.After.Gold != 300 || o.After.Strength != 15 || o.After.WeaponTier != 1 || o.After.Weapon != "Stick" {
+		t.Fatalf("after the stick: gold %d, strength %d, tier %d, %q", o.After.Gold, o.After.Strength, o.After.WeaponTier, o.After.Weapon)
 	}
 	o, err = g.Invoke("deposit", map[string]opensysml.Value{"amount": IntValue(120)})
 	if err != nil {
