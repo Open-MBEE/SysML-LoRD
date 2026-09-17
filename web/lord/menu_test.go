@@ -88,6 +88,12 @@ func TestMenuFollowsTheGuards(t *testing.T) {
 	if c := find(t, inn, "F"); c.Action != "flirt" || !c.Enabled {
 		t.Fatalf("flirting = %+v", c)
 	}
+	if c := find(t, inn, "D"); c.Signal != "AskForADivorce" || c.Action != "" || c.Enabled {
+		t.Fatalf("an unmarried warrior may divorce: %+v", c)
+	}
+	if _, err := g.Play("D", nil); !errors.Is(err, ErrRefused) {
+		t.Fatalf("divorcing unmarried: err = %v, want ErrRefused", err)
+	}
 	if _, err := g.Play("G", map[string]string{"stat": "Stat::defense"}); !errors.Is(err, ErrRefused) {
 		t.Fatalf("playing a disabled choice: err = %v, want ErrRefused", err)
 	}
@@ -107,6 +113,29 @@ func TestMenuFollowsTheGuards(t *testing.T) {
 	}
 	if o := play(t, g, "N", nil); o.To != "townSquare" || o.After.InnRoom {
 		t.Fatalf("midnight left the sleeper in %s: %+v", o.To, *o.After)
+	}
+}
+
+func TestDivorceFollowsMarriage(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	play(t, g, "I", nil)
+	for attribute, value := range map[string]int64{"charm": 100, "experience": 1000} {
+		if err := g.SetPreference(attribute, IntValue(value)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if o := play(t, g, "F", map[string]string{"favour": "town.inn.violet.marryHer"}); o.After.Spouse != "violet" {
+		t.Fatalf("marrying Violet: %+v", *o.After)
+	}
+	if c := find(t, menu(t, g), "D"); !c.Enabled {
+		t.Fatalf("a married warrior may not divorce: %+v", c)
+	}
+	o := play(t, g, "D", nil)
+	if o.To != "inn" || o.After.Spouse != "nobody" || o.After.Charm != 50 {
+		t.Fatalf("the divorce: %s %+v", o.To, *o.After)
+	}
+	if c := find(t, menu(t, g), "D"); c.Enabled {
+		t.Fatalf("divorced twice: %+v", c)
 	}
 }
 

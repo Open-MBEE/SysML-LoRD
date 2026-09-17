@@ -294,6 +294,7 @@ stateDiagram-v2
   n5 --> n1 : bank_town: accept ReturnToTown
   n6 --> n1 : training_town: accept ReturnToTown
   n7 --> n7 : inn_flirt: accept FlirtAtTheInn [alive and not flirtedToday] / flirting
+  n7 --> n7 : inn_divorce: accept AskForADivorce [alive and spouse != Spouse::nobody] / divorcing
   n7 --> n7 : inn_bard: accept ListenToTheBard [alive and not heardTheBard] / listening
   n7 --> n7 : inn_bribe: accept BribeTheBartender [alive and level #gt;= 2 and not bribed and gold #gt;= BribePrice(level)] / bribing
   n7 --> n7 : inn_gems: accept TradeGems [alive and level #gt;= 2 and gems #gt;= town.inn.gemsPerStatPoint] / trading

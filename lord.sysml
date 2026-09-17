@@ -504,6 +504,7 @@ package LordPlay {
     attribute def VisitTheTrainingHall;
     attribute def VisitTheInn;
     attribute def FlirtAtTheInn;
+    attribute def AskForADivorce;
     attribute def ListenToTheBard;
     attribute def BribeTheBartender;
     attribute def TradeGems;
@@ -2372,6 +2373,13 @@ package LordPlay {
                 accept FlirtAtTheInn
                 if alive and not flirtedToday
                 do action flirting { perform flirt; }
+                then inn;
+
+            transition inn_divorce
+                first inn
+                accept AskForADivorce
+                if alive and spouse != Spouse::nobody
+                do action divorcing { perform divorce; }
                 then inn;
 
             transition inn_bard
