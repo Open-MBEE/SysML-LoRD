@@ -1036,7 +1036,9 @@ model's, not a copy of it:
   the dice being seeded, the warrior returns exactly as left. A save from
   another revision of the model, or one of whose moves the menu no longer
   offers, is refused rather than replayed into a different game, and the
-  character screen is shown; *Retire* forgets the save.
+  character screen is shown; *Retire* forgets the save. Two tabs that resume
+  the same warrior play apart, so the save follows the tab that wrote it
+  last and the other is told its moves are not kept.
 - **The menu is the state machine.** Each key is one of the `accept` triggers
   of the transitions out of the current state; a choice the guard refuses
   (*Seek the Red Dragon* at level one, robbing the bank untrained, a room with

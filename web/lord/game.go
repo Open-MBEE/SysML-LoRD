@@ -5,6 +5,7 @@
 package lord
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -91,7 +92,7 @@ func openGame(client opensysml.Client, modelSource []byte, seed uint64, characte
 	if err != nil {
 		return nil, err
 	}
-	g := &Game{client: client, model: model, session: session, seed: seed, source: modelSource, character: character}
+	g := &Game{client: client, model: model, session: session, seed: seed, source: bytes.Clone(modelSource), character: character}
 	if err := g.start(character); err != nil {
 		_ = session.Close()
 		return nil, err

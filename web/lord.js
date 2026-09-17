@@ -23,6 +23,7 @@
   let pending = null;  // {choice, params, index, inputs} while a choice is asking for inputs
   let typed = "";      // digits typed so far towards a numbered option
   let history = [];    // the last few results, oldest first
+  let written = null;  // the save this tab last wrote or resumed; another value means another tab has the warrior
 
   // Every call into the game takes and returns JSON; a failure is {error}.
   function api(name, body) {
@@ -210,14 +211,29 @@
   }
 
   // persist keeps the game's save, or drops it when no warrior walks the realm.
+  // A save another tab has moved on is left alone: this tab's game is the stale one.
   function persist() {
     try {
-      if (screen) localStorage.setItem(SAVE_KEY, JSON.stringify(api("save")));
-      else localStorage.removeItem(SAVE_KEY);
+      if (overtaken()) return;
+      if (screen) written = JSON.stringify(api("save"));
+      else written = null;
+      if (written === null) localStorage.removeItem(SAVE_KEY);
+      else localStorage.setItem(SAVE_KEY, written);
     } catch (err) {
       console.warn("the game could not be saved:", err);
     }
   }
+
+  // overtaken reports whether another tab has written the save since this one did.
+  function overtaken() {
+    if (written === null || localStorage.getItem(SAVE_KEY) === written) return false;
+    show(null, "Your warrior walks on in another tab; what happens here is not saved.");
+    return true;
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === SAVE_KEY || event.key === null) overtaken();
+  });
 
   // resume brings back the saved warrior, if any; a save that no longer plays is dropped.
   async function resume() {
@@ -227,6 +243,7 @@
     await new Promise(requestAnimationFrame);
     try {
       show(api("resume", JSON.parse(stored)));
+      written = stored;
     } catch (err) {
       localStorage.removeItem(SAVE_KEY);
       show(null, `Your saved warrior could not return: ${err.message}`);
