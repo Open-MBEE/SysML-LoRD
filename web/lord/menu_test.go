@@ -139,6 +139,23 @@ func TestDivorceFollowsMarriage(t *testing.T) {
 	}
 }
 
+func TestTheBardsSongIsNotMidnight(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	play(t, g, "I", nil)
+	o := play(t, g, "B", nil)
+	if o.To != "inn" || o.Refused {
+		t.Fatalf("the bard: %s refused=%v", o.To, o.Refused)
+	}
+	if lines := strings.Join(o.Narrate(g), "\n"); strings.Contains(lines, "new day") {
+		t.Fatalf("the bard's song narrated %q", lines)
+	}
+	if o.After.ForestFightsLeft > o.Before.ForestFightsLeft || o.After.PlayerFightsLeft > o.Before.PlayerFightsLeft {
+		if lines := strings.Join(o.Narrate(g), "\n"); !strings.Contains(lines, "You have") {
+			t.Fatalf("fights granted without a word: %q", lines)
+		}
+	}
+}
+
 func TestFlirtOptionsSuitTheWarrior(t *testing.T) {
 	for _, tc := range []struct {
 		female bool

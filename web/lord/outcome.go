@@ -247,13 +247,24 @@ func (o *Outcome) changes() []string {
 		add("The bartender pockets your gold and forgets your name.")
 	}
 	if a.ForestFightsLeft > b.ForestFightsLeft || a.PlayerFightsLeft > b.PlayerFightsLeft {
-		add("A new day dawns. You have %s in the forest and %s against other warriors.",
+		fights := fmt.Sprintf("You have %s in the forest and %s against other warriors.",
 			plural(a.ForestFightsLeft, "fight"), plural(a.PlayerFightsLeft, "fight"))
+		if o.midnight() {
+			add("A new day dawns. %s", fights)
+		} else {
+			add(fights)
+		}
 	}
 	if a.News != b.News && a.News != "" {
 		add("The town crier: %s", a.News)
 	}
 	return lines
+}
+
+// midnight reports whether the day machine left the night behind: asleep at the
+// inn or slain, then back in the town square.
+func (o *Outcome) midnight() bool {
+	return o.To == "townSquare" && (o.From == "asleep" || o.From == "slain")
 }
 
 func plural(n int64, noun string) string {
