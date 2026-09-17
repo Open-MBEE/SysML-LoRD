@@ -45,6 +45,8 @@ pre {
   margin: 0.5rem 0 1.5rem;
 }
 #subtitle code { color: var(--fg); }
+#subtitle a { color: var(--fg); }
+#subtitle a:hover { color: var(--bright); }
 
 h2 {
   color: var(--amber);
@@ -157,6 +159,16 @@ fieldset label { display: block; }
 
 #hint { color: var(--dim); margin-top: 1.5rem; }
 #hint a { color: var(--dim); }
+
+#colophon {
+  color: var(--dim);
+  margin-top: 2.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--dim);
+}
+#colophon pre { margin: 0 0 0.5rem; color: var(--fg); }
+#colophon a { color: var(--amber); text-decoration: none; }
+#colophon a:hover { color: var(--bright); text-decoration: underline; }
 
 .cursor::after {
   content: "█";
