@@ -504,6 +504,7 @@ package LordPlay {
     attribute def VisitTheTrainingHall;
     attribute def VisitTheInn;
     attribute def FlirtAtTheInn;
+    attribute def AskForADivorce;
     attribute def ListenToTheBard;
     attribute def BribeTheBartender;
     attribute def TradeGems;
@@ -542,6 +543,7 @@ package LordPlay {
         attribute favouredMove : Move default = Move::attack;
         attribute forestFightsLeft : Integer default = 15;
         attribute playerFightsLeft : Integer default = 3;
+        attribute daysPlayed : Integer default = 1;
         attribute alive : Boolean default = true;
         attribute dragonKills : Integer default = 0;
         attribute playerKills : Integer default = 0;
@@ -1648,6 +1650,7 @@ package LordPlay {
 
             first start;
             then action reset {
+                assign daysPlayed := daysPlayed + 1;
                 assign forestFightsLeft := 15 + children;
                 assign playerFightsLeft := 3;
                 assign deathKnightUses := SkillUses(deathKnightPoints, 4);
@@ -2372,6 +2375,13 @@ package LordPlay {
                 accept FlirtAtTheInn
                 if alive and not flirtedToday
                 do action flirting { perform flirt; }
+                then inn;
+
+            transition inn_divorce
+                first inn
+                accept AskForADivorce
+                if alive and spouse != Spouse::nobody
+                do action divorcing { perform divorce; }
                 then inn;
 
             transition inn_bard

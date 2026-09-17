@@ -67,6 +67,7 @@ var signalMenus = map[string]signalMenu{
 	"VisitTheTrainingHall":   {"T", "Turgon's Warrior Training"},
 	"VisitTheInn":            {"I", "The Inn"},
 	"ListenToTheBard":        {"B", "Listen to Seth Able the bard"},
+	"AskForADivorce":         {"D", "Divorce"},
 	"BribeTheBartender":      {"P", "Pay the bartender to keep quiet"},
 	"BuyARoom":               {"S", "Sleep in a room for the night"},
 	"SlaughterOtherPlayers":  {"S", "Slaughter other players"},
@@ -142,7 +143,6 @@ var actionMenus = []actionMenu{
 		{name: "favour", prompt: "How?", sources: []optionSource{{"Barmaid", "town.inn.violet"}, {"Bard", "town.inn.sethAble"}}, detail: []string{"charmNeeded"}, suitor: "suitor"}}},
 	{state: "inn", key: "G", label: "Trade gems for a stat", action: "tradeGems", signal: "TradeGems", params: []paramSpec{
 		{name: "stat", prompt: "Which stat?", sources: enumeration("Stat")}}},
-	{state: "inn", key: "D", label: "Divorce", action: "divorce"},
 }
 
 // standIn is the direct action shown in place of a signal in a state, if any.

@@ -246,8 +246,11 @@ func (o *Outcome) changes() []string {
 	if !b.Bribed && a.Bribed {
 		add("The bartender pockets your gold and forgets your name.")
 	}
-	if a.ForestFightsLeft > b.ForestFightsLeft || a.PlayerFightsLeft > b.PlayerFightsLeft {
+	if a.Day > b.Day {
 		add("A new day dawns. You have %s in the forest and %s against other warriors.",
+			plural(a.ForestFightsLeft, "fight"), plural(a.PlayerFightsLeft, "fight"))
+	} else if a.ForestFightsLeft > b.ForestFightsLeft || a.PlayerFightsLeft > b.PlayerFightsLeft {
+		add("You have %s in the forest and %s against other warriors.",
 			plural(a.ForestFightsLeft, "fight"), plural(a.PlayerFightsLeft, "fight"))
 	}
 	if a.News != b.News && a.News != "" {

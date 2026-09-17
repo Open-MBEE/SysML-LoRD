@@ -75,7 +75,7 @@
     const kids = w.children ? `, ${w.children} ${w.children === 1 ? "child" : "children"}` : "";
     const extras = [w.horse && "horse", w.fairy && "fairy", w.innRoom && "a room at the inn", w.bribed && "bartender bribed"].filter(Boolean);
     stats.replaceChildren(
-      span("name", pad(w.name, 26)), `Level ${pad(w.level, 3)}`, `Exp ${pad(w.experience, 8)}`, span(hpClass, `HP ${hp}`), "\n",
+      span("name", pad(w.name, 26)), `Level ${pad(w.level, 3)}`, `Exp ${pad(w.experience, 8)}`, span(hpClass, `HP ${hp}`), `  Day ${w.daysPlayed}`, "\n",
       pad(`Weapon ${w.weapon}`, 26), `Str ${pad(w.strength, 5)}`, `Def ${pad(w.defense, 9)}`, span("gold", `Gold ${w.gold}`), "\n",
       pad(`Armour ${w.armour}`, 26), `Forest fights ${pad(w.forestFightsLeft, 3)}`, `Player fights ${pad(w.playerFightsLeft, 3)}`, span("gold", `Bank ${w.bankGold}`), "\n",
       pad(`Charm ${w.charm}  Gems ${w.gems}`, 26), `${GUILDS[w.class] ?? w.class} · ${w.sex} · ${spouse}${kids}${extras.length ? " · " + extras.join(", ") : ""}`,
