@@ -28,7 +28,7 @@
  █   ╚═╝  ╚═╝╚══════╝╚═════╝     ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   █
  █                                                                                      █
  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀</pre>
-    <p id="subtitle">A SysML v2 model, played. The rules live in <code>lord.sysml</code>, run by the model runtime compiled to WebAssembly; this page only presses its keys.</p>
+    <p id="subtitle">A SysML v2 model, played. The rules live in <a href="https://github.com/Open-MBEE/SysML-LoRD/blob/main/lord.sysml"><code>lord.sysml</code></a>, run by the <a href="https://opensysml.org/">OpenSysML</a> model runtime compiled to WebAssembly; this page only presses its keys.</p>
   </header>
 
   <section id="character" hidden>
@@ -59,6 +59,10 @@
     <form id="prompt" hidden></form>
     <p id="hint">Press a key, or click a choice. <kbd>Esc</kbd> cancels a prompt. <a href="#" id="retire">Retire this warrior</a>.</p>
   </section>
+  <footer id="colophon">
+    <pre id="powered">-=[ Powered by <a href="https://opensysml.org/">OpenSysML</a>, the open SysML v2 runtime ]=-</pre>
+    <p>Model, page and source on <a href="https://github.com/Open-MBEE/SysML-LoRD">GitHub</a>. Legend of the Red Dragon was written by Seth Able Robinson, 1989.</p>
+  </footer>
 </main>
 <script src="wasm_exec.js"></script>
 <script src="lord.js"></script>
