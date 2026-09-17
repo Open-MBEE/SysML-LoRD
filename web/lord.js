@@ -50,7 +50,7 @@
       game.hidden = false;
       screen = view.screen;
       renderStats(view.warrior);
-      location.textContent = view.screen.title;
+      location.textContent = view.screen.title + foeLine(view.warrior.foe);
       renderMenu(view.screen.choices);
       if (view.lines && view.lines.length) history.push({lines: view.lines, error: view.refused});
     }
@@ -67,6 +67,11 @@
   }
 
   const pad = (s, n) => String(s).padEnd(n);
+
+  function foeLine(foe) {
+    if (!foe || !foe.present) return "";
+    return ` — ${foe.name} (${foe.weapon}) HP ${foe.hitPoints}`;
+  }
 
   function renderStats(w) {
     const hp = `${w.hitPoints}/${w.maxHitPoints}`;

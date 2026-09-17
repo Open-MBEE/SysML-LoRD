@@ -207,8 +207,13 @@ func (g *Game) Location() string {
 // Send offers the day machine a signal of the LordPlay package and, where the
 // current state takes it and its guard holds, dispatches it and runs what follows.
 func (g *Game) Send(signal string) (*Outcome, error) {
+	return g.SendWith(signal, nil)
+}
+
+// SendWith sends a signal carrying the given attributes as its payload.
+func (g *Game) SendWith(signal string, args map[string]opensysml.Value) (*Outcome, error) {
 	signalID := playPackage + "::" + signal
-	acceptance, err := g.session.Accepts(g.hero, signalID, nil)
+	acceptance, err := g.session.Accepts(g.hero, signalID, args)
 	if err != nil {
 		if errors.Is(err, opensysml.ErrFailure) {
 			return nil, fmt.Errorf("%w: signal %s", ErrNoSuchCommand, signal)
@@ -222,7 +227,7 @@ func (g *Game) Send(signal string) (*Outcome, error) {
 		return nil, fmt.Errorf("%w: %s in %s", ErrRefused, signal, g.Location())
 	}
 	return g.run(func() (deed, error) {
-		if _, err := g.session.Send(g.hero, signalID, nil); err != nil {
+		if _, err := g.session.Send(g.hero, signalID, args); err != nil {
 			return deed{}, err
 		}
 		advanced, err := g.session.Advance(1)
