@@ -156,6 +156,22 @@ func TestTheBardsSongIsNotMidnight(t *testing.T) {
 	}
 }
 
+func TestMidnightDawnsWhereverItFinds(t *testing.T) {
+	for _, keys := range [][]string{{"N"}, {"I", "S", "N"}} {
+		g := newGame(t, 1, Character{})
+		var o *Outcome
+		for _, key := range keys {
+			o = play(t, g, key, nil)
+		}
+		if o.To != "townSquare" || o.After.Day != o.Before.Day+1 {
+			t.Fatalf("%v: to %s, day %d -> %d", keys, o.To, o.Before.Day, o.After.Day)
+		}
+		if lines := strings.Join(o.Narrate(g), "\n"); !strings.Contains(lines, "A new day dawns") {
+			t.Fatalf("%v: midnight narrated %q", keys, lines)
+		}
+	}
+}
+
 func TestFlirtOptionsSuitTheWarrior(t *testing.T) {
 	for _, tc := range []struct {
 		female bool

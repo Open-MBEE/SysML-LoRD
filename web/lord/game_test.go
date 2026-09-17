@@ -48,7 +48,7 @@ func TestNewGameStartsADayInTheTownSquare(t *testing.T) {
 	want := Snapshot{
 		Name: "Sir Devin", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 10, MaxHitPoints: 10,
 		Strength: 10, Defense: 1, Weapon: "Fists", Armour: "Nothing!", Gold: 500, Charm: 1,
-		FavouredMove: "attack", ForestFightsLeft: 15, PlayerFightsLeft: 3, Alive: true, Spouse: "nobody",
+		FavouredMove: "attack", ForestFightsLeft: 15, PlayerFightsLeft: 3, Day: 1, Alive: true, Spouse: "nobody",
 	}
 	if *s != want {
 		t.Fatalf("snapshot = %+v, want %+v", *s, want)

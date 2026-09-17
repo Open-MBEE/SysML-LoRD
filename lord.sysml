@@ -543,6 +543,7 @@ package LordPlay {
         attribute favouredMove : Move default = Move::attack;
         attribute forestFightsLeft : Integer default = 15;
         attribute playerFightsLeft : Integer default = 3;
+        attribute daysPlayed : Integer default = 1;
         attribute alive : Boolean default = true;
         attribute dragonKills : Integer default = 0;
         attribute playerKills : Integer default = 0;
@@ -1649,6 +1650,7 @@ package LordPlay {
 
             first start;
             then action reset {
+                assign daysPlayed := daysPlayed + 1;
                 assign forestFightsLeft := 15 + children;
                 assign playerFightsLeft := 3;
                 assign deathKnightUses := SkillUses(deathKnightPoints, 4);
