@@ -1,9 +1,13 @@
 // The page is a dumb terminal: it shows the view the game reports and turns keys
 // into plays. The game is lord.wasm, the model runtime compiled for the browser;
 // which keys exist, what they do and what they cost is the model's business,
-// reported back in every view.
+// reported back in every view. The one thing the page keeps is the game's save
+// (its seed, character and moves) in localStorage, handed back when the page
+// next opens so the warrior returns where they left off.
 (() => {
   "use strict";
+
+  const SAVE_KEY = "lord.save";
 
   const $ = (id) => document.getElementById(id);
   const character = $("character");
@@ -199,8 +203,38 @@
   function play(key, inputs) {
     try {
       show(api("play", {key, inputs}));
+      persist();
     } catch (err) {
       show(null, err.message);
+    }
+  }
+
+  // persist keeps the game's save, or drops it when no warrior walks the realm.
+  function persist() {
+    try {
+      if (screen) localStorage.setItem(SAVE_KEY, JSON.stringify(api("save")));
+      else localStorage.removeItem(SAVE_KEY);
+    } catch (err) {
+      console.warn("the game could not be saved:", err);
+    }
+  }
+
+  // resume brings back the saved warrior, if any; a save that no longer plays is dropped.
+  async function resume() {
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+    } catch {
+      saved = null;
+    }
+    if (!saved) return;
+    tell(["Your warrior returns to the realm..."]);
+    await new Promise(requestAnimationFrame);
+    try {
+      show(api("resume", saved));
+    } catch (err) {
+      localStorage.removeItem(SAVE_KEY);
+      show(null, `Your saved warrior could not return: ${err.message}`);
     }
   }
 
@@ -214,13 +248,14 @@
     event.preventDefault();
     const form = new FormData(event.target);
     const body = {
-      Name: form.get("name").trim(),
-      Female: form.get("sex") === "female",
-      Class: form.get("class"),
+      name: form.get("name").trim(),
+      female: form.get("sex") === "female",
+      class: form.get("class"),
     };
     history = [];
     try {
       show(api("newGame", body));
+      persist();
     } catch (err) {
       show(null, err.message);
     }
@@ -232,6 +267,7 @@
     history = [];
     try {
       show(api("retire"));
+      persist();
     } catch (err) {
       show(null, err.message);
     }
@@ -279,6 +315,7 @@
     if (!model.ok) throw new Error(`lord.sysml: ${model.status} ${model.statusText}`);
     show(api("load", await model.text()));
     $("begin").disabled = false;
+    await resume();
   }
 
   boot().catch((err) => show({character: true}, err.message));

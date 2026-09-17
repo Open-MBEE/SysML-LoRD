@@ -3,6 +3,7 @@ package lord
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"strconv"
 	"strings"
 	"unicode"
@@ -293,8 +294,18 @@ func (g *Game) options(spec paramSpec, source optionSource) ([]Option, error) {
 }
 
 // Play takes the key the player pressed on the current screen with the inputs
-// they gave, binds them as the model's values and runs the choice.
+// they gave, binds them as the model's values and runs the choice. A play that
+// ran, refused or not, is recorded for Save; one the menu turned down is not.
 func (g *Game) Play(key string, inputs map[string]string) (*Outcome, error) {
+	outcome, err := g.play(key, inputs)
+	if err != nil {
+		return nil, err
+	}
+	g.moves = append(g.moves, Move{Key: key, Inputs: maps.Clone(inputs)})
+	return outcome, nil
+}
+
+func (g *Game) play(key string, inputs map[string]string) (*Outcome, error) {
 	screen, err := g.Menu()
 	if err != nil {
 		return nil, err

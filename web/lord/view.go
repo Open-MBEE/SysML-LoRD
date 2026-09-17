@@ -43,6 +43,15 @@ func (g *Game) Welcome() (*View, error) {
 	return g.View(fmt.Sprintf("Welcome to the realm, %s. It is a fine day to slay the dragon.", warrior.Name))
 }
 
+// Returned is the first view of a warrior whose game was resumed.
+func (g *Game) Returned() (*View, error) {
+	warrior, err := g.Snapshot()
+	if err != nil {
+		return nil, err
+	}
+	return g.View(fmt.Sprintf("Welcome back, %s. The realm is as you left it.", warrior.Name))
+}
+
 // Played is the view after a turn: the outcome narrated, or when there is
 // nothing to tell, where the warrior went, that the model refused, or that
 // nothing came of it.
