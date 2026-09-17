@@ -60,6 +60,20 @@ func TestResumeReplaysTheGameToTheSameState(t *testing.T) {
 	}
 }
 
+func TestSaveCarriesTheSeedAsAString(t *testing.T) {
+	data, err := json.Marshal(&Save{Seed: 1<<64 - 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), `"seed":"18446744073709551615"`) {
+		t.Fatalf("save = %s", data)
+	}
+	var loaded Save
+	if err := json.Unmarshal(data, &loaded); err != nil || loaded.Seed != 1<<64-1 {
+		t.Fatalf("seed = %d, %v", loaded.Seed, err)
+	}
+}
+
 func TestResumeRefusesASaveOfAnotherModel(t *testing.T) {
 	source := modelSource(t)
 	saved := &Save{Model: ModelDigest([]byte("package Other;")), Seed: 1}

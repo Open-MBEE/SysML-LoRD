@@ -15,8 +15,9 @@ var ErrStaleSave = errors.New("the saved game cannot be resumed")
 // Save is a game as the record that replays it: the model it was played against,
 // its dice, the character and every move since, in order.
 type Save struct {
-	Model     string    `json:"model"`
-	Seed      uint64    `json:"seed"`
+	Model string `json:"model"`
+	// Seed travels as a string: a JSON number would lose it past 2^53.
+	Seed      uint64    `json:"seed,string"`
 	Character Character `json:"character"`
 	Moves     []Move    `json:"moves"`
 }
