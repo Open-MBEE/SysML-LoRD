@@ -221,17 +221,12 @@
 
   // resume brings back the saved warrior, if any; a save that no longer plays is dropped.
   async function resume() {
-    let saved = null;
-    try {
-      saved = JSON.parse(localStorage.getItem(SAVE_KEY));
-    } catch {
-      saved = null;
-    }
-    if (!saved) return;
+    const stored = localStorage.getItem(SAVE_KEY);
+    if (stored === null) return;
     tell(["Your warrior returns to the realm..."]);
     await new Promise(requestAnimationFrame);
     try {
-      show(api("resume", saved));
+      show(api("resume", JSON.parse(stored)));
     } catch (err) {
       localStorage.removeItem(SAVE_KEY);
       show(null, `Your saved warrior could not return: ${err.message}`);
