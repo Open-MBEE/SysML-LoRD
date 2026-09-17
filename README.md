@@ -11,7 +11,8 @@ at midnight — is an executable SysML action or transition, guarded so that the
 warrior's invariants hold however it is reached. [Played in the browser](#in-the-browser),
 it looks like the door game did — a black screen, the menus, a warrior's stats —
 with the page pressing the model's keys and no rule of its own. What it still is
-not is the bulletin board: no saved characters, no other players on the line.
+not is the bulletin board: a warrior is saved in the browser that made them, and
+no other players are on the line.
 Every output below is what the commands print.
 
 The model is written for [OpenSysML](https://github.com/Open-MBEE/OpenSysML),
@@ -1023,12 +1024,21 @@ choice that needs more — how much to deposit, which weapon, which blessing —
 asks for it, and <kbd>Esc</kbd> takes the question back. The page is the
 model's, not a copy of it:
 
-- **Each tab plays its own model.** The page fetches `lord.sysml` and hands it
+- **Each browser plays its own model.** The page fetches `lord.sysml` and hands it
   to the runtime in `lord.wasm`, which parses and checks it, instantiates
-  `LordPlay::hero` and starts its `day` machine — all in the browser. A game
-  lives as long as the tab; nothing is sent anywhere, written to disk, or
-  shared with another tab. Edit the model in `build/web/`, reload, and
-  the changed rules are what you play.
+  `LordPlay::hero` and starts its `day` machine — all in the browser. Nothing
+  is sent anywhere or shared with another browser. Edit the model in
+  `build/web/`, reload, and the changed rules are what you play.
+- **The save is the game replayed.** After every key the page keeps, in the
+  browser's `localStorage`, the game's seed, the character and the keys pressed
+  so far, with a digest of the model they were played against. Opening the page
+  again makes a new game from the seed and character and plays the keys back:
+  the dice being seeded, the warrior returns exactly as left. A save from
+  another revision of the model, or one of whose moves the menu no longer
+  offers, is refused rather than replayed into a different game, and the
+  character screen is shown; *Retire* forgets the save. Two tabs that resume
+  the same warrior play apart, so the save follows the tab that wrote it
+  last and the other is told its moves are not kept.
 - **The menu is the state machine.** Each key is one of the `accept` triggers
   of the transitions out of the current state; a choice the guard refuses
   (*Seek the Red Dragon* at level one, robbing the bank untrained, a room with

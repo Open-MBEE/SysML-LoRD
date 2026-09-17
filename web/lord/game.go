@@ -5,6 +5,7 @@
 package lord
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -38,10 +39,10 @@ var (
 // Character is what a player chooses before the first day: the warrior's name,
 // sex and skill guild, written to the hero's declared attributes.
 type Character struct {
-	Name   string
-	Female bool
+	Name   string `json:"name"`
+	Female bool   `json:"female"`
 	// Class is a literal of Lord::CharacterClass: deathKnight, mysticalSkills or thievingSkills.
-	Class string
+	Class string `json:"class"`
 }
 
 // Game is one warrior's run of the model: a session of its own on the public
@@ -54,6 +55,10 @@ type Game struct {
 	// seed fixes the game's dice; deeds counts the direct actions performed, so
 	// each is run under dice of its own that the seed still determines.
 	seed, deeds uint64
+	// source, character and moves are what Save records: enough to replay the game.
+	source    []byte
+	character Character
+	moves     []Move
 }
 
 // NewGame parses the model source in a client of its own, opens a session on
@@ -87,7 +92,7 @@ func openGame(client opensysml.Client, modelSource []byte, seed uint64, characte
 	if err != nil {
 		return nil, err
 	}
-	g := &Game{client: client, model: model, session: session, seed: seed}
+	g := &Game{client: client, model: model, session: session, seed: seed, source: bytes.Clone(modelSource), character: character}
 	if err := g.start(character); err != nil {
 		_ = session.Close()
 		return nil, err

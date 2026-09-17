@@ -1,9 +1,13 @@
 // The page is a dumb terminal: it shows the view the game reports and turns keys
 // into plays. The game is lord.wasm, the model runtime compiled for the browser;
 // which keys exist, what they do and what they cost is the model's business,
-// reported back in every view.
+// reported back in every view. The one thing the page keeps is the game's save
+// (its seed, character and moves) in localStorage, handed back when the page
+// next opens so the warrior returns where they left off.
 (() => {
   "use strict";
+
+  const SAVE_KEY = "lord.save";
 
   const $ = (id) => document.getElementById(id);
   const character = $("character");
@@ -19,6 +23,7 @@
   let pending = null;  // {choice, params, index, inputs} while a choice is asking for inputs
   let typed = "";      // digits typed so far towards a numbered option
   let history = [];    // the last few results, oldest first
+  let written = null;  // the save this tab last wrote or resumed; another value means another tab has the warrior
 
   // Every call into the game takes and returns JSON; a failure is {error}.
   function api(name, body) {
@@ -199,8 +204,49 @@
   function play(key, inputs) {
     try {
       show(api("play", {key, inputs}));
+      persist();
     } catch (err) {
       show(null, err.message);
+    }
+  }
+
+  // persist keeps the game's save, or drops it when no warrior walks the realm.
+  // A save another tab has moved on is left alone: this tab's game is the stale one.
+  function persist() {
+    try {
+      if (overtaken()) return;
+      if (screen) written = JSON.stringify(api("save"));
+      else written = null;
+      if (written === null) localStorage.removeItem(SAVE_KEY);
+      else localStorage.setItem(SAVE_KEY, written);
+    } catch (err) {
+      console.warn("the game could not be saved:", err);
+    }
+  }
+
+  // overtaken reports whether another tab has written the save since this one did.
+  function overtaken() {
+    if (written === null || localStorage.getItem(SAVE_KEY) === written) return false;
+    show(null, "Your warrior walks on in another tab; what happens here is not saved.");
+    return true;
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === SAVE_KEY || event.key === null) overtaken();
+  });
+
+  // resume brings back the saved warrior, if any; a save that no longer plays is dropped.
+  async function resume() {
+    const stored = localStorage.getItem(SAVE_KEY);
+    if (stored === null) return;
+    tell(["Your warrior returns to the realm..."]);
+    await new Promise(requestAnimationFrame);
+    try {
+      show(api("resume", JSON.parse(stored)));
+      written = stored;
+    } catch (err) {
+      localStorage.removeItem(SAVE_KEY);
+      show(null, `Your saved warrior could not return: ${err.message}`);
     }
   }
 
@@ -214,13 +260,14 @@
     event.preventDefault();
     const form = new FormData(event.target);
     const body = {
-      Name: form.get("name").trim(),
-      Female: form.get("sex") === "female",
-      Class: form.get("class"),
+      name: form.get("name").trim(),
+      female: form.get("sex") === "female",
+      class: form.get("class"),
     };
     history = [];
     try {
       show(api("newGame", body));
+      persist();
     } catch (err) {
       show(null, err.message);
     }
@@ -232,6 +279,7 @@
     history = [];
     try {
       show(api("retire"));
+      persist();
     } catch (err) {
       show(null, err.message);
     }
@@ -279,6 +327,7 @@
     if (!model.ok) throw new Error(`lord.sysml: ${model.status} ${model.statusText}`);
     show(api("load", await model.text()));
     $("begin").disabled = false;
+    await resume();
   }
 
   boot().catch((err) => show({character: true}, err.message));

@@ -3,7 +3,8 @@
 // Command web runs the Legend of the Red Dragon model in the browser. Compiled
 // to WebAssembly, it hands the page a `lord` object whose calls take and return
 // JSON: the page fetches lord.sysml, loads it, and plays one warrior in the
-// runtime that lives in the tab. No server is involved; no rule lives here.
+// runtime that lives in the tab, saving the game as a record of its moves the
+// page keeps and hands back to resume. No server is involved; no rule lives here.
 package main
 
 import (
@@ -35,6 +36,8 @@ func main() {
 	api.Set("view", call(view))
 	api.Set("newGame", call(newGame))
 	api.Set("play", call(play))
+	api.Set("save", call(save))
+	api.Set("resume", call(resume))
 	api.Set("retire", call(retire))
 	js.Global().Set("lord", api)
 	select {}
@@ -105,7 +108,7 @@ func newGame(arg string) (any, error) {
 
 func play(arg string) (any, error) {
 	if game == nil {
-		return nil, fmt.Errorf("%w: no warrior walks the realm", lord.ErrNoSuchCommand)
+		return nil, errNoWarrior
 	}
 	var req playRequest
 	if err := json.Unmarshal([]byte(arg), &req); err != nil {
@@ -116,6 +119,34 @@ func play(arg string) (any, error) {
 		return nil, err
 	}
 	return game.Played(outcome)
+}
+
+var errNoWarrior = fmt.Errorf("%w: no warrior walks the realm", lord.ErrNoSuchCommand)
+
+// save records the warrior's game so far, for the page to keep.
+func save(string) (any, error) {
+	if game == nil {
+		return nil, errNoWarrior
+	}
+	return game.Save(), nil
+}
+
+// resume replays a saved game against the loaded model and makes it the tab's game.
+func resume(arg string) (any, error) {
+	if source == nil {
+		return nil, errNoModel
+	}
+	var saved lord.Save
+	if err := json.Unmarshal([]byte(arg), &saved); err != nil {
+		return nil, fmt.Errorf("%w: %v", lord.ErrBadArgument, err)
+	}
+	g, err := lord.Resume(source, &saved)
+	if err != nil {
+		return nil, err
+	}
+	retireGame()
+	game = g
+	return game.Returned()
 }
 
 func retire(string) (any, error) {
