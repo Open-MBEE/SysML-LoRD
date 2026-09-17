@@ -71,11 +71,14 @@
     const extras = [w.horse && "horse", w.fairy && "fairy", w.innRoom && "a room at the inn", w.bribed && "bartender bribed"].filter(Boolean);
     stats.replaceChildren(
       span("name", pad(w.name, 26)), `Level ${pad(w.level, 3)}`, `Exp ${pad(w.experience, 8)}`, span(hpClass, `HP ${hp}`), "\n",
-      `${pad(w.sex === "female" ? "Lady" : "Sir", 5)}${pad(w.class, 21)}`, `Str ${pad(w.strength, 5)}`, `Def ${pad(w.defense, 9)}`, span("gold", `Gold ${w.gold}`), "\n",
-      pad(`Charm ${w.charm}  Gems ${w.gems}`, 26), `Forest fights ${pad(w.forestFightsLeft, 3)}`, `Player fights ${pad(w.playerFightsLeft, 3)}`, span("gold", `Bank ${w.bankGold}`), "\n",
-      `${spouse}${kids}${extras.length ? " · " + extras.join(", ") : ""}`, w.dragonKills ? `  · dragon kills ${w.dragonKills}` : "", w.playerKills ? `  · warriors slain ${w.playerKills}` : "",
+      pad(`Weapon ${w.weapon}`, 26), `Str ${pad(w.strength, 5)}`, `Def ${pad(w.defense, 9)}`, span("gold", `Gold ${w.gold}`), "\n",
+      pad(`Armour ${w.armour}`, 26), `Forest fights ${pad(w.forestFightsLeft, 3)}`, `Player fights ${pad(w.playerFightsLeft, 3)}`, span("gold", `Bank ${w.bankGold}`), "\n",
+      pad(`Charm ${w.charm}  Gems ${w.gems}`, 26), `${GUILDS[w.class] ?? w.class} · ${w.sex} · ${spouse}${kids}${extras.length ? " · " + extras.join(", ") : ""}`,
+      w.dragonKills ? `  · dragon kills ${w.dragonKills}` : "", w.playerKills ? `  · warriors slain ${w.playerKills}` : "",
     );
   }
+
+  const GUILDS = { deathKnight: "Death Knight", mysticalSkills: "Mystical Skills", thievingSkills: "Thieving Skills" };
 
   function span(cls, text) {
     const el = document.createElement("span");

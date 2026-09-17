@@ -1,5 +1,7 @@
 package lord
 
+import "fmt"
+
 // Snapshot is the warrior's standing as the model holds it, read attribute by
 // attribute from the hero instance; the screen renders it and outcomes diff it.
 type Snapshot struct {
@@ -13,7 +15,9 @@ type Snapshot struct {
 	Strength         int64  `json:"strength"`
 	Defense          int64  `json:"defense"`
 	WeaponTier       int64  `json:"weaponTier"`
+	Weapon           string `json:"weapon"`
 	ArmourTier       int64  `json:"armourTier"`
+	Armour           string `json:"armour"`
 	Gold             int64  `json:"gold"`
 	BankGold         int64  `json:"bankGold"`
 	Gems             int64  `json:"gems"`
@@ -99,5 +103,45 @@ func (g *Game) Snapshot() (*Snapshot, error) {
 	if err != nil {
 		return nil, err
 	}
+	if s.Weapon, err = g.gearName("WeaponShop", "town.weapons", s.WeaponTier, "Fists"); err != nil {
+		return nil, err
+	}
+	if s.Armour, err = g.gearName("ArmourShop", "town.armour", s.ArmourTier, "Nothing!"); err != nil {
+		return nil, err
+	}
 	return s, nil
+}
+
+// gearName is the name of the shop's piece at the tier the warrior holds, or
+// what a warrior holding none has: bare fists, no armour.
+func (g *Game) gearName(shop, path string, tier int64, bare string) (string, error) {
+	if tier == 0 {
+		return bare, nil
+	}
+	names, err := g.Members(lordPackage + "::" + shop)
+	if err != nil {
+		return "", err
+	}
+	for _, name := range names {
+		v, err := g.Eval(path + "." + name)
+		if err != nil {
+			return "", err
+		}
+		inst, ok := g.Instance(v)
+		if !ok {
+			continue
+		}
+		t, err := g.Feature(inst, "tier")
+		if err != nil {
+			return "", err
+		}
+		if n, err := whole("tier", t); err == nil && n == tier {
+			label, err := g.Feature(inst, "name")
+			if err != nil {
+				return "", err
+			}
+			return spell(label), nil
+		}
+	}
+	return "", fmt.Errorf("%w: %s sells nothing of tier %d", ErrModelInvalid, shop, tier)
 }
