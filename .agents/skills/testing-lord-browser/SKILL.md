@@ -32,9 +32,15 @@ None. No authentication or backend is involved.
   and "The fairy in your pocket flies free.", no foe miss, healed HP and
   removal of the fairy indicator. Child rescue is progression-gated and
   should be marked untested when not naturally reached.
-- Town S opens Slaughter; A resolves a rival attack. Confirm its outcome
-  and subsequent responsive navigation. This does not demonstrate the
+- Town S opens Slaughter; A asks for the opening move (only Attack until a
+  skill has uses and the rival outranks you) and resolves a rival attack.
+  Confirm its outcome and subsequent responsive navigation. This does not demonstrate the
   model-internal unwoundable stand-off edge case.
+- Town H enters the Healer's Hut without healing; H again heals and charges
+  only when hurt and able to pay, and is dimmed otherwise.
+- Forest T then G wagers: the outcome reads "The old man rolls the dice..."
+  with a win or loss. Inn B: Seth Able's song is named and its effect told;
+  B dims afterwards.
 - Read-only `lord.view()` returns JSON text for complete state/menu
   comparisons. Compare it and the `lord.save` localStorage entry across a
   UI reload, as well as the visible Welcome back message.

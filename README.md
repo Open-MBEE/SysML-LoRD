@@ -263,7 +263,7 @@ stateDiagram-v2
     [*] --> n1
   }
   n1 --> n2 : townSquare_forest: accept EnterForest
-  n1 --> n5 : townSquare_healer: accept VisitTheHealer / healing
+  n1 --> n5 : townSquare_healer: accept VisitTheHealer
   n1 --> n6 : townSquare_bank: accept VisitTheBank
   n1 --> n7 : townSquare_training: accept VisitTheTrainingHall / training
   n1 --> n8 : townSquare_inn: accept VisitTheInn
@@ -288,6 +288,7 @@ stateDiagram-v2
   n4 --> n4 : tavern_gamble: accept Gamble [alive and gold #gt;= 100] / betting
   n4 --> n4 : tavern_profession: accept ChangeProfession [alive] / retraining
   n4 --> n2 : tavern_forest: accept ReturnToTheForest
+  n5 --> n5 : healer_heal: accept HealYourWounds [alive and hitPoints #lt; maxHitPoints and gold #gt;= HealRate(level)] / healing
   n5 --> n1 : healer_town: accept ReturnToTown
   n6 --> n6 : bank_rob: accept RobTheBank [alive and class == CharacterClass::thievingSkills and fairy] / robbing
   n6 --> n1 : bank_town: accept ReturnToTown
@@ -300,7 +301,7 @@ stateDiagram-v2
   n8 --> n9 : inn_room: accept BuyARoom [alive and not innRoom and (charm #gt;= town.inn.charmForAFreeRoom or gold #gt;= RoomPrice(level))] / lodging
   n8 --> n1 : inn_town: accept ReturnToTown
   n9 --> n1 : asleep_midnight: accept NewDay / midnight
-  n10 --> n10 : slaughter_attack: accept AttackAWarrior [playerFightsLeft #gt; 0 and alive] / attacking
+  n10 --> n10 : slaughter_attack: accept AttackAWarrior [playerFightsLeft #gt; 0 and alive and rival.alive and (a.move == Move::attack or (rival.level #gt; level and ((a.move == Move::deathKnight and deathKnightUses #gt;= 1) or (a.move == Move::thieving and thievingUses #gt;= 1))))] / attacking
   n10 --> n12 : slaughter_slain: [not alive]
   n10 --> n1 : slaughter_town: accept ReturnToTown
   n11 --> n1 : otherPlaces_town: accept ReturnToTown
@@ -1344,8 +1345,9 @@ The page is the model's, not a copy of it:
   no gold, a spell without the uses) is drawn dimmed and, pressed, is refused
   by the machine, not the page. Where a transition's deed takes an argument —
   the fairies' blessing, a wager, a profession, a favour, a stat for the gems,
-  the skill to use — the page asks for it and sends the signal or performs
-  the action with the argument bound to the model's own value
+  the skill to use, the move a slaughter opens with — the page asks for it
+  and sends the signal or performs the action with the argument bound to the
+  model's own value
   (`Blessing::horse`, `town.inn.violet.wink`, `Move::heatWave`), with the same
   guard deciding.
 - **The stats are the warrior's features.** Name, level, hit points, gold in

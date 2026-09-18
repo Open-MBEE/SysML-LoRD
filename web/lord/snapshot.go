@@ -32,7 +32,6 @@ type Snapshot struct {
 	DeathKnightSkill int64  `json:"deathKnightPoints"`
 	MysticalSkill    int64  `json:"mysticalPoints"`
 	ThievingSkill    int64  `json:"thievingPoints"`
-	FavouredMove     string `json:"favouredMove"`
 	ForestFightsLeft int64  `json:"forestFightsLeft"`
 	PlayerFightsLeft int64  `json:"playerFightsLeft"`
 	Day              int64  `json:"daysPlayed"`
@@ -105,7 +104,6 @@ func (g *Game) Snapshot() (*Snapshot, error) {
 	num(&s.DeathKnightSkill, "deathKnightPoints")
 	num(&s.MysticalSkill, "mysticalPoints")
 	num(&s.ThievingSkill, "thievingPoints")
-	lit(&s.FavouredMove, "favouredMove")
 	num(&s.ForestFightsLeft, "forestFightsLeft")
 	num(&s.PlayerFightsLeft, "playerFightsLeft")
 	num(&s.Day, "daysPlayed")

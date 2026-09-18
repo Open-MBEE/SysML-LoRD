@@ -115,6 +115,7 @@ func (p *player) heal() {
 	}
 	if p.warrior().Gold >= 5*w.Level {
 		p.must("H", nil)
+		p.must("H", nil)
 		p.town()
 	}
 }
@@ -145,23 +146,6 @@ func (p *player) trade() {
 		p.must("G", map[string]string{"stat": stats[i%len(stats)].Value})
 	}
 	p.town()
-}
-
-// favour picks the class's skill as the favoured move, so the fights spend it.
-func (p *player) favour(class string) {
-	p.t.Helper()
-	want := map[string]string{"deathKnight": "deathKnight", "mysticalSkills": "pinchRealHard", "thievingSkills": "thieving"}[class]
-	c, ok := p.choice("M")
-	if !ok {
-		p.t.Fatal("no favoured move to choose")
-	}
-	for _, o := range c.Params[0].Options {
-		if strings.HasSuffix(o.Value, want) {
-			p.must("M", map[string]string{"favouredMove": o.Value})
-			return
-		}
-	}
-	p.t.Fatalf("no move %q among %v", want, c.Params[0].Options)
 }
 
 // skill picks the skill worth spending this round, or none: the Death Knight's
@@ -326,7 +310,6 @@ func TestAWarriorCanSlayTheDragon(t *testing.T) {
 		t.Run(fmt.Sprintf("seed%d_%s", tc.seed, tc.class), func(t *testing.T) {
 			g := newGame(t, tc.seed, Character{Class: tc.class})
 			p := &player{t: t, g: g}
-			p.favour(tc.class)
 			for day := 1; day <= 150; day++ {
 				if p.warrior().DragonKills > 0 {
 					w := p.warrior()
