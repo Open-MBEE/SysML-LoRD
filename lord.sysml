@@ -2632,12 +2632,12 @@ package LordPlay {
     }
 
     part hero : Warrior {
-        attribute :>> name = "Sir Devin";
+        attribute :>> name = "Sir Ed";
     }
 
     // A warrior of the other sex, charming enough for the bard's hand.
     part heroine : Warrior {
-        attribute :>> name = "Dame Devin";
+        attribute :>> name = "Dame Ed";
         attribute :>> sex = Sex::female;
         attribute :>> class = CharacterClass::mysticalSkills;
         attribute :>> charm = 125;
