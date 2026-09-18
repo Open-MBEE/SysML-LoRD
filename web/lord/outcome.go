@@ -23,13 +23,66 @@ type Outcome struct {
 func (o *Outcome) Moved() bool { return o.From != o.To }
 
 // Narrate tells the outcome as the game's screens did: the foe met, each side's
-// blow, and every change to the warrior's standing.
+// blow, the old man's dice or the bard's song, and every change to the warrior's standing.
 func (o *Outcome) Narrate(g *Game) []string {
 	var lines []string
 	lines = append(lines, o.fightLines()...)
+	lines = append(lines, o.slaughterLines()...)
+	lines = append(lines, o.tavernLines()...)
+	lines = append(lines, o.songLines()...)
 	lines = append(lines, o.changes()...)
 	if master := o.masterLine(g); master != "" {
 		lines = append(lines, master)
+	}
+	return lines
+}
+
+// slaughterLines tells the skill a slaughter opened with, if any.
+func (o *Outcome) slaughterLines() []string {
+	b, a := o.Before, o.After
+	if b.Foe.Present || a.PlayerFightsLeft >= b.PlayerFightsLeft {
+		return nil
+	}
+	switch {
+	case a.DeathKnightUses < b.DeathKnightUses:
+		return []string{"You call on the power of the Death Knights!"}
+	case a.ThievingUses < b.ThievingUses:
+		return []string{"You slip behind your victim for a sneak attack!"}
+	}
+	return nil
+}
+
+// tavernLines tells how the old man's dice fell on a wager.
+func (o *Outcome) tavernLines() []string {
+	if !o.decided("decision dice") {
+		return nil
+	}
+	d := o.After.Gold - o.Before.Gold
+	if d > 0 {
+		return []string{fmt.Sprintf("The old man rolls the dice... and curses. You win %s!", plural(d, "gold piece"))}
+	}
+	return []string{fmt.Sprintf("The old man rolls the dice... and grins. You lose %s.", plural(-d, "gold piece"))}
+}
+
+// songLines tells which song Seth Able sang and what it did for the warrior.
+func (o *Outcome) songLines() []string {
+	if !o.decided("decision song") {
+		return nil
+	}
+	lines := []string{"Seth Able strikes up a song for you."}
+	switch {
+	case o.took("decision song", "->threeFights"), o.took("decision song", "->twoFights"), o.took("decision song", "->oneFight"):
+		lines = append(lines, "A rousing ballad of the forest: you feel ready for more fights today.")
+	case o.took("decision song", "->userBattle"):
+		lines = append(lines, "A song of vengeance: you feel ready for another fight against a warrior.")
+	case o.took("decision song", "->hitPointsMaxed"):
+		lines = append(lines, "A soothing melody: your wounds close and you feel fully rested.")
+	case o.took("decision song", "->hitPointUp"):
+		lines = append(lines, "A song of endurance: you feel hardier than before.")
+	case o.took("decision song", "->bankDoubled"):
+		lines = append(lines, fmt.Sprintf("A song of riches: the bank doubles your savings to %s.", plural(o.After.BankGold, "gold piece")))
+	case o.took("decision song", "->charmPoint"):
+		lines = append(lines, "A song of your deeds: the crowd finds you more charming.")
 	}
 	return lines
 }
@@ -243,10 +296,12 @@ func (o *Outcome) changes() []string {
 	if a.PlayerKills > b.PlayerKills {
 		add("You have killed another warrior!")
 	}
-	if d := a.Gold - b.Gold; d > 0 {
-		add("You gain %s.", plural(d, "gold piece"))
-	} else if d < 0 && a.Alive {
-		add("You spend %s.", plural(-d, "gold piece"))
+	if d := a.Gold - b.Gold; !o.decided("decision dice") {
+		if d > 0 {
+			add("You gain %s.", plural(d, "gold piece"))
+		} else if d < 0 && a.Alive {
+			add("You spend %s.", plural(-d, "gold piece"))
+		}
 	}
 	if d := a.BankGold - b.BankGold; d != 0 {
 		add("Your bank account now holds %s.", plural(a.BankGold, "gold piece"))
@@ -286,9 +341,6 @@ func (o *Outcome) changes() []string {
 	}
 	if a.Class != b.Class {
 		add("You now follow the way of the %s.", className(a.Class))
-	}
-	if a.FavouredMove != b.FavouredMove {
-		add("In combat you will favour %s.", spaced(a.FavouredMove))
 	}
 	for _, skill := range []struct {
 		name   string
@@ -360,6 +412,19 @@ func className(literal string) string {
 		return "Thieving Skills"
 	}
 	return literal
+}
+
+// moveName spells a Move literal as the fight offers it.
+func moveName(literal string) string {
+	switch literal {
+	case "attack":
+		return "Attack"
+	case "deathKnight":
+		return "Power of the Death Knights"
+	case "thieving":
+		return "Sneak attack"
+	}
+	return spaced(literal)
 }
 
 // spouseName spells a Spouse literal as the inn knows them.

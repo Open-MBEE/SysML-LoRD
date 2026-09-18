@@ -534,6 +534,7 @@ package LordPlay {
     attribute def ReturnToTheForest;
     attribute def ReturnToTown;
     attribute def VisitTheHealer;
+    attribute def HealYourWounds;
     attribute def VisitTheBank;
     attribute def RobTheBank;
     attribute def VisitTheTrainingHall;
@@ -545,7 +546,9 @@ package LordPlay {
     attribute def TradeGems;
     attribute def BuyARoom;
     attribute def SlaughterOtherPlayers;
-    attribute def AttackAWarrior;
+    attribute def AttackAWarrior {
+        attribute move : Move;
+    }
     attribute def OtherPlaces;
     attribute def NewDay;
 
@@ -589,8 +592,6 @@ package LordPlay {
         attribute mysticalUses : Integer default = 0;
         attribute thievingUses : Integer default = 0;
         attribute lightShield : Boolean default = false;
-        // The move a fight opens with when none is named.
-        attribute favouredMove : Move default = Move::attack;
         attribute forestFightsLeft : Integer default = 15;
         attribute playerFightsLeft : Integer default = 3;
         attribute daysPlayed : Integer default = 1;
@@ -840,7 +841,7 @@ package LordPlay {
         // thieves' sneak attack are three blows in one; the mystics' spells each their own.
         // An attacking skill lands for at least a point; the foe answers unless it falls or is fled.
         action useSkill {
-            in move : Move default = favouredMove;
+            in move : Move default = Move::attack;
 
             attribute quarters : Integer = 0;
 
@@ -1030,7 +1031,7 @@ package LordPlay {
         // warriors neither of whom can mark the other, skills spent, break off the fight.
         action attack {
             in victim : Warrior = rival;
-            in move : Move default = favouredMove;
+            in move : Move default = Move::attack;
 
             attribute rounds : Integer = 0;
             attribute quarters : Integer = 0;
@@ -2440,6 +2441,12 @@ package LordPlay {
             transition townSquare_healer
                 first townSquare
                 accept VisitTheHealer
+                then healersHut;
+
+            transition healer_heal
+                first healersHut
+                accept HealYourWounds
+                if alive and hitPoints < maxHitPoints and gold >= HealRate(level)
                 do action healing { perform heal; }
                 then healersHut;
 
@@ -2580,9 +2587,13 @@ package LordPlay {
 
             transition slaughter_attack
                 first slaughter
-                accept AttackAWarrior
-                if playerFightsLeft > 0 and alive
-                do action attacking { perform attack; }
+                accept a : AttackAWarrior
+                if playerFightsLeft > 0 and alive and rival.alive
+                    and (a.move == Move::attack
+                        or (rival.level > level
+                            and ((a.move == Move::deathKnight and deathKnightUses >= 1)
+                                or (a.move == Move::thieving and thievingUses >= 1))))
+                do action attacking { perform attack { in move = a.move; } }
                 then slaughter;
 
             transition slaughter_slain
@@ -2656,7 +2667,6 @@ package LordPlay {
         attribute :>> armourDefense = 400;
         attribute :>> deathKnightPoints = 40;
         attribute :>> deathKnightUses = 10;
-        attribute :>> favouredMove = Move::deathKnight;
     }
 
     // The hero a round into a forest fight, the Small Thief before him and neither yet touched.

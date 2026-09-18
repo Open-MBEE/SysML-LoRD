@@ -64,6 +64,7 @@ var signalMenus = map[string]signalMenu{
 	"ReturnToTheForest":      {"R", "Return to the forest"},
 	"ReturnToTown":           {"R", "Return to town"},
 	"VisitTheHealer":         {"H", "Healer's Hut"},
+	"HealYourWounds":         {"H", "Heal your wounds"},
 	"VisitTheBank":           {"K", "King Arthur's Bank"},
 	"RobTheBank":             {"B", "Rob the bank"},
 	"VisitTheTrainingHall":   {"T", "Turgon's Warrior Training"},
@@ -73,7 +74,6 @@ var signalMenus = map[string]signalMenu{
 	"BribeTheBartender":      {"P", "Pay the bartender to keep quiet"},
 	"BuyARoom":               {"S", "Sleep in a room for the night"},
 	"SlaughterOtherPlayers":  {"S", "Slaughter other players"},
-	"AttackAWarrior":         {"A", "Attack a warrior"},
 	"OtherPlaces":            {"O", "Other places"},
 	"NewDay":                 {"N", "Wait for midnight (a new day)"},
 }
@@ -126,23 +126,19 @@ type optionSource struct {
 
 func enumeration(name string) []optionSource { return []optionSource{{definition: name}} }
 
-var moveParam = paramSpec{name: "favouredMove", prompt: "Fight with which move?", sources: enumeration("Move")}
-
 var actionMenus = []actionMenu{
 	{state: "townSquare", key: "W", label: "King Arthur's Weapons", action: "buyWeapon", params: []paramSpec{
 		{name: "weapon", prompt: "Which weapon?", sources: []optionSource{{"WeaponShop", "town.weapons"}}, detail: []string{"strength", "price"}}}},
 	{state: "townSquare", key: "A", label: "Abdul's Armour", action: "buyArmour", params: []paramSpec{
 		{name: "armour", prompt: "Which armour?", sources: []optionSource{{"ArmourShop", "town.armour"}}, detail: []string{"defense", "price"}}}},
-	{state: "townSquare", key: "M", label: "Choose your favoured move", params: []paramSpec{moveParam}},
-	{state: "forest", key: "M", label: "Choose your favoured move", params: []paramSpec{moveParam}},
-	{state: "slaughter", key: "M", label: "Choose your favoured move", params: []paramSpec{moveParam}},
 	{state: "forest", key: "A", label: "Ask the fairies for a blessing", action: "askTheFairies", signal: "AskTheFairies", params: []paramSpec{
 		{name: "blessing", prompt: "Which blessing?", sources: enumeration("Blessing")}}},
 	{state: "fighting", key: "S", label: "Use a skill", signal: "UseASkill", payload: true, params: []paramSpec{
 		{name: "move", prompt: "Which skill?", sources: enumeration("Move")}}},
+	{state: "slaughter", key: "A", label: "Attack a warrior", signal: "AttackAWarrior", payload: true, params: []paramSpec{
+		{name: "move", prompt: "Open with which move?", sources: enumeration("Move")}}},
 	{state: "bank", key: "D", label: "Deposit gold", action: "deposit", params: []paramSpec{{name: "amount", prompt: "How much to deposit?", integer: true}}},
 	{state: "bank", key: "W", label: "Withdraw gold", action: "withdraw", params: []paramSpec{{name: "amount", prompt: "How much to withdraw?", integer: true}}},
-	{state: "healersHut", key: "H", label: "Heal your wounds", action: "heal"},
 	{state: "darkCloakTavern", key: "G", label: "Gamble with the old man", action: "gamble", signal: "Gamble", params: []paramSpec{
 		{name: "wager", prompt: "How much to wager?", integer: true}}},
 	{state: "darkCloakTavern", key: "P", label: "Let Chance change your profession", action: "changeProfession", signal: "ChangeProfession", params: []paramSpec{
@@ -298,7 +294,11 @@ func (g *Game) options(spec paramSpec, source optionSource) ([]Option, error) {
 	var options []Option
 	for _, name := range names {
 		if source.path == "" {
-			options = append(options, Option{Value: source.definition + "::" + name, Label: spaced(name)})
+			label := spaced(name)
+			if source.definition == "Move" {
+				label = moveName(name)
+			}
+			options = append(options, Option{Value: source.definition + "::" + name, Label: label})
 			continue
 		}
 		option := Option{Value: source.path + "." + name, Label: spaced(name)}
@@ -392,19 +392,9 @@ func (g *Game) bindAll(choice Choice, inputs map[string]string) (map[string]open
 	return args, nil
 }
 
-// perform invokes a direct action with its bound inputs, or writes a preference.
+// perform invokes a direct action with its bound inputs.
 func (g *Game) perform(choice Choice, args map[string]opensysml.Value) (*Outcome, error) {
-	if choice.Action != "" {
-		return g.Invoke(choice.Action, args)
-	}
-	return g.run(func() (deed, error) {
-		for name, v := range args {
-			if err := g.SetPreference(name, v); err != nil {
-				return deed{}, err
-			}
-		}
-		return deed{}, nil
-	})
+	return g.Invoke(choice.Action, args)
 }
 
 // bind turns the player's text into the model value the parameter takes: a

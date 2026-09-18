@@ -49,7 +49,7 @@ func TestMenuShowsTheStatesSignalsAndActions(t *testing.T) {
 	if town.Title != "The Town Square" {
 		t.Fatalf("title = %q", town.Title)
 	}
-	if got, want := strings.Join(keys(town), ""), "FHKTISONWAM"; got != want {
+	if got, want := strings.Join(keys(town), ""), "FHKTISONWA"; got != want {
 		t.Fatalf("town keys = %s, want %s", got, want)
 	}
 	for _, key := range "FHKTISON" {
@@ -59,9 +59,6 @@ func TestMenuShowsTheStatesSignalsAndActions(t *testing.T) {
 	}
 	if c := find(t, town, "W"); c.Action != "buyWeapon" || len(c.Params) != 1 || len(c.Params[0].Options) != 13 {
 		t.Fatalf("weapons = %+v", c)
-	}
-	if c := find(t, town, "M"); c.Action != "" || c.Signal != "" || len(c.Params[0].Options) != 9 {
-		t.Fatalf("favoured move = %+v", c)
 	}
 	play(t, g, "F", nil)
 	forest := menu(t, g)
@@ -204,10 +201,6 @@ func TestPlayBindsTheOptionsAndNumbers(t *testing.T) {
 	if o.After.WeaponTier != 1 || o.After.Gold != 300 || !o.Refused {
 		t.Fatalf("a weapon beyond the purse was sold: %+v", *o.After)
 	}
-	o = play(t, g, "M", map[string]string{"favouredMove": "Move::deathKnight"})
-	if o.After.FavouredMove != "deathKnight" {
-		t.Fatalf("favoured move = %s", o.After.FavouredMove)
-	}
 	play(t, g, "K", nil)
 	o = play(t, g, "D", map[string]string{"amount": " 250 "})
 	if o.After.Gold != 50 || o.After.BankGold != 250 {
@@ -257,7 +250,7 @@ func TestPlayRefusesWhatItCannotBind(t *testing.T) {
 		{"W", nil, ErrBadArgument},
 		{"W", map[string]string{"weapon": "town.weapons.excalibur"}, ErrBadArgument},
 		{"W", map[string]string{"weapon": "gold"}, ErrBadArgument},
-		{"M", map[string]string{"favouredMove": "Move::attack; assign gold := 1"}, ErrBadArgument},
+		{"A", map[string]string{"armour": "town.armour.coat; assign gold := 1"}, ErrBadArgument},
 	} {
 		if _, err := g.Play(tc.key, tc.inputs); !errors.Is(err, tc.want) {
 			t.Errorf("Play(%q, %v): err = %v, want %v", tc.key, tc.inputs, err, tc.want)
@@ -293,5 +286,149 @@ func TestPlayReadsTheMenuFromTheModel(t *testing.T) {
 	o = play(t, g, "P", map[string]string{"profession": "CharacterClass::thievingSkills"})
 	if o.After.Class != "thievingSkills" {
 		t.Fatalf("class = %s", o.After.Class)
+	}
+}
+
+func TestTheOldManTellsHowTheDiceFell(t *testing.T) {
+	won, lost := false, false
+	for seed := uint64(1); seed <= 12 && !(won && lost); seed++ {
+		g := newGame(t, seed, Character{})
+		play(t, g, "F", nil)
+		play(t, g, "T", nil)
+		o := play(t, g, "G", map[string]string{"wager": "100"})
+		lines := strings.Join(o.Narrate(g), "\n")
+		switch d := o.After.Gold - o.Before.Gold; {
+		case d == 100 && strings.Contains(lines, "You win 100 gold pieces!"):
+			won = true
+		case d == -100 && strings.Contains(lines, "You lose 100 gold pieces."):
+			lost = true
+		default:
+			t.Fatalf("seed %d: gold %d -> %d narrated %q", seed, o.Before.Gold, o.After.Gold, lines)
+		}
+		if strings.Contains(lines, "You spend") || strings.Contains(lines, "You gain") {
+			t.Fatalf("seed %d: a wager read as shopping: %q", seed, lines)
+		}
+	}
+	if !won || !lost {
+		t.Fatalf("twelve seeds: won=%v lost=%v", won, lost)
+	}
+}
+
+func TestSethAbleNamesHisSong(t *testing.T) {
+	songs := map[string]bool{}
+	for seed := uint64(1); seed <= 40; seed++ {
+		g := newGame(t, seed, Character{})
+		play(t, g, "K", nil)
+		play(t, g, "D", map[string]string{"amount": "100"})
+		play(t, g, "R", nil)
+		play(t, g, "I", nil)
+		o := play(t, g, "B", nil)
+		lines := strings.Join(o.Narrate(g), "\n")
+		if !strings.Contains(lines, "Seth Able strikes up a song") {
+			t.Fatalf("seed %d: the bard narrated %q", seed, lines)
+		}
+		b, a := o.Before, o.After
+		var song string
+		switch {
+		case a.ForestFightsLeft > b.ForestFightsLeft:
+			song = "ballad of the forest"
+		case a.PlayerFightsLeft > b.PlayerFightsLeft:
+			song = "song of vengeance"
+		case a.MaxHitPoints > b.MaxHitPoints:
+			song = "song of endurance"
+		case a.BankGold > b.BankGold:
+			song = "doubles your savings to 200 gold pieces"
+		case a.Charm > b.Charm:
+			song = "song of your deeds"
+		default:
+			song = "soothing melody"
+		}
+		if !strings.Contains(lines, song) {
+			t.Fatalf("seed %d: %+v -> %+v narrated %q, want %q", seed, *b, *a, lines, song)
+		}
+		songs[song] = true
+		if c := find(t, menu(t, g), "B"); c.Enabled {
+			t.Fatalf("seed %d: the bard sings twice", seed)
+		}
+	}
+	if len(songs) != 6 {
+		t.Fatalf("forty seeds heard only %v", songs)
+	}
+}
+
+func TestTheHealersWaitToBeAsked(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	set(t, g, map[string]int64{"hitPoints": 5})
+	if c := find(t, menu(t, g), "H"); c.Signal != "VisitTheHealer" || !c.Enabled {
+		t.Fatalf("the hut = %+v", c)
+	}
+	o := play(t, g, "H", nil)
+	if o.To != "healersHut" || o.After.HitPoints != 5 || o.After.Gold != 500 {
+		t.Fatalf("walking in: %s hp=%d gold=%d", o.To, o.After.HitPoints, o.After.Gold)
+	}
+	hut := menu(t, g)
+	if got := strings.Join(keys(hut), ""); got != "HR" {
+		t.Fatalf("hut keys = %s", got)
+	}
+	if c := find(t, hut, "H"); c.Signal != "HealYourWounds" || c.Action != "" || !c.Enabled {
+		t.Fatalf("healing = %+v", c)
+	}
+	o = play(t, g, "H", nil)
+	if o.To != "healersHut" || o.After.HitPoints != 20 || o.After.Gold != 500-15*5 {
+		t.Fatalf("healing: %s hp=%d gold=%d", o.To, o.After.HitPoints, o.After.Gold)
+	}
+	if lines := strings.Join(o.Narrate(g), "\n"); !strings.Contains(lines, "healed for 15 hit points") {
+		t.Fatalf("narrated %q", lines)
+	}
+	if c := find(t, menu(t, g), "H"); c.Enabled {
+		t.Fatalf("healing the whole: %+v", c)
+	}
+	if _, err := g.Play("H", nil); !errors.Is(err, ErrRefused) {
+		t.Fatalf("healing the whole: err = %v, want ErrRefused", err)
+	}
+	set(t, g, map[string]int64{"hitPoints": 1, "gold": 4})
+	if c := find(t, menu(t, g), "H"); c.Enabled {
+		t.Fatalf("healing without the fee: %+v", c)
+	}
+}
+
+func TestASlaughterOpensWithAMove(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	play(t, g, "S", nil)
+	c := find(t, menu(t, g), "A")
+	if c.Signal != "AttackAWarrior" || !c.Enabled || len(c.Params) != 1 || len(c.Params[0].Options) != 1 || c.Params[0].Options[0].Label != "Attack" {
+		t.Fatalf("attack = %+v", c)
+	}
+	if _, err := g.Play("A", map[string]string{"move": "Move::deathKnight"}); !errors.Is(err, ErrBadArgument) {
+		t.Fatalf("an untrained power move: err = %v, want ErrBadArgument", err)
+	}
+	set(t, g, map[string]int64{"deathKnightUses": 1})
+	if c = find(t, menu(t, g), "A"); len(c.Params[0].Options) != 1 {
+		t.Fatalf("a power move against a rival of the same level: %+v", c.Params[0].Options)
+	}
+	rival, err := g.Eval("rival")
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, ok := g.Instance(rival)
+	if !ok {
+		t.Fatalf("rival is %v, not an object", rival)
+	}
+	if err := g.session.SetFeature(id, "level", IntValue(2)); err != nil {
+		t.Fatal(err)
+	}
+	c = find(t, menu(t, g), "A")
+	if len(c.Params[0].Options) != 2 || c.Params[0].Options[1].Label != "Power of the Death Knights" {
+		t.Fatalf("a Death Knight's moves = %+v", c.Params[0].Options)
+	}
+	o := play(t, g, "A", map[string]string{"move": "Move::deathKnight"})
+	if o.Refused || o.After.DeathKnightUses != 0 || o.After.PlayerFightsLeft != 2 {
+		t.Fatalf("the power move: refused=%v uses=%d fights=%d", o.Refused, o.After.DeathKnightUses, o.After.PlayerFightsLeft)
+	}
+	if lines := strings.Join(o.Narrate(g), "\n"); !strings.Contains(lines, "Death Knights") {
+		t.Fatalf("narrated %q", lines)
+	}
+	if c = find(t, menu(t, g), "A"); c.Enabled {
+		t.Fatalf("attacking the slain: %+v", c)
 	}
 }

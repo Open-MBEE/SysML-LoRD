@@ -269,8 +269,7 @@ func (g *Game) Invoke(action string, args map[string]opensysml.Value) (*Outcome,
 	})
 }
 
-// SetPreference writes one of the warrior's own preference attributes, such as
-// the favoured move the forest fights are fought with.
+// SetPreference writes one of the warrior's own attributes outside any deed.
 func (g *Game) SetPreference(attribute string, value opensysml.Value) error {
 	return g.session.SetFeature(g.hero, attribute, value)
 }
