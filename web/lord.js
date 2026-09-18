@@ -261,11 +261,18 @@
     if (input) answer(input.value.trim());
   });
 
+  // The name the page suggests, and gives a warrior who offers none.
+  const suggestedName = (form) => (form.get("sex") === "female" ? "Dame Ed" : "Sir Ed");
+
+  $("character-form").addEventListener("change", (event) => {
+    $("name").placeholder = suggestedName(new FormData(event.currentTarget));
+  });
+
   $("character-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const form = new FormData(event.target);
     const body = {
-      name: form.get("name").trim(),
+      name: form.get("name").trim() || suggestedName(form),
       female: form.get("sex") === "female",
       class: form.get("class"),
     };
@@ -315,7 +322,7 @@
   // instantiate compiles lord.wasm: streamed where the server calls it
   // application/wasm, from its bytes where a plain file server does not.
   async function instantiate(go) {
-    const response = await fetch("lord.wasm");
+    const response = await fetch("lord.wasm", {cache: "no-cache"});
     if (!response.ok) throw new Error(`lord.wasm: ${response.status} ${response.statusText}`);
     const type = (response.headers.get("Content-Type") || "").split(";", 1)[0].trim();
     if (type === "application/wasm") return WebAssembly.instantiateStreaming(response, go.importObject);
@@ -328,7 +335,7 @@
     const go = new Go();
     const wasm = await instantiate(go);
     go.run(wasm.instance);
-    const model = await fetch("lord.sysml");
+    const model = await fetch("lord.sysml", {cache: "no-cache"});
     if (!model.ok) throw new Error(`lord.sysml: ${model.status} ${model.statusText}`);
     show(api("load", await model.text()));
     $("begin").disabled = false;
