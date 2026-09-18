@@ -146,16 +146,16 @@ package Lord {
     // Turgon's Warrior Training: one master per level a warrior can still gain.
     part def TrainingHall {
         part halder : Master { attribute :>> name = "Halder"; attribute :>> weapon = "Short Sword"; attribute :>> teaches = 2; attribute :>> experienceRequired = 100; attribute :>> hitPoints = 15; attribute :>> strength = 10; attribute :>> defense = 2; attribute :>> hitPointsTaught = 10; attribute :>> strengthTaught = 5; attribute :>> defenseTaught = 2; }
-        part barak : Master { attribute :>> name = "Barak"; attribute :>> weapon = "Battle Axe"; attribute :>> teaches = 3; attribute :>> experienceRequired = 400; attribute :>> hitPoints = 25; attribute :>> strength = 15; attribute :>> defense = 4; attribute :>> hitPointsTaught = 15; attribute :>> strengthTaught = 8; attribute :>> defenseTaught = 3; }
+        part barak : Master { attribute :>> name = "Barak"; attribute :>> weapon = "Battle Axe"; attribute :>> teaches = 3; attribute :>> experienceRequired = 400; attribute :>> hitPoints = 25; attribute :>> strength = 15; attribute :>> defense = 4; attribute :>> hitPointsTaught = 15; attribute :>> strengthTaught = 7; attribute :>> defenseTaught = 3; }
         part aragorn : Master { attribute :>> name = "Aragorn"; attribute :>> weapon = "Twin Swords"; attribute :>> teaches = 4; attribute :>> experienceRequired = 1000; attribute :>> hitPoints = 40; attribute :>> strength = 22; attribute :>> defense = 7; attribute :>> hitPointsTaught = 20; attribute :>> strengthTaught = 10; attribute :>> defenseTaught = 5; }
-        part olodrin : Master { attribute :>> name = "Olodrin"; attribute :>> weapon = "Power Axe"; attribute :>> teaches = 5; attribute :>> experienceRequired = 4000; attribute :>> hitPoints = 60; attribute :>> strength = 32; attribute :>> defense = 10; attribute :>> hitPointsTaught = 25; attribute :>> strengthTaught = 12; attribute :>> defenseTaught = 6; }
-        part sandtiger : Master { attribute :>> name = "Sandtiger"; attribute :>> weapon = "Blessed Sword"; attribute :>> teaches = 6; attribute :>> experienceRequired = 10000; attribute :>> hitPoints = 90; attribute :>> strength = 45; attribute :>> defense = 15; attribute :>> hitPointsTaught = 30; attribute :>> strengthTaught = 15; attribute :>> defenseTaught = 8; }
-        part sparhawk : Master { attribute :>> name = "Sparhawk"; attribute :>> weapon = "Double Bladed Sword"; attribute :>> teaches = 7; attribute :>> experienceRequired = 40000; attribute :>> hitPoints = 130; attribute :>> strength = 60; attribute :>> defense = 20; attribute :>> hitPointsTaught = 40; attribute :>> strengthTaught = 20; attribute :>> defenseTaught = 10; }
-        part atsukoSensei : Master { attribute :>> name = "Atsuko Sensei"; attribute :>> weapon = "Huge Curved Blade"; attribute :>> teaches = 8; attribute :>> experienceRequired = 100000; attribute :>> hitPoints = 180; attribute :>> strength = 80; attribute :>> defense = 27; attribute :>> hitPointsTaught = 50; attribute :>> strengthTaught = 25; attribute :>> defenseTaught = 12; }
-        part aladdin : Master { attribute :>> name = "Aladdin"; attribute :>> weapon = "Shiny Lamp"; attribute :>> teaches = 9; attribute :>> experienceRequired = 400000; attribute :>> hitPoints = 250; attribute :>> strength = 105; attribute :>> defense = 35; attribute :>> hitPointsTaught = 60; attribute :>> strengthTaught = 30; attribute :>> defenseTaught = 15; }
-        part princeCaspian : Master { attribute :>> name = "Prince Caspian"; attribute :>> weapon = "Flashing Rapier"; attribute :>> teaches = 10; attribute :>> experienceRequired = 1000000; attribute :>> hitPoints = 350; attribute :>> strength = 140; attribute :>> defense = 45; attribute :>> hitPointsTaught = 80; attribute :>> strengthTaught = 40; attribute :>> defenseTaught = 20; }
-        part gandalf : Master { attribute :>> name = "Gandalf"; attribute :>> weapon = "Huge Fireballs"; attribute :>> teaches = 11; attribute :>> experienceRequired = 4000000; attribute :>> hitPoints = 500; attribute :>> strength = 190; attribute :>> defense = 60; attribute :>> hitPointsTaught = 100; attribute :>> strengthTaught = 50; attribute :>> defenseTaught = 25; }
-        part turgon : Master { attribute :>> name = "Turgon"; attribute :>> weapon = "Able's Sword"; attribute :>> teaches = 12; attribute :>> experienceRequired = 10000000; attribute :>> hitPoints = 800; attribute :>> strength = 260; attribute :>> defense = 80; attribute :>> hitPointsTaught = 150; attribute :>> strengthTaught = 70; attribute :>> defenseTaught = 35; }
+        part olodrin : Master { attribute :>> name = "Olodrin"; attribute :>> weapon = "Power Axe"; attribute :>> teaches = 5; attribute :>> experienceRequired = 4000; attribute :>> hitPoints = 60; attribute :>> strength = 32; attribute :>> defense = 10; attribute :>> hitPointsTaught = 30; attribute :>> strengthTaught = 12; attribute :>> defenseTaught = 10; }
+        part sandtiger : Master { attribute :>> name = "Sandtiger"; attribute :>> weapon = "Blessed Sword"; attribute :>> teaches = 6; attribute :>> experienceRequired = 10000; attribute :>> hitPoints = 90; attribute :>> strength = 45; attribute :>> defense = 15; attribute :>> hitPointsTaught = 50; attribute :>> strengthTaught = 20; attribute :>> defenseTaught = 15; }
+        part sparhawk : Master { attribute :>> name = "Sparhawk"; attribute :>> weapon = "Double Bladed Sword"; attribute :>> teaches = 7; attribute :>> experienceRequired = 40000; attribute :>> hitPoints = 130; attribute :>> strength = 60; attribute :>> defense = 20; attribute :>> hitPointsTaught = 75; attribute :>> strengthTaught = 35; attribute :>> defenseTaught = 22; }
+        part atsukoSensei : Master { attribute :>> name = "Atsuko Sensei"; attribute :>> weapon = "Huge Curved Blade"; attribute :>> teaches = 8; attribute :>> experienceRequired = 100000; attribute :>> hitPoints = 180; attribute :>> strength = 80; attribute :>> defense = 27; attribute :>> hitPointsTaught = 125; attribute :>> strengthTaught = 50; attribute :>> defenseTaught = 35; }
+        part aladdin : Master { attribute :>> name = "Aladdin"; attribute :>> weapon = "Shiny Lamp"; attribute :>> teaches = 9; attribute :>> experienceRequired = 400000; attribute :>> hitPoints = 250; attribute :>> strength = 105; attribute :>> defense = 35; attribute :>> hitPointsTaught = 185; attribute :>> strengthTaught = 75; attribute :>> defenseTaught = 60; }
+        part princeCaspian : Master { attribute :>> name = "Prince Caspian"; attribute :>> weapon = "Flashing Rapier"; attribute :>> teaches = 10; attribute :>> experienceRequired = 1000000; attribute :>> hitPoints = 350; attribute :>> strength = 140; attribute :>> defense = 45; attribute :>> hitPointsTaught = 250; attribute :>> strengthTaught = 110; attribute :>> defenseTaught = 80; }
+        part gandalf : Master { attribute :>> name = "Gandalf"; attribute :>> weapon = "Huge Fireballs"; attribute :>> teaches = 11; attribute :>> experienceRequired = 4000000; attribute :>> hitPoints = 500; attribute :>> strength = 190; attribute :>> defense = 60; attribute :>> hitPointsTaught = 350; attribute :>> strengthTaught = 150; attribute :>> defenseTaught = 120; }
+        part turgon : Master { attribute :>> name = "Turgon"; attribute :>> weapon = "Able's Sword"; attribute :>> teaches = 12; attribute :>> experienceRequired = 10000000; attribute :>> hitPoints = 800; attribute :>> strength = 260; attribute :>> defense = 80; attribute :>> hitPointsTaught = 550; attribute :>> strengthTaught = 200; attribute :>> defenseTaught = 150; }
     }
 
     // One level of the forest: the eleven monsters a warrior of that level meets.
@@ -427,12 +427,23 @@ package LordPlay {
     private import RealFunctions::floor;
     private import Lord::*;
 
-    // A blow lands for strength less defense, and always for at least one point.
+    // A blow with all the strength behind it, less defense, never less than one: the
+    // training bout's rule and the bound the analyses reckon with.
     calc def Blow {
         in strength : Integer;
         in defense : Integer;
 
         max(1, strength - defense)
+    }
+
+    // A blow as the game rolls it: half the strength, the dice's share of the other half
+    // (none, a quarter, half, three quarters or all of it), less defense; nothing left is a miss.
+    calc def Hit {
+        in strength : Integer;
+        in defense : Integer;
+        in quarters : Integer;
+
+        max(0, floor(strength / 2) + floor(strength * quarters / 8) - defense)
     }
 
     // The same blow through a Light Shield, which halves it.
@@ -485,10 +496,34 @@ package LordPlay {
         floor(points / pointsPerUse)
     }
 
+    // Whether a skill's move can be paid for out of the day's uses; a shield already up
+    // cannot be raised again.
+    calc def SkillReady {
+        in move : Move;
+        in deathKnightUses : Integer;
+        in thievingUses : Integer;
+        in mysticalUses : Integer;
+        in shielded : Boolean;
+
+        (move == Move::deathKnight and deathKnightUses >= 1)
+            or (move == Move::thieving and thievingUses >= 1)
+            or (move == Move::pinchRealHard and mysticalUses >= 1)
+            or (move == Move::disappear and mysticalUses >= 4)
+            or (move == Move::heatWave and mysticalUses >= 8)
+            or (move == Move::lightShield and mysticalUses >= 12 and not shielded)
+            or (move == Move::shatter and mysticalUses >= 16)
+            or (move == Move::mindHeal and mysticalUses >= 20)
+    }
+
     // The menu keys of the game, as the signals a warrior's day accepts.
     attribute def EnterForest;
     attribute def LookForSomethingToKill;
     attribute def SeekTheDragon;
+    attribute def AttackTheFoe;
+    attribute def UseASkill {
+        attribute move : Move;
+    }
+    attribute def RunAway;
     attribute def MeetYourGuild;
     attribute def MeetTheOldHag;
     attribute def AskTheFairies;
@@ -514,14 +549,29 @@ package LordPlay {
     attribute def OtherPlaces;
     attribute def NewDay;
 
+    // The monster before the warrior, copied out of the forest when met; `present` while
+    // the fight is on, `dragon` in the lair.
+    part def Foe {
+        attribute present : Boolean default = false;
+        attribute dragon : Boolean default = false;
+        attribute name : String default = "";
+        attribute weapon : String default = "";
+        attribute hitPoints : Integer default = 0;
+        attribute strength : Integer default = 0;
+        attribute defense : Integer default = 0;
+        attribute gold : Integer default = 0;
+        attribute experience : Integer default = 0;
+        attribute breath : Integer default = 0;
+    }
+
     // A warrior: the stats screen, the deeds the realm offers, and the day itself.
     part def Warrior :> Fighter {
         attribute sex : Sex default = Sex::male;
         attribute class : CharacterClass default = CharacterClass::deathKnight;
         attribute level : Integer default = 1;
         attribute experience : Integer default = 0;
-        attribute :>> hitPoints default = 10;
-        attribute maxHitPoints : Integer default = 10;
+        attribute :>> hitPoints default = 20;
+        attribute maxHitPoints : Integer default = 20;
         attribute :>> strength default = 10;
         attribute :>> defense default = 1;
         attribute weaponTier : Integer default = 0;
@@ -558,7 +608,10 @@ package LordPlay {
         attribute flirtedToday : Boolean default = false;
         attribute trainedToday : Boolean default = false;
         attribute taughtToday : Boolean default = false;
+        attribute blessedToday : Boolean default = false;
+        attribute grabbedToday : Boolean default = false;
         attribute news : String default = "";
+        part foe : Foe;
 
         // What the game never lets happen, asserted of every warrior.
         assert constraint levelInRange { level >= 1 and level <= 12 }
@@ -582,89 +635,273 @@ package LordPlay {
         assert constraint violetTakesGrooms { spouse != Spouse::violet or sex == Sex::male }
         assert constraint theBardTakesBrides { spouse != Spouse::sethAble or sex == Sex::female }
 
-        // One forest fight against a monster of the warrior's level; a swing landing and a gem
-        // turning up are the game's dice, left to the schedule. Skills are spent while uses last.
-        action fight {
-            in foe : Monster default = town.forest.level1.smallThief;
-            in move : Move default = favouredMove;
-
-            attribute foeLeft : Integer = 0;
-            attribute rounds : Integer = 0;
-            attribute incoming : Integer = 0;
-            attribute skillReady : Boolean = false;
+        // The forest serves a monster of the warrior's level for a fight left; the warrior then
+        // chooses each round: the sword, a skill, or the way out.
+        action meet {
+            in monster : Monster default = town.forest.level1.smallThief;
 
             first start;
             then decide mayFight;
-            if forestFightsLeft > 0 and alive and foe.level == level and not (foe istype Dragon)
-                and foe.hitPoints > 0 and foe.strength >= 0 and foe.defense >= 0
-                and foe.gold >= 0 and foe.experience >= 0 then engage;
+            if forestFightsLeft > 0 and alive and not foe.present and monster.level == level
+                and not (monster istype Dragon) and monster.hitPoints > 0 and monster.strength >= 0
+                and monster.defense >= 0 and monster.gold >= 0 and monster.experience >= 0 then engage;
             else done;
 
             action engage {
-                assign foeLeft := foe.hitPoints;
+                assign foe.present := true;
+                assign foe.dragon := false;
+                assign foe.name := monster.name;
+                assign foe.weapon := monster.weapon;
+                assign foe.hitPoints := monster.hitPoints;
+                assign foe.strength := monster.strength;
+                assign foe.defense := monster.defense;
+                assign foe.gold := monster.gold;
+                assign foe.experience := monster.experience;
+                assign foe.breath := 0;
                 assign forestFightsLeft := forestFightsLeft - 1;
                 assign lightShield := false;
             }
+            then done;
+        }
 
-            merge nextRound;
+        // The dragon's lair, open to a level-twelve warrior with a fight left.
+        action meetTheDragon {
+            in dragon : Dragon default = town.forest.redDragon;
 
-            // A skill is spent while the warrior has the uses for it; otherwise the sword.
-            action ready {
-                assign skillReady := (move == Move::deathKnight and deathKnightUses >= 1)
-                    or (move == Move::thieving and thievingUses >= 1)
-                    or (move == Move::pinchRealHard and mysticalUses >= 1)
-                    or (move == Move::disappear and mysticalUses >= 4)
-                    or (move == Move::heatWave and mysticalUses >= 8)
-                    or (move == Move::lightShield and mysticalUses >= 12 and not lightShield)
-                    or (move == Move::shatter and mysticalUses >= 16)
-                    or (move == Move::mindHeal and mysticalUses >= 20);
-                assign rounds := rounds + 1;
+            first start;
+            then decide mayFight;
+            if forestFightsLeft > 0 and alive and not foe.present and level == 12
+                and dragon.hitPoints > 0 and dragon.strength >= 0 and dragon.defense >= 0
+                and dragon.breath >= 0 then engage;
+            else done;
+
+            action engage {
+                assign foe.present := true;
+                assign foe.dragon := true;
+                assign foe.name := dragon.name;
+                assign foe.weapon := dragon.weapon;
+                assign foe.hitPoints := dragon.hitPoints;
+                assign foe.strength := dragon.strength;
+                assign foe.defense := dragon.defense;
+                assign foe.gold := dragon.gold;
+                assign foe.experience := dragon.experience;
+                assign foe.breath := dragon.breath;
+                assign forestFightsLeft := forestFightsLeft - 1;
+                assign lightShield := false;
+            }
+            then done;
+        }
+
+        // The foe's turn: its dice, its blow through the shield if one is up, and what is left
+        // of the warrior. The dragon breathes, stomps, claws or lashes; its breath burns whole.
+        action foeStrikes {
+            attribute foeQuarters : Integer = 0;
+            attribute incoming : Integer = 0;
+
+            first start;
+            then decide foeSwing;
+            if true then foeWeakBlow;
+            if true then foeGlancingBlow;
+            if true then foeSolidBlow;
+            if true then foeHardBlow;
+            if true then foeMightyBlow;
+
+            action foeWeakBlow { assign foeQuarters := 0; }
+            action foeGlancingBlow { assign foeQuarters := 1; }
+            action foeSolidBlow { assign foeQuarters := 2; }
+            action foeHardBlow { assign foeQuarters := 3; }
+            action foeMightyBlow { assign foeQuarters := 4; }
+
+            merge foeRolled;
+            decide foeAttacks;
+
+            action blow {
+                assign incoming := Shielded(Hit(foe.strength, defense, foeQuarters), lightShield);
             }
 
-            decide choose;
+            action flamingBreath {
+                assign incoming := Shielded(foe.breath, lightShield);
+            }
+
+            action stomp {
+                assign incoming := Shielded(Hit(foe.strength, defense, foeQuarters), lightShield);
+            }
+
+            action hugeClaw {
+                assign incoming := Shielded(Hit(floor(foe.strength / 2), defense, foeQuarters), lightShield);
+            }
+
+            action swishingTail {
+                assign incoming := Shielded(Hit(floor(foe.strength / 4), defense, foeQuarters), lightShield);
+            }
+
+            merge struck;
+            decide warriorStanding;
+
+            action takeBlow {
+                assign hitPoints := hitPoints - incoming;
+            }
+
+            // A grown child sneaks up on the foe and takes the killing blow instead.
+            action childIntervenes {
+                assign children := children - 1;
+                assign foe.hitPoints := max(0, foe.hitPoints - Hit(strength, foe.defense, 4));
+            }
+
+            // A fairy caught today flies out of the pocket and revives the warrior once.
+            action fairyRevives {
+                assign fairy := false;
+                assign hitPoints := maxHitPoints;
+            }
+
+            // Death costs the gold on hand, a tenth of the experience, and the day.
+            action die {
+                assign alive := false;
+                assign hitPoints := 0;
+                assign gold := 0;
+                assign experience := experience - Tithe(experience);
+                assign lightShield := false;
+                assign foe.present := false;
+            }
+
+            succession first foeWeakBlow then foeRolled;
+            succession first foeGlancingBlow then foeRolled;
+            succession first foeSolidBlow then foeRolled;
+            succession first foeHardBlow then foeRolled;
+            succession first foeMightyBlow then foeRolled;
+            succession first foeRolled then foeAttacks;
+            first foeAttacks if not foe.dragon then blow;
+            first foeAttacks if foe.dragon then flamingBreath;
+            first foeAttacks if foe.dragon then stomp;
+            first foeAttacks if foe.dragon then hugeClaw;
+            first foeAttacks if foe.dragon then swishingTail;
+            succession first blow then struck;
+            succession first flamingBreath then struck;
+            succession first stomp then struck;
+            succession first hugeClaw then struck;
+            succession first swishingTail then struck;
+            succession first struck then warriorStanding;
+            first warriorStanding if incoming < hitPoints then takeBlow;
+            first warriorStanding if incoming >= hitPoints and children > 0 then childIntervenes;
+            first warriorStanding if incoming >= hitPoints and children <= 0 and fairy then fairyRevives;
+            first warriorStanding if incoming >= hitPoints and children <= 0 and not fairy then die;
+            succession first takeBlow then done;
+            succession first childIntervenes then done;
+            succession first fairyRevives then done;
+            succession first die then done;
+        }
+
+        // One round with the sword: the warrior's dice and blow, then the foe's if it stands.
+        action strike {
+            attribute quarters : Integer = 0;
+
+            first start;
+            then decide mayStrike;
+            if alive and foe.present and foe.hitPoints > 0 then swing;
+            else done;
+
             decide swing;
 
-            action strike {
-                assign foeLeft := foeLeft - Blow(strength, foe.defense);
+            action weakBlow { assign quarters := 0; }
+            action glancingBlow { assign quarters := 1; }
+            action solidBlow { assign quarters := 2; }
+            action hardBlow { assign quarters := 3; }
+            action mightyBlow { assign quarters := 4; }
+
+            action blow {
+                assign foe.hitPoints := max(0, foe.hitPoints - Hit(strength, foe.defense, quarters));
             }
 
-            action miss;
+            decide foeStanding;
 
-            // The Death Knights' power move and the thieves' sneak attack: three blows in one.
+            action foesTurn { first start; then perform foeStrikes; then done; }
+
+            first swing if true then weakBlow;
+            first swing if true then glancingBlow;
+            first swing if true then solidBlow;
+            first swing if true then hardBlow;
+            first swing if true then mightyBlow;
+            succession first weakBlow then blow;
+            succession first glancingBlow then blow;
+            succession first solidBlow then blow;
+            succession first hardBlow then blow;
+            succession first mightyBlow then blow;
+            succession first blow then foeStanding;
+            first foeStanding if foe.hitPoints > 0 then foesTurn;
+            first foeStanding if foe.hitPoints <= 0 then done;
+            succession first foesTurn then done;
+        }
+
+        // One round with a skill, for its price in uses: the Death Knights' power move and the
+        // thieves' sneak attack are three blows in one; the mystics' spells each their own.
+        // An attacking skill lands for at least a point; the foe answers unless it falls or is fled.
+        action useSkill {
+            in move : Move default = favouredMove;
+
+            attribute quarters : Integer = 0;
+
+            first start;
+            then decide ready;
+            if alive and foe.present and foe.hitPoints > 0
+                and ((move == Move::deathKnight and deathKnightUses >= 1)
+                    or (move == Move::thieving and thievingUses >= 1)
+                    or (move == Move::pinchRealHard and mysticalUses >= 1)
+                    or (move == Move::heatWave and mysticalUses >= 8)
+                    or (move == Move::shatter and mysticalUses >= 16)) then swing;
+            if alive and foe.present and foe.hitPoints > 0
+                and move == Move::disappear and mysticalUses >= 4 then vanish;
+            if alive and foe.present and foe.hitPoints > 0
+                and move == Move::lightShield and mysticalUses >= 12 and not lightShield then shield;
+            if alive and foe.present and foe.hitPoints > 0
+                and move == Move::mindHeal and mysticalUses >= 20 then mend;
+            else done;
+
+            decide swing;
+
+            action weakBlow { assign quarters := 0; }
+            action glancingBlow { assign quarters := 1; }
+            action solidBlow { assign quarters := 2; }
+            action hardBlow { assign quarters := 3; }
+            action mightyBlow { assign quarters := 4; }
+
+            merge rolled;
+            decide spell;
+
             action powerMove {
-                assign foeLeft := foeLeft - 3 * Blow(strength, foe.defense);
+                assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
                 assign deathKnightUses := deathKnightUses - 1;
             }
 
             action sneakAttack {
-                assign foeLeft := foeLeft - 3 * Blow(strength, foe.defense);
+                assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
                 assign thievingUses := thievingUses - 1;
             }
 
-            // The mystic's spells, each for its price in uses.
             action pinch {
-                assign foeLeft := foeLeft - 2 * Blow(strength, foe.defense);
+                assign foe.hitPoints := max(0, foe.hitPoints - max(1, 2 * Hit(strength, foe.defense, quarters)));
                 assign mysticalUses := mysticalUses - 1;
             }
 
+            action heat {
+                assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
+                assign mysticalUses := mysticalUses - 8;
+            }
+
+            action shatterBlow {
+                assign foe.hitPoints := max(0, foe.hitPoints - max(1, 6 * Hit(strength, foe.defense, quarters)));
+                assign mysticalUses := mysticalUses - 16;
+            }
+
+            // Disappear never fails; the foe is left behind, spoils and all.
             action vanish {
                 assign mysticalUses := mysticalUses - 4;
                 assign lightShield := false;
-            }
-
-            action heat {
-                assign foeLeft := foeLeft - 3 * Blow(strength, foe.defense);
-                assign mysticalUses := mysticalUses - 8;
+                assign foe.present := false;
             }
 
             action shield {
                 assign lightShield := true;
                 assign mysticalUses := mysticalUses - 12;
-            }
-
-            action shatterBlow {
-                assign foeLeft := foeLeft - 6 * Blow(strength, foe.defense);
-                assign mysticalUses := mysticalUses - 16;
             }
 
             action mend {
@@ -675,34 +912,73 @@ package LordPlay {
             merge landed;
             decide foeStanding;
 
-            action riposte {
-                assign incoming := Shielded(Blow(foe.strength, defense), lightShield);
+            action foesTurn { first start; then perform foeStrikes; then done; }
+
+            first swing if true then weakBlow;
+            first swing if true then glancingBlow;
+            first swing if true then solidBlow;
+            first swing if true then hardBlow;
+            first swing if true then mightyBlow;
+            succession first weakBlow then rolled;
+            succession first glancingBlow then rolled;
+            succession first solidBlow then rolled;
+            succession first hardBlow then rolled;
+            succession first mightyBlow then rolled;
+            succession first rolled then spell;
+            first spell if move == Move::deathKnight then powerMove;
+            first spell if move == Move::thieving then sneakAttack;
+            first spell if move == Move::pinchRealHard then pinch;
+            first spell if move == Move::heatWave then heat;
+            first spell if move == Move::shatter then shatterBlow;
+            succession first powerMove then landed;
+            succession first sneakAttack then landed;
+            succession first pinch then landed;
+            succession first heat then landed;
+            succession first shatterBlow then landed;
+            succession first shield then landed;
+            succession first mend then landed;
+            succession first landed then foeStanding;
+            first foeStanding if foe.hitPoints > 0 then foesTurn;
+            first foeStanding if foe.hitPoints <= 0 then done;
+            succession first foesTurn then done;
+            succession first vanish then done;
+        }
+
+        // Running is the dice's to grant: the warrior gets away, or is caught and struck.
+        action run {
+            first start;
+            then decide mayRun;
+            if alive and foe.present and foe.hitPoints > 0 then flee;
+            else done;
+
+            decide flee;
+
+            action escape {
+                assign foe.present := false;
+                assign lightShield := false;
             }
 
-            decide warriorStanding;
+            action caught { first start; then perform foeStrikes; then done; }
 
-            action takeBlow {
-                assign hitPoints := hitPoints - incoming;
-            }
+            first flee if true then escape;
+            first flee if true then caught;
+            succession first escape then done;
+            succession first caught then done;
+        }
 
-            // A grown child sneaks up on the foe and takes the killing blow instead.
-            action childIntervenes {
-                assign children := children - 1;
-                assign foeLeft := foeLeft - Blow(strength, foe.defense);
-            }
+        // A fallen foe's gold and experience, and a gem if the dice say so. The dragon yields
+        // the kill instead: the warrior wakes a new person, keeping skills, charm, gems and kin.
+        action win {
+            first start;
+            then decide fallen;
+            if alive and foe.present and foe.hitPoints <= 0 then claim;
+            else done;
 
-            decide childStanding;
-
-            // A fairy caught today flies out of the pocket and revives the warrior once.
-            action fairyRevives {
-                assign fairy := false;
-                assign hitPoints := maxHitPoints;
-            }
-
-            action win {
+            action claim {
                 assign gold := gold + foe.gold;
                 assign experience := experience + foe.experience;
                 assign lightShield := false;
+                assign foe.present := false;
             }
 
             decide spoils;
@@ -713,191 +989,15 @@ package LordPlay {
 
             action noGem;
 
-            // Death in the forest costs the gold on hand, a tenth of the experience, and the day.
-            action die {
-                assign alive := false;
-                assign hitPoints := 0;
-                assign gold := 0;
-                assign experience := experience - Tithe(experience);
-                assign lightShield := false;
-            }
-
-            succession first engage then nextRound;
-            succession first nextRound then ready;
-            succession first ready then choose;
-            first choose if not skillReady then swing;
-            first choose if skillReady and move == Move::deathKnight then powerMove;
-            first choose if skillReady and move == Move::thieving then sneakAttack;
-            first choose if skillReady and move == Move::pinchRealHard then pinch;
-            first choose if skillReady and move == Move::disappear then vanish;
-            first choose if skillReady and move == Move::heatWave then heat;
-            first choose if skillReady and move == Move::lightShield then shield;
-            first choose if skillReady and move == Move::shatter then shatterBlow;
-            first choose if skillReady and move == Move::mindHeal then mend;
-            first swing if foeLeft > 0 then strike;
-            first swing if foeLeft > 0 then miss;
-            succession first strike then landed;
-            succession first powerMove then landed;
-            succession first sneakAttack then landed;
-            succession first pinch then landed;
-            succession first heat then landed;
-            succession first shatterBlow then landed;
-            succession first landed then foeStanding;
-            succession first miss then riposte;
-            succession first shield then riposte;
-            succession first mend then riposte;
-            succession first vanish then done;
-            first foeStanding if foeLeft <= 0 then win;
-            first foeStanding if foeLeft > 0 then riposte;
-            succession first riposte then warriorStanding;
-            first warriorStanding if incoming < hitPoints then takeBlow;
-            first warriorStanding if incoming >= hitPoints and children > 0 then childIntervenes;
-            first warriorStanding if incoming >= hitPoints and children <= 0 and fairy then fairyRevives;
-            first warriorStanding if incoming >= hitPoints and children <= 0 and not fairy then die;
-            succession first takeBlow then nextRound;
-            succession first childIntervenes then childStanding;
-            first childStanding if foeLeft <= 0 then win;
-            first childStanding if foeLeft > 0 then nextRound;
-            succession first fairyRevives then nextRound;
-            succession first win then spoils;
-            first spoils if true then findGem;
-            first spoils if true then noGem;
-            succession first findGem then done;
-            succession first noGem then done;
-            succession first die then done;
-        }
-
-        // The dragon's lair, open to a level-twelve warrior with a fight left: its breath burns
-        // through any armour; slaying it starts the warrior over, keeping skills, charm, gems, kin.
-        action fightDragon {
-            in dragon : Dragon = town.forest.redDragon;
-            in move : Move default = favouredMove;
-
-            attribute dragonLeft : Integer = 0;
-            attribute rounds : Integer = 0;
-            attribute incoming : Integer = 0;
-            attribute skillReady : Boolean = false;
-
-            first start;
-            then decide mayFight;
-            if forestFightsLeft > 0 and alive and level == 12 and dragon.hitPoints > 0
-                and dragon.strength >= 0 and dragon.defense >= 0 and dragon.breath >= 0 then engage;
-            else done;
-
-            action engage {
-                assign dragonLeft := dragon.hitPoints;
-                assign forestFightsLeft := forestFightsLeft - 1;
-                assign lightShield := false;
-            }
-
-            merge nextRound;
-
-            action ready {
-                assign skillReady := (move == Move::deathKnight and deathKnightUses >= 1)
-                    or (move == Move::thieving and thievingUses >= 1)
-                    or (move == Move::pinchRealHard and mysticalUses >= 1)
-                    or (move == Move::heatWave and mysticalUses >= 8)
-                    or (move == Move::lightShield and mysticalUses >= 12 and not lightShield)
-                    or (move == Move::shatter and mysticalUses >= 16)
-                    or (move == Move::mindHeal and mysticalUses >= 20);
-                assign rounds := rounds + 1;
-            }
-
-            decide choose;
-            decide swing;
-
-            action strike {
-                assign dragonLeft := dragonLeft - Blow(strength, dragon.defense);
-            }
-
-            action miss;
-
-            action powerMove {
-                assign dragonLeft := dragonLeft - 3 * Blow(strength, dragon.defense);
-                assign deathKnightUses := deathKnightUses - 1;
-            }
-
-            action sneakAttack {
-                assign dragonLeft := dragonLeft - 3 * Blow(strength, dragon.defense);
-                assign thievingUses := thievingUses - 1;
-            }
-
-            action pinch {
-                assign dragonLeft := dragonLeft - 2 * Blow(strength, dragon.defense);
-                assign mysticalUses := mysticalUses - 1;
-            }
-
-            action heat {
-                assign dragonLeft := dragonLeft - 3 * Blow(strength, dragon.defense);
-                assign mysticalUses := mysticalUses - 8;
-            }
-
-            action shield {
-                assign lightShield := true;
-                assign mysticalUses := mysticalUses - 12;
-            }
-
-            action shatterBlow {
-                assign dragonLeft := dragonLeft - 6 * Blow(strength, dragon.defense);
-                assign mysticalUses := mysticalUses - 16;
-            }
-
-            action mend {
-                assign hitPoints := maxHitPoints;
-                assign mysticalUses := mysticalUses - 20;
-            }
-
-            merge landed;
-            decide dragonStanding;
-            merge dragonsTurn;
-            decide dragonAttacks;
-
-            action flamingBreath {
-                assign incoming := Shielded(dragon.breath, lightShield);
-            }
-
-            action stomp {
-                assign incoming := Shielded(Blow(dragon.strength, defense), lightShield);
-            }
-
-            action hugeClaw {
-                assign incoming := Shielded(Blow(floor(dragon.strength / 2), defense), lightShield);
-            }
-
-            action swishingTail {
-                assign incoming := Shielded(Blow(floor(dragon.strength / 4), defense), lightShield);
-            }
-
-            merge struck;
-            decide warriorStanding;
-
-            action takeBlow {
-                assign hitPoints := hitPoints - incoming;
-            }
-
-            action childIntervenes {
-                assign children := children - 1;
-                assign dragonLeft := dragonLeft - Blow(strength, dragon.defense);
-            }
-
-            decide childStanding;
-
-            action fairyRevives {
-                assign fairy := false;
-                assign hitPoints := maxHitPoints;
-            }
-
             action slay {
                 assign dragonKills := dragonKills + 1;
-                assign lightShield := false;
             }
 
-            // The quest is not over: the warrior wakes a new person, keeping what was earned.
             action bornAgain {
                 assign level := 1;
                 assign experience := 0;
-                assign maxHitPoints := 10;
-                assign hitPoints := 10;
+                assign maxHitPoints := 20;
+                assign hitPoints := 20;
                 assign strength := 10;
                 assign defense := 1;
                 assign weaponTier := 0;
@@ -906,64 +1006,17 @@ package LordPlay {
                 assign armourDefense := 0;
                 assign gold := 500;
                 assign bankGold := 0;
-                assign forestFightsLeft := 0;
+                assign forestFightsLeft := 15 + children;
             }
 
-            action die {
-                assign alive := false;
-                assign hitPoints := 0;
-                assign gold := 0;
-                assign experience := experience - Tithe(experience);
-                assign lightShield := false;
-            }
-
-            succession first engage then nextRound;
-            succession first nextRound then ready;
-            succession first ready then choose;
-            first choose if not skillReady then swing;
-            first choose if skillReady and move == Move::deathKnight then powerMove;
-            first choose if skillReady and move == Move::thieving then sneakAttack;
-            first choose if skillReady and move == Move::pinchRealHard then pinch;
-            first choose if skillReady and move == Move::heatWave then heat;
-            first choose if skillReady and move == Move::lightShield then shield;
-            first choose if skillReady and move == Move::shatter then shatterBlow;
-            first choose if skillReady and move == Move::mindHeal then mend;
-            first swing if dragonLeft > 0 then strike;
-            first swing if dragonLeft > 0 then miss;
-            succession first strike then landed;
-            succession first powerMove then landed;
-            succession first sneakAttack then landed;
-            succession first pinch then landed;
-            succession first heat then landed;
-            succession first shatterBlow then landed;
-            succession first landed then dragonStanding;
-            succession first miss then dragonsTurn;
-            succession first shield then dragonsTurn;
-            succession first mend then dragonsTurn;
-            first dragonStanding if dragonLeft <= 0 then slay;
-            first dragonStanding if dragonLeft > 0 then dragonsTurn;
-            succession first dragonsTurn then dragonAttacks;
-            first dragonAttacks if true then flamingBreath;
-            first dragonAttacks if true then stomp;
-            first dragonAttacks if true then hugeClaw;
-            first dragonAttacks if true then swishingTail;
-            succession first flamingBreath then struck;
-            succession first stomp then struck;
-            succession first hugeClaw then struck;
-            succession first swishingTail then struck;
-            succession first struck then warriorStanding;
-            first warriorStanding if incoming < hitPoints then takeBlow;
-            first warriorStanding if incoming >= hitPoints and children > 0 then childIntervenes;
-            first warriorStanding if incoming >= hitPoints and children <= 0 and fairy then fairyRevives;
-            first warriorStanding if incoming >= hitPoints and children <= 0 and not fairy then die;
-            succession first takeBlow then nextRound;
-            succession first childIntervenes then childStanding;
-            first childStanding if dragonLeft <= 0 then slay;
-            first childStanding if dragonLeft > 0 then nextRound;
-            succession first fairyRevives then nextRound;
+            succession first claim then spoils;
+            first spoils if foe.dragon then slay;
+            first spoils if not foe.dragon then findGem;
+            first spoils if not foe.dragon then noGem;
             succession first slay then bornAgain;
             succession first bornAgain then done;
-            succession first die then done;
+            succession first findGem then done;
+            succession first noGem then done;
         }
 
         // Slaughter another warrior: three a day, none asleep at the inn unless the bartender
@@ -971,19 +1024,21 @@ package LordPlay {
         // foe. The loser's gold and a tenth of the experience go to the winner, who counts the
         // kill; a slain sleeper's gems go too, while an attacker who dies keeps the gems.
         action attack {
-            in foe : Warrior = rival;
+            in victim : Warrior = rival;
             in move : Move default = favouredMove;
 
             attribute rounds : Integer = 0;
+            attribute quarters : Integer = 0;
+            attribute victimQuarters : Integer = 0;
             attribute incoming : Integer = 0;
             attribute skillReady : Boolean = false;
 
             first start;
             then decide mayAttack;
-            if playerFightsLeft > 0 and alive and foe != self and foe.alive and foe.hitPoints > 0
-                and foe.strength >= 0 and foe.defense >= 0
-                and foe.gold >= 0 and foe.experience >= 0 and foe.gems >= 0
-                and (not foe.innRoom or (bribed and foe.level >= level - 1)) then engage;
+            if playerFightsLeft > 0 and alive and victim != self and victim.alive and victim.hitPoints > 0
+                and victim.strength >= 0 and victim.defense >= 0
+                and victim.gold >= 0 and victim.experience >= 0 and victim.gems >= 0
+                and (not victim.innRoom or (bribed and victim.level >= level - 1)) then engage;
             else done;
 
             action engage {
@@ -994,36 +1049,51 @@ package LordPlay {
             merge nextRound;
 
             action ready {
-                assign skillReady := foe.level > level
+                assign skillReady := victim.level > level
                     and ((move == Move::deathKnight and deathKnightUses >= 1)
                         or (move == Move::thieving and thievingUses >= 1));
                 assign rounds := rounds + 1;
             }
 
-            decide choose;
             decide swing;
 
+            action weakBlow { assign quarters := 0; }
+            action glancingBlow { assign quarters := 1; }
+            action solidBlow { assign quarters := 2; }
+            action hardBlow { assign quarters := 3; }
+            action mightyBlow { assign quarters := 4; }
+
+            merge rolled;
+            decide choose;
+
             action strike {
-                assign foe.hitPoints := max(0, foe.hitPoints - Blow(strength, foe.defense));
+                assign victim.hitPoints := max(0, victim.hitPoints - Hit(strength, victim.defense, quarters));
             }
 
-            action miss;
-
             action powerMove {
-                assign foe.hitPoints := max(0, foe.hitPoints - 3 * Blow(strength, foe.defense));
+                assign victim.hitPoints := max(0, victim.hitPoints - max(1, 3 * Hit(strength, victim.defense, quarters)));
                 assign deathKnightUses := deathKnightUses - 1;
             }
 
             action sneakAttack {
-                assign foe.hitPoints := max(0, foe.hitPoints - 3 * Blow(strength, foe.defense));
+                assign victim.hitPoints := max(0, victim.hitPoints - max(1, 3 * Hit(strength, victim.defense, quarters)));
                 assign thievingUses := thievingUses - 1;
             }
 
             merge landed;
-            decide foeStanding;
+            decide victimStanding;
+
+            merge victimsTurn;
+            decide victimSwing;
+
+            action victimWeakBlow { assign victimQuarters := 0; }
+            action victimGlancingBlow { assign victimQuarters := 1; }
+            action victimSolidBlow { assign victimQuarters := 2; }
+            action victimHardBlow { assign victimQuarters := 3; }
+            action victimMightyBlow { assign victimQuarters := 4; }
 
             action riposte {
-                assign incoming := Blow(foe.strength, defense);
+                assign incoming := Hit(victim.strength, defense, victimQuarters);
             }
 
             decide warriorStanding;
@@ -1038,20 +1108,20 @@ package LordPlay {
             }
 
             action slay {
-                assign foe.alive := false;
-                assign gold := gold + foe.gold;
-                assign foe.gold := 0;
-                assign gems := gems + foe.gems;
-                assign foe.gems := 0;
-                assign experience := experience + Tithe(foe.experience);
-                assign foe.experience := foe.experience - Tithe(foe.experience);
+                assign victim.alive := false;
+                assign gold := gold + victim.gold;
+                assign victim.gold := 0;
+                assign gems := gems + victim.gems;
+                assign victim.gems := 0;
+                assign experience := experience + Tithe(victim.experience);
+                assign victim.experience := victim.experience - Tithe(victim.experience);
                 assign playerKills := playerKills + 1;
             }
 
             action die {
-                assign foe.gold := foe.gold + gold;
-                assign foe.experience := foe.experience + Tithe(experience);
-                assign foe.playerKills := foe.playerKills + 1;
+                assign victim.gold := victim.gold + gold;
+                assign victim.experience := victim.experience + Tithe(experience);
+                assign victim.playerKills := victim.playerKills + 1;
                 assign alive := false;
                 assign hitPoints := 0;
                 assign gold := 0;
@@ -1060,19 +1130,38 @@ package LordPlay {
 
             succession first engage then nextRound;
             succession first nextRound then ready;
-            succession first ready then choose;
-            first choose if not skillReady then swing;
+            succession first ready then swing;
+            first swing if true then weakBlow;
+            first swing if true then glancingBlow;
+            first swing if true then solidBlow;
+            first swing if true then hardBlow;
+            first swing if true then mightyBlow;
+            succession first weakBlow then rolled;
+            succession first glancingBlow then rolled;
+            succession first solidBlow then rolled;
+            succession first hardBlow then rolled;
+            succession first mightyBlow then rolled;
+            succession first rolled then choose;
+            first choose if not skillReady then strike;
             first choose if skillReady and move == Move::deathKnight then powerMove;
             first choose if skillReady and move == Move::thieving then sneakAttack;
-            first swing if foe.hitPoints > 0 then strike;
-            first swing if foe.hitPoints > 0 then miss;
             succession first strike then landed;
             succession first powerMove then landed;
             succession first sneakAttack then landed;
-            succession first landed then foeStanding;
-            succession first miss then riposte;
-            first foeStanding if foe.hitPoints <= 0 then slay;
-            first foeStanding if foe.hitPoints > 0 then riposte;
+            succession first landed then victimStanding;
+            first victimStanding if victim.hitPoints <= 0 then slay;
+            first victimStanding if victim.hitPoints > 0 then victimsTurn;
+            succession first victimsTurn then victimSwing;
+            first victimSwing if true then victimWeakBlow;
+            first victimSwing if true then victimGlancingBlow;
+            first victimSwing if true then victimSolidBlow;
+            first victimSwing if true then victimHardBlow;
+            first victimSwing if true then victimMightyBlow;
+            succession first victimWeakBlow then riposte;
+            succession first victimGlancingBlow then riposte;
+            succession first victimSolidBlow then riposte;
+            succession first victimHardBlow then riposte;
+            succession first victimMightyBlow then riposte;
             succession first riposte then warriorStanding;
             first warriorStanding if incoming < hitPoints then takeBlow;
             first warriorStanding if incoming >= hitPoints and fairy then fairyRevives;
@@ -1323,17 +1412,19 @@ package LordPlay {
             then done;
         }
 
-        // The fairies grant a blessing for the asking: a healing kiss, a horse, a gem for a
-        // sad story, or lore worth experience by level.
+        // The fairies grant one blessing a day for the asking: a healing kiss, a horse, a gem
+        // for a sad story, or lore worth experience by level.
         action askTheFairies {
             in blessing : Blessing = Blessing::kiss;
 
             first start;
             then decide mayAsk;
-            if alive then ask;
+            if alive and not blessedToday then ask;
             else done;
 
-            action ask;
+            action ask {
+                assign blessedToday := true;
+            }
             decide granted;
 
             action kissed {
@@ -1363,15 +1454,17 @@ package LordPlay {
             succession first lore then done;
         }
 
-        // Grab for a fairy: caught, it revives the warrior once today; missed, the
-        // thornberry bush leaves one hit point.
+        // One grab for a fairy a day: caught, it revives the warrior once today; missed,
+        // the thornberry bush leaves one hit point.
         action catchAFairy {
             first start;
             then decide mayGrab;
-            if alive and not fairy then grab;
+            if alive and not fairy and not grabbedToday then grab;
             else done;
 
-            action grab;
+            action grab {
+                assign grabbedToday := true;
+            }
             decide luck;
 
             action caught {
@@ -1653,11 +1746,12 @@ package LordPlay {
                 assign daysPlayed := daysPlayed + 1;
                 assign forestFightsLeft := 15 + children;
                 assign playerFightsLeft := 3;
+                assign foe.present := false;
                 assign deathKnightUses := SkillUses(deathKnightPoints, 4);
                 assign thievingUses := SkillUses(thievingPoints, 4);
                 assign mysticalUses := mysticalPoints;
                 assign bankGold := bankGold + Interest(bankGold, max(0, interestPercent));
-                assign hitPoints := if alive ? hitPoints else maxHitPoints;
+                assign hitPoints := maxHitPoints;
                 assign alive := true;
                 assign lightShield := false;
                 assign fairy := false;
@@ -1667,6 +1761,8 @@ package LordPlay {
                 assign flirtedToday := false;
                 assign trainedToday := false;
                 assign taughtToday := false;
+                assign blessedToday := false;
+                assign grabbedToday := false;
             }
 
             decide crier;
@@ -1714,6 +1810,9 @@ package LordPlay {
 
             state forest;
 
+            // Face to face with a monster: the sword, a skill or the way out, round by round.
+            state fighting;
+
             state darkCloakTavern;
 
             state healersHut;
@@ -1739,13 +1838,12 @@ package LordPlay {
                 accept EnterForest
                 then forest;
 
-            // While fights remain, the dice pick one of the monsters of the warrior's level to
-            // fight; the warrior stays in the forest or goes to the grave.
+            // While fights remain, the dice pick one of the monsters of the warrior's level to meet.
             transition forest_fight
                 first forest
                 accept LookForSomethingToKill
                 if forestFightsLeft > 0 and alive
-                do action fighting {
+                do action hunting {
                     first start;
                     then decide byLevel;
                     if level == 1 then level1;
@@ -1776,27 +1874,27 @@ package LordPlay {
                         if true then evilWretch;
                         if true then smallBear;
                         if true then smallTroll;
-                        action smallThief { first start; then perform fight { in foe = town.forest.level1.smallThief; } then done; }
+                        action smallThief { first start; then perform meet { in monster = town.forest.level1.smallThief; } then done; }
                         then done;
-                        action rudeBoy { first start; then perform fight { in foe = town.forest.level1.rudeBoy; } then done; }
+                        action rudeBoy { first start; then perform meet { in monster = town.forest.level1.rudeBoy; } then done; }
                         then done;
-                        action oldMan { first start; then perform fight { in foe = town.forest.level1.oldMan; } then done; }
+                        action oldMan { first start; then perform meet { in monster = town.forest.level1.oldMan; } then done; }
                         then done;
-                        action largeGreenRat { first start; then perform fight { in foe = town.forest.level1.largeGreenRat; } then done; }
+                        action largeGreenRat { first start; then perform meet { in monster = town.forest.level1.largeGreenRat; } then done; }
                         then done;
-                        action wildBoar { first start; then perform fight { in foe = town.forest.level1.wildBoar; } then done; }
+                        action wildBoar { first start; then perform meet { in monster = town.forest.level1.wildBoar; } then done; }
                         then done;
-                        action uglyOldHag { first start; then perform fight { in foe = town.forest.level1.uglyOldHag; } then done; }
+                        action uglyOldHag { first start; then perform meet { in monster = town.forest.level1.uglyOldHag; } then done; }
                         then done;
-                        action largeMosquito { first start; then perform fight { in foe = town.forest.level1.largeMosquito; } then done; }
+                        action largeMosquito { first start; then perform meet { in monster = town.forest.level1.largeMosquito; } then done; }
                         then done;
-                        action branTheWarrior { first start; then perform fight { in foe = town.forest.level1.branTheWarrior; } then done; }
+                        action branTheWarrior { first start; then perform meet { in monster = town.forest.level1.branTheWarrior; } then done; }
                         then done;
-                        action evilWretch { first start; then perform fight { in foe = town.forest.level1.evilWretch; } then done; }
+                        action evilWretch { first start; then perform meet { in monster = town.forest.level1.evilWretch; } then done; }
                         then done;
-                        action smallBear { first start; then perform fight { in foe = town.forest.level1.smallBear; } then done; }
+                        action smallBear { first start; then perform meet { in monster = town.forest.level1.smallBear; } then done; }
                         then done;
-                        action smallTroll { first start; then perform fight { in foe = town.forest.level1.smallTroll; } then done; }
+                        action smallTroll { first start; then perform meet { in monster = town.forest.level1.smallTroll; } then done; }
                         then done;
                     }
                     then done;
@@ -1814,27 +1912,27 @@ package LordPlay {
                         if true then membrainMan;
                         if true then bentRiverDryad;
                         if true then rockMan;
-                        action greenPython { first start; then perform fight { in foe = town.forest.level2.greenPython; } then done; }
+                        action greenPython { first start; then perform meet { in monster = town.forest.level2.greenPython; } then done; }
                         then done;
-                        action gathTheBarbarian { first start; then perform fight { in foe = town.forest.level2.gathTheBarbarian; } then done; }
+                        action gathTheBarbarian { first start; then perform meet { in monster = town.forest.level2.gathTheBarbarian; } then done; }
                         then done;
-                        action evilWoodNymph { first start; then perform fight { in foe = town.forest.level2.evilWoodNymph; } then done; }
+                        action evilWoodNymph { first start; then perform meet { in monster = town.forest.level2.evilWoodNymph; } then done; }
                         then done;
-                        action fedrickTheLimpingBaboon { first start; then perform fight { in foe = town.forest.level2.fedrickTheLimpingBaboon; } then done; }
+                        action fedrickTheLimpingBaboon { first start; then perform meet { in monster = town.forest.level2.fedrickTheLimpingBaboon; } then done; }
                         then done;
-                        action wildMan { first start; then perform fight { in foe = town.forest.level2.wildMan; } then done; }
+                        action wildMan { first start; then perform meet { in monster = town.forest.level2.wildMan; } then done; }
                         then done;
-                        action brorandiaTheViking { first start; then perform fight { in foe = town.forest.level2.brorandiaTheViking; } then done; }
+                        action brorandiaTheViking { first start; then perform meet { in monster = town.forest.level2.brorandiaTheViking; } then done; }
                         then done;
-                        action hugeBaldMan { first start; then perform fight { in foe = town.forest.level2.hugeBaldMan; } then done; }
+                        action hugeBaldMan { first start; then perform meet { in monster = town.forest.level2.hugeBaldMan; } then done; }
                         then done;
-                        action senileSeniorCitizen { first start; then perform fight { in foe = town.forest.level2.senileSeniorCitizen; } then done; }
+                        action senileSeniorCitizen { first start; then perform meet { in monster = town.forest.level2.senileSeniorCitizen; } then done; }
                         then done;
-                        action membrainMan { first start; then perform fight { in foe = town.forest.level2.membrainMan; } then done; }
+                        action membrainMan { first start; then perform meet { in monster = town.forest.level2.membrainMan; } then done; }
                         then done;
-                        action bentRiverDryad { first start; then perform fight { in foe = town.forest.level2.bentRiverDryad; } then done; }
+                        action bentRiverDryad { first start; then perform meet { in monster = town.forest.level2.bentRiverDryad; } then done; }
                         then done;
-                        action rockMan { first start; then perform fight { in foe = town.forest.level2.rockMan; } then done; }
+                        action rockMan { first start; then perform meet { in monster = town.forest.level2.rockMan; } then done; }
                         then done;
                     }
                     then done;
@@ -1852,27 +1950,27 @@ package LordPlay {
                         if true then headbangerOfTheWest;
                         if true then morbidWalker;
                         if true then magicalEvilGnome;
-                        action lazyBum { first start; then perform fight { in foe = town.forest.level3.lazyBum; } then done; }
+                        action lazyBum { first start; then perform meet { in monster = town.forest.level3.lazyBum; } then done; }
                         then done;
-                        action twoHeadedRotwieler { first start; then perform fight { in foe = town.forest.level3.twoHeadedRotwieler; } then done; }
+                        action twoHeadedRotwieler { first start; then perform meet { in monster = town.forest.level3.twoHeadedRotwieler; } then done; }
                         then done;
-                        action purpleMonchichi { first start; then perform fight { in foe = town.forest.level3.purpleMonchichi; } then done; }
+                        action purpleMonchichi { first start; then perform meet { in monster = town.forest.level3.purpleMonchichi; } then done; }
                         then done;
-                        action bone { first start; then perform fight { in foe = town.forest.level3.bone; } then done; }
+                        action bone { first start; then perform meet { in monster = town.forest.level3.bone; } then done; }
                         then done;
-                        action redNeck { first start; then perform fight { in foe = town.forest.level3.redNeck; } then done; }
+                        action redNeck { first start; then perform meet { in monster = town.forest.level3.redNeck; } then done; }
                         then done;
-                        action wingedDemonOfDeath { first start; then perform fight { in foe = town.forest.level3.wingedDemonOfDeath; } then done; }
+                        action wingedDemonOfDeath { first start; then perform meet { in monster = town.forest.level3.wingedDemonOfDeath; } then done; }
                         then done;
-                        action blackOwl { first start; then perform fight { in foe = town.forest.level3.blackOwl; } then done; }
+                        action blackOwl { first start; then perform meet { in monster = town.forest.level3.blackOwl; } then done; }
                         then done;
-                        action muscledMidget { first start; then perform fight { in foe = town.forest.level3.muscledMidget; } then done; }
+                        action muscledMidget { first start; then perform meet { in monster = town.forest.level3.muscledMidget; } then done; }
                         then done;
-                        action headbangerOfTheWest { first start; then perform fight { in foe = town.forest.level3.headbangerOfTheWest; } then done; }
+                        action headbangerOfTheWest { first start; then perform meet { in monster = town.forest.level3.headbangerOfTheWest; } then done; }
                         then done;
-                        action morbidWalker { first start; then perform fight { in foe = town.forest.level3.morbidWalker; } then done; }
+                        action morbidWalker { first start; then perform meet { in monster = town.forest.level3.morbidWalker; } then done; }
                         then done;
-                        action magicalEvilGnome { first start; then perform fight { in foe = town.forest.level3.magicalEvilGnome; } then done; }
+                        action magicalEvilGnome { first start; then perform meet { in monster = town.forest.level3.magicalEvilGnome; } then done; }
                         then done;
                     }
                     then done;
@@ -1890,27 +1988,27 @@ package LordPlay {
                         if true then mudMan;
                         if true then deathJester;
                         if true then rockMan;
-                        action deathDog { first start; then perform fight { in foe = town.forest.level4.deathDog; } then done; }
+                        action deathDog { first start; then perform meet { in monster = town.forest.level4.deathDog; } then done; }
                         then done;
-                        action weakOrc { first start; then perform fight { in foe = town.forest.level4.weakOrc; } then done; }
+                        action weakOrc { first start; then perform meet { in monster = town.forest.level4.weakOrc; } then done; }
                         then done;
-                        action darkElf { first start; then perform fight { in foe = town.forest.level4.darkElf; } then done; }
+                        action darkElf { first start; then perform meet { in monster = town.forest.level4.darkElf; } then done; }
                         then done;
-                        action evilHobbit { first start; then perform fight { in foe = town.forest.level4.evilHobbit; } then done; }
+                        action evilHobbit { first start; then perform meet { in monster = town.forest.level4.evilHobbit; } then done; }
                         then done;
-                        action shortGoblin { first start; then perform fight { in foe = town.forest.level4.shortGoblin; } then done; }
+                        action shortGoblin { first start; then perform meet { in monster = town.forest.level4.shortGoblin; } then done; }
                         then done;
-                        action hugeBlackBear { first start; then perform fight { in foe = town.forest.level4.hugeBlackBear; } then done; }
+                        action hugeBlackBear { first start; then perform meet { in monster = town.forest.level4.hugeBlackBear; } then done; }
                         then done;
-                        action rabidWolf { first start; then perform fight { in foe = town.forest.level4.rabidWolf; } then done; }
+                        action rabidWolf { first start; then perform meet { in monster = town.forest.level4.rabidWolf; } then done; }
                         then done;
-                        action youngWizard { first start; then perform fight { in foe = town.forest.level4.youngWizard; } then done; }
+                        action youngWizard { first start; then perform meet { in monster = town.forest.level4.youngWizard; } then done; }
                         then done;
-                        action mudMan { first start; then perform fight { in foe = town.forest.level4.mudMan; } then done; }
+                        action mudMan { first start; then perform meet { in monster = town.forest.level4.mudMan; } then done; }
                         then done;
-                        action deathJester { first start; then perform fight { in foe = town.forest.level4.deathJester; } then done; }
+                        action deathJester { first start; then perform meet { in monster = town.forest.level4.deathJester; } then done; }
                         then done;
-                        action rockMan { first start; then perform fight { in foe = town.forest.level4.rockMan; } then done; }
+                        action rockMan { first start; then perform meet { in monster = town.forest.level4.rockMan; } then done; }
                         then done;
                     }
                     then done;
@@ -1928,27 +2026,27 @@ package LordPlay {
                         if true then blackAlligator;
                         if true then clancySonOfEmpororLen;
                         if true then blackSorcerer;
-                        action pandionKnight { first start; then perform fight { in foe = town.forest.level5.pandionKnight; } then done; }
+                        action pandionKnight { first start; then perform meet { in monster = town.forest.level5.pandionKnight; } then done; }
                         then done;
-                        action jabba { first start; then perform fight { in foe = town.forest.level5.jabba; } then done; }
+                        action jabba { first start; then perform meet { in monster = town.forest.level5.jabba; } then done; }
                         then done;
-                        action manokenSloth { first start; then perform fight { in foe = town.forest.level5.manokenSloth; } then done; }
+                        action manokenSloth { first start; then perform meet { in monster = town.forest.level5.manokenSloth; } then done; }
                         then done;
-                        action trojanWarrior { first start; then perform fight { in foe = town.forest.level5.trojanWarrior; } then done; }
+                        action trojanWarrior { first start; then perform meet { in monster = town.forest.level5.trojanWarrior; } then done; }
                         then done;
-                        action misfitTheUgly { first start; then perform fight { in foe = town.forest.level5.misfitTheUgly; } then done; }
+                        action misfitTheUgly { first start; then perform meet { in monster = town.forest.level5.misfitTheUgly; } then done; }
                         then done;
-                        action georgeOfTheJungle { first start; then perform fight { in foe = town.forest.level5.georgeOfTheJungle; } then done; }
+                        action georgeOfTheJungle { first start; then perform meet { in monster = town.forest.level5.georgeOfTheJungle; } then done; }
                         then done;
-                        action silentDeath { first start; then perform fight { in foe = town.forest.level5.silentDeath; } then done; }
+                        action silentDeath { first start; then perform meet { in monster = town.forest.level5.silentDeath; } then done; }
                         then done;
-                        action baldMedusa { first start; then perform fight { in foe = town.forest.level5.baldMedusa; } then done; }
+                        action baldMedusa { first start; then perform meet { in monster = town.forest.level5.baldMedusa; } then done; }
                         then done;
-                        action blackAlligator { first start; then perform fight { in foe = town.forest.level5.blackAlligator; } then done; }
+                        action blackAlligator { first start; then perform meet { in monster = town.forest.level5.blackAlligator; } then done; }
                         then done;
-                        action clancySonOfEmpororLen { first start; then perform fight { in foe = town.forest.level5.clancySonOfEmpororLen; } then done; }
+                        action clancySonOfEmpororLen { first start; then perform meet { in monster = town.forest.level5.clancySonOfEmpororLen; } then done; }
                         then done;
-                        action blackSorcerer { first start; then perform fight { in foe = town.forest.level5.blackSorcerer; } then done; }
+                        action blackSorcerer { first start; then perform meet { in monster = town.forest.level5.blackSorcerer; } then done; }
                         then done;
                     }
                     then done;
@@ -1966,27 +2064,27 @@ package LordPlay {
                         if true then ragingLion;
                         if true then hugeStoneWarrior;
                         if true then magicalEvilGnome;
-                        action ironWarrior { first start; then perform fight { in foe = town.forest.level6.ironWarrior; } then done; }
+                        action ironWarrior { first start; then perform meet { in monster = town.forest.level6.ironWarrior; } then done; }
                         then done;
-                        action blackSoul { first start; then perform fight { in foe = town.forest.level6.blackSoul; } then done; }
+                        action blackSoul { first start; then perform meet { in monster = town.forest.level6.blackSoul; } then done; }
                         then done;
-                        action goldMan { first start; then perform fight { in foe = town.forest.level6.goldMan; } then done; }
+                        action goldMan { first start; then perform meet { in monster = town.forest.level6.goldMan; } then done; }
                         then done;
-                        action screamingZombie { first start; then perform fight { in foe = town.forest.level6.screamingZombie; } then done; }
+                        action screamingZombie { first start; then perform meet { in monster = town.forest.level6.screamingZombie; } then done; }
                         then done;
-                        action satansHelper { first start; then perform fight { in foe = town.forest.level6.satansHelper; } then done; }
+                        action satansHelper { first start; then perform meet { in monster = town.forest.level6.satansHelper; } then done; }
                         then done;
-                        action wildStallion { first start; then perform fight { in foe = town.forest.level6.wildStallion; } then done; }
+                        action wildStallion { first start; then perform meet { in monster = town.forest.level6.wildStallion; } then done; }
                         then done;
-                        action belar { first start; then perform fight { in foe = town.forest.level6.belar; } then done; }
+                        action belar { first start; then perform meet { in monster = town.forest.level6.belar; } then done; }
                         then done;
-                        action emptyArmour { first start; then perform fight { in foe = town.forest.level6.emptyArmour; } then done; }
+                        action emptyArmour { first start; then perform meet { in monster = town.forest.level6.emptyArmour; } then done; }
                         then done;
-                        action ragingLion { first start; then perform fight { in foe = town.forest.level6.ragingLion; } then done; }
+                        action ragingLion { first start; then perform meet { in monster = town.forest.level6.ragingLion; } then done; }
                         then done;
-                        action hugeStoneWarrior { first start; then perform fight { in foe = town.forest.level6.hugeStoneWarrior; } then done; }
+                        action hugeStoneWarrior { first start; then perform meet { in monster = town.forest.level6.hugeStoneWarrior; } then done; }
                         then done;
-                        action magicalEvilGnome { first start; then perform fight { in foe = town.forest.level6.magicalEvilGnome; } then done; }
+                        action magicalEvilGnome { first start; then perform meet { in monster = town.forest.level6.magicalEvilGnome; } then done; }
                         then done;
                     }
                     then done;
@@ -2004,27 +2102,27 @@ package LordPlay {
                         if true then massiveDinosaur;
                         if true then swissButcher;
                         if true then deathGnome;
-                        action emporerLen { first start; then perform fight { in foe = town.forest.level7.emporerLen; } then done; }
+                        action emporerLen { first start; then perform meet { in monster = town.forest.level7.emporerLen; } then done; }
                         then done;
-                        action nightHawk { first start; then perform fight { in foe = town.forest.level7.nightHawk; } then done; }
+                        action nightHawk { first start; then perform meet { in monster = town.forest.level7.nightHawk; } then done; }
                         then done;
-                        action chargingRhinoceros { first start; then perform fight { in foe = town.forest.level7.chargingRhinoceros; } then done; }
+                        action chargingRhinoceros { first start; then perform meet { in monster = town.forest.level7.chargingRhinoceros; } then done; }
                         then done;
-                        action goblinPygmy { first start; then perform fight { in foe = town.forest.level7.goblinPygmy; } then done; }
+                        action goblinPygmy { first start; then perform meet { in monster = town.forest.level7.goblinPygmy; } then done; }
                         then done;
-                        action goliath { first start; then perform fight { in foe = town.forest.level7.goliath; } then done; }
+                        action goliath { first start; then perform meet { in monster = town.forest.level7.goliath; } then done; }
                         then done;
-                        action angryLiontaur { first start; then perform fight { in foe = town.forest.level7.angryLiontaur; } then done; }
+                        action angryLiontaur { first start; then perform meet { in monster = town.forest.level7.angryLiontaur; } then done; }
                         then done;
-                        action fallenAngel { first start; then perform fight { in foe = town.forest.level7.fallenAngel; } then done; }
+                        action fallenAngel { first start; then perform meet { in monster = town.forest.level7.fallenAngel; } then done; }
                         then done;
-                        action wickedWombat { first start; then perform fight { in foe = town.forest.level7.wickedWombat; } then done; }
+                        action wickedWombat { first start; then perform meet { in monster = town.forest.level7.wickedWombat; } then done; }
                         then done;
-                        action massiveDinosaur { first start; then perform fight { in foe = town.forest.level7.massiveDinosaur; } then done; }
+                        action massiveDinosaur { first start; then perform meet { in monster = town.forest.level7.massiveDinosaur; } then done; }
                         then done;
-                        action swissButcher { first start; then perform fight { in foe = town.forest.level7.swissButcher; } then done; }
+                        action swissButcher { first start; then perform meet { in monster = town.forest.level7.swissButcher; } then done; }
                         then done;
-                        action deathGnome { first start; then perform fight { in foe = town.forest.level7.deathGnome; } then done; }
+                        action deathGnome { first start; then perform meet { in monster = town.forest.level7.deathGnome; } then done; }
                         then done;
                     }
                     then done;
@@ -2042,27 +2140,27 @@ package LordPlay {
                         if true then kingVidion;
                         if true then babyDragon;
                         if true then deathGnome;
-                        action screechingWitch { first start; then perform fight { in foe = town.forest.level8.screechingWitch; } then done; }
+                        action screechingWitch { first start; then perform meet { in monster = town.forest.level8.screechingWitch; } then done; }
                         then done;
-                        action rundorig { first start; then perform fight { in foe = town.forest.level8.rundorig; } then done; }
+                        action rundorig { first start; then perform meet { in monster = town.forest.level8.rundorig; } then done; }
                         then done;
-                        action wheeler { first start; then perform fight { in foe = town.forest.level8.wheeler; } then done; }
+                        action wheeler { first start; then perform meet { in monster = town.forest.level8.wheeler; } then done; }
                         then done;
-                        action deathKnight { first start; then perform fight { in foe = town.forest.level8.deathKnight; } then done; }
+                        action deathKnight { first start; then perform meet { in monster = town.forest.level8.deathKnight; } then done; }
                         then done;
-                        action werewolf { first start; then perform fight { in foe = town.forest.level8.werewolf; } then done; }
+                        action werewolf { first start; then perform meet { in monster = town.forest.level8.werewolf; } then done; }
                         then done;
-                        action fireOrk { first start; then perform fight { in foe = town.forest.level8.fireOrk; } then done; }
+                        action fireOrk { first start; then perform meet { in monster = town.forest.level8.fireOrk; } then done; }
                         then done;
-                        action wansBeast { first start; then perform fight { in foe = town.forest.level8.wansBeast; } then done; }
+                        action wansBeast { first start; then perform meet { in monster = town.forest.level8.wansBeast; } then done; }
                         then done;
-                        action lordMathese { first start; then perform fight { in foe = town.forest.level8.lordMathese; } then done; }
+                        action lordMathese { first start; then perform meet { in monster = town.forest.level8.lordMathese; } then done; }
                         then done;
-                        action kingVidion { first start; then perform fight { in foe = town.forest.level8.kingVidion; } then done; }
+                        action kingVidion { first start; then perform meet { in monster = town.forest.level8.kingVidion; } then done; }
                         then done;
-                        action babyDragon { first start; then perform fight { in foe = town.forest.level8.babyDragon; } then done; }
+                        action babyDragon { first start; then perform meet { in monster = town.forest.level8.babyDragon; } then done; }
                         then done;
-                        action deathGnome { first start; then perform fight { in foe = town.forest.level8.deathGnome; } then done; }
+                        action deathGnome { first start; then perform meet { in monster = town.forest.level8.deathGnome; } then done; }
                         then done;
                     }
                     then done;
@@ -2080,27 +2178,27 @@ package LordPlay {
                         if true then frankenmoose;
                         if true then earthShaker;
                         if true then gollumsWrath;
-                        action pinkElephant { first start; then perform fight { in foe = town.forest.level9.pinkElephant; } then done; }
+                        action pinkElephant { first start; then perform meet { in monster = town.forest.level9.pinkElephant; } then done; }
                         then done;
-                        action gwendolensNightmare { first start; then perform fight { in foe = town.forest.level9.gwendolensNightmare; } then done; }
+                        action gwendolensNightmare { first start; then perform meet { in monster = town.forest.level9.gwendolensNightmare; } then done; }
                         then done;
-                        action flyingCobra { first start; then perform fight { in foe = town.forest.level9.flyingCobra; } then done; }
+                        action flyingCobra { first start; then perform meet { in monster = town.forest.level9.flyingCobra; } then done; }
                         then done;
-                        action rentakisPet { first start; then perform fight { in foe = town.forest.level9.rentakisPet; } then done; }
+                        action rentakisPet { first start; then perform meet { in monster = town.forest.level9.rentakisPet; } then done; }
                         then done;
-                        action ernestBrown { first start; then perform fight { in foe = town.forest.level9.ernestBrown; } then done; }
+                        action ernestBrown { first start; then perform meet { in monster = town.forest.level9.ernestBrown; } then done; }
                         then done;
-                        action scallianRap { first start; then perform fight { in foe = town.forest.level9.scallianRap; } then done; }
+                        action scallianRap { first start; then perform meet { in monster = town.forest.level9.scallianRap; } then done; }
                         then done;
-                        action apeman { first start; then perform fight { in foe = town.forest.level9.apeman; } then done; }
+                        action apeman { first start; then perform meet { in monster = town.forest.level9.apeman; } then done; }
                         then done;
-                        action hemoGlob { first start; then perform fight { in foe = town.forest.level9.hemoGlob; } then done; }
+                        action hemoGlob { first start; then perform meet { in monster = town.forest.level9.hemoGlob; } then done; }
                         then done;
-                        action frankenmoose { first start; then perform fight { in foe = town.forest.level9.frankenmoose; } then done; }
+                        action frankenmoose { first start; then perform meet { in monster = town.forest.level9.frankenmoose; } then done; }
                         then done;
-                        action earthShaker { first start; then perform fight { in foe = town.forest.level9.earthShaker; } then done; }
+                        action earthShaker { first start; then perform meet { in monster = town.forest.level9.earthShaker; } then done; }
                         then done;
-                        action gollumsWrath { first start; then perform fight { in foe = town.forest.level9.gollumsWrath; } then done; }
+                        action gollumsWrath { first start; then perform meet { in monster = town.forest.level9.gollumsWrath; } then done; }
                         then done;
                     }
                     then done;
@@ -2118,27 +2216,27 @@ package LordPlay {
                         if true then adultGoldDragon;
                         if true then killJoy;
                         if true then blackSorcerer;
-                        action toraksSonKorak { first start; then perform fight { in foe = town.forest.level10.toraksSonKorak; } then done; }
+                        action toraksSonKorak { first start; then perform meet { in monster = town.forest.level10.toraksSonKorak; } then done; }
                         then done;
-                        action brandTheWanderer { first start; then perform fight { in foe = town.forest.level10.brandTheWanderer; } then done; }
+                        action brandTheWanderer { first start; then perform meet { in monster = town.forest.level10.brandTheWanderer; } then done; }
                         then done;
-                        action theGrimestReaper { first start; then perform fight { in foe = town.forest.level10.theGrimestReaper; } then done; }
+                        action theGrimestReaper { first start; then perform meet { in monster = town.forest.level10.theGrimestReaper; } then done; }
                         then done;
-                        action deathDealer { first start; then perform fight { in foe = town.forest.level10.deathDealer; } then done; }
+                        action deathDealer { first start; then perform meet { in monster = town.forest.level10.deathDealer; } then done; }
                         then done;
-                        action tigerOfTheDeepJungle { first start; then perform fight { in foe = town.forest.level10.tigerOfTheDeepJungle; } then done; }
+                        action tigerOfTheDeepJungle { first start; then perform meet { in monster = town.forest.level10.tigerOfTheDeepJungle; } then done; }
                         then done;
-                        action sweetLookingLittleGirl { first start; then perform fight { in foe = town.forest.level10.sweetLookingLittleGirl; } then done; }
+                        action sweetLookingLittleGirl { first start; then perform meet { in monster = town.forest.level10.sweetLookingLittleGirl; } then done; }
                         then done;
-                        action floatingEvilEye { first start; then perform fight { in foe = town.forest.level10.floatingEvilEye; } then done; }
+                        action floatingEvilEye { first start; then perform meet { in monster = town.forest.level10.floatingEvilEye; } then done; }
                         then done;
-                        action slock { first start; then perform fight { in foe = town.forest.level10.slock; } then done; }
+                        action slock { first start; then perform meet { in monster = town.forest.level10.slock; } then done; }
                         then done;
-                        action adultGoldDragon { first start; then perform fight { in foe = town.forest.level10.adultGoldDragon; } then done; }
+                        action adultGoldDragon { first start; then perform meet { in monster = town.forest.level10.adultGoldDragon; } then done; }
                         then done;
-                        action killJoy { first start; then perform fight { in foe = town.forest.level10.killJoy; } then done; }
+                        action killJoy { first start; then perform meet { in monster = town.forest.level10.killJoy; } then done; }
                         then done;
-                        action blackSorcerer { first start; then perform fight { in foe = town.forest.level10.blackSorcerer; } then done; }
+                        action blackSorcerer { first start; then perform meet { in monster = town.forest.level10.blackSorcerer; } then done; }
                         then done;
                     }
                     then done;
@@ -2156,27 +2254,27 @@ package LordPlay {
                         if true then madman;
                         if true then vegetableCreature;
                         if true then cyclopsWarrior;
-                        action gormaTheLeper { first start; then perform fight { in foe = town.forest.level11.gormaTheLeper; } then done; }
+                        action gormaTheLeper { first start; then perform meet { in monster = town.forest.level11.gormaTheLeper; } then done; }
                         then done;
-                        action shogunWarrior { first start; then perform fight { in foe = town.forest.level11.shogunWarrior; } then done; }
+                        action shogunWarrior { first start; then perform meet { in monster = town.forest.level11.shogunWarrior; } then done; }
                         then done;
-                        action apparentlyWeakOldWoman { first start; then perform fight { in foe = town.forest.level11.apparentlyWeakOldWoman; } then done; }
+                        action apparentlyWeakOldWoman { first start; then perform meet { in monster = town.forest.level11.apparentlyWeakOldWoman; } then done; }
                         then done;
-                        action ablesCreature { first start; then perform fight { in foe = town.forest.level11.ablesCreature; } then done; }
+                        action ablesCreature { first start; then perform meet { in monster = town.forest.level11.ablesCreature; } then done; }
                         then done;
-                        action whiteBearOfLore { first start; then perform fight { in foe = town.forest.level11.whiteBearOfLore; } then done; }
+                        action whiteBearOfLore { first start; then perform meet { in monster = town.forest.level11.whiteBearOfLore; } then done; }
                         then done;
-                        action mountain { first start; then perform fight { in foe = town.forest.level11.mountain; } then done; }
+                        action mountain { first start; then perform meet { in monster = town.forest.level11.mountain; } then done; }
                         then done;
-                        action sheenaTheShapechanger { first start; then perform fight { in foe = town.forest.level11.sheenaTheShapechanger; } then done; }
+                        action sheenaTheShapechanger { first start; then perform meet { in monster = town.forest.level11.sheenaTheShapechanger; } then done; }
                         then done;
-                        action shadowstormwarrior { first start; then perform fight { in foe = town.forest.level11.shadowstormwarrior; } then done; }
+                        action shadowstormwarrior { first start; then perform meet { in monster = town.forest.level11.shadowstormwarrior; } then done; }
                         then done;
-                        action madman { first start; then perform fight { in foe = town.forest.level11.madman; } then done; }
+                        action madman { first start; then perform meet { in monster = town.forest.level11.madman; } then done; }
                         then done;
-                        action vegetableCreature { first start; then perform fight { in foe = town.forest.level11.vegetableCreature; } then done; }
+                        action vegetableCreature { first start; then perform meet { in monster = town.forest.level11.vegetableCreature; } then done; }
                         then done;
-                        action cyclopsWarrior { first start; then perform fight { in foe = town.forest.level11.cyclopsWarrior; } then done; }
+                        action cyclopsWarrior { first start; then perform meet { in monster = town.forest.level11.cyclopsWarrior; } then done; }
                         then done;
                     }
                     then done;
@@ -2193,37 +2291,76 @@ package LordPlay {
                         if true then humongousBlackWyre;
                         if true then theWizardOfDarkness;
                         if true then greatOgreOfTheNorth;
-                        action corinthianGiant { first start; then perform fight { in foe = town.forest.level12.corinthianGiant; } then done; }
+                        action corinthianGiant { first start; then perform meet { in monster = town.forest.level12.corinthianGiant; } then done; }
                         then done;
-                        action theScreamingEunich { first start; then perform fight { in foe = town.forest.level12.theScreamingEunich; } then done; }
+                        action theScreamingEunich { first start; then perform meet { in monster = town.forest.level12.theScreamingEunich; } then done; }
                         then done;
-                        action blackWarlock { first start; then perform fight { in foe = town.forest.level12.blackWarlock; } then done; }
+                        action blackWarlock { first start; then perform meet { in monster = town.forest.level12.blackWarlock; } then done; }
                         then done;
-                        action kalTorak { first start; then perform fight { in foe = town.forest.level12.kalTorak; } then done; }
+                        action kalTorak { first start; then perform meet { in monster = town.forest.level12.kalTorak; } then done; }
                         then done;
-                        action theMightyShadow { first start; then perform fight { in foe = town.forest.level12.theMightyShadow; } then done; }
+                        action theMightyShadow { first start; then perform meet { in monster = town.forest.level12.theMightyShadow; } then done; }
                         then done;
-                        action blackUnicorn { first start; then perform fight { in foe = town.forest.level12.blackUnicorn; } then done; }
+                        action blackUnicorn { first start; then perform meet { in monster = town.forest.level12.blackUnicorn; } then done; }
                         then done;
-                        action mutatedBlackWidow { first start; then perform fight { in foe = town.forest.level12.mutatedBlackWidow; } then done; }
+                        action mutatedBlackWidow { first start; then perform meet { in monster = town.forest.level12.mutatedBlackWidow; } then done; }
                         then done;
-                        action humongousBlackWyre { first start; then perform fight { in foe = town.forest.level12.humongousBlackWyre; } then done; }
+                        action humongousBlackWyre { first start; then perform meet { in monster = town.forest.level12.humongousBlackWyre; } then done; }
                         then done;
-                        action theWizardOfDarkness { first start; then perform fight { in foe = town.forest.level12.theWizardOfDarkness; } then done; }
+                        action theWizardOfDarkness { first start; then perform meet { in monster = town.forest.level12.theWizardOfDarkness; } then done; }
                         then done;
-                        action greatOgreOfTheNorth { first start; then perform fight { in foe = town.forest.level12.greatOgreOfTheNorth; } then done; }
+                        action greatOgreOfTheNorth { first start; then perform meet { in monster = town.forest.level12.greatOgreOfTheNorth; } then done; }
                         then done;
                     }
                     then done;
                 }
-                then forest;
+                then fighting;
 
             transition forest_dragon
                 first forest
                 accept SeekTheDragon
                 if forestFightsLeft > 0 and alive and level == 12
-                do action braving { perform fightDragon; }
+                do action braving { perform meetTheDragon; }
+                then fighting;
+
+            transition fighting_attack
+                first fighting
+                accept AttackTheFoe
+                if alive and foe.present and foe.hitPoints > 0
+                do action striking { perform strike; }
+                then fighting;
+
+            transition fighting_skill
+                first fighting
+                accept s : UseASkill
+                if alive and foe.present and foe.hitPoints > 0
+                    and SkillReady(s.move, deathKnightUses, thievingUses, mysticalUses, lightShield)
+                do action casting { perform useSkill { in move = s.move; } }
+                then fighting;
+
+            transition fighting_run
+                first fighting
+                accept RunAway
+                if alive and foe.present and foe.hitPoints > 0
+                do action fleeing { perform run; }
+                then fighting;
+
+            // A fallen foe is stripped on the way back to the forest; a fled one is left behind.
+            transition fighting_won
+                first fighting
+                if alive and foe.present and foe.hitPoints <= 0
+                do action claiming { perform win; }
                 then forest;
+
+            transition fighting_fled
+                first fighting
+                if alive and not foe.present
+                then forest;
+
+            transition fighting_slain
+                first fighting
+                if not alive
+                then slain;
 
             transition forest_guild
                 first forest
@@ -2242,14 +2379,14 @@ package LordPlay {
             transition forest_fairies
                 first forest
                 accept AskTheFairies
-                if alive
+                if alive and not blessedToday
                 do action asking { perform askTheFairies; }
                 then forest;
 
             transition forest_catch
                 first forest
                 accept CatchAFairy
-                if alive and not fairy
+                if alive and not fairy and not grabbedToday
                 do action grabbing { perform catchAFairy; }
                 then forest;
 
@@ -2509,6 +2646,32 @@ package LordPlay {
         attribute :>> deathKnightUses = 10;
         attribute :>> favouredMove = Move::deathKnight;
     }
+
+    // The hero a round into a forest fight, the Small Thief before him and neither yet touched.
+    part cornered :> hero {
+        part :>> foe {
+            attribute :>> present = true;
+            attribute :>> name = Lord::town.forest.level1.smallThief.name;
+            attribute :>> weapon = Lord::town.forest.level1.smallThief.weapon;
+            attribute :>> hitPoints = Lord::town.forest.level1.smallThief.hitPoints;
+            attribute :>> strength = Lord::town.forest.level1.smallThief.strength;
+            attribute :>> gold = Lord::town.forest.level1.smallThief.gold;
+            attribute :>> experience = Lord::town.forest.level1.smallThief.experience;
+        }
+    }
+
+    // The champion at the dragon's throat, the first round about to be struck.
+    part dragonslayer :> champion {
+        part :>> foe {
+            attribute :>> present = true;
+            attribute :>> dragon = true;
+            attribute :>> name = Lord::town.forest.redDragon.name;
+            attribute :>> weapon = Lord::town.forest.redDragon.weapon;
+            attribute :>> hitPoints = Lord::town.forest.redDragon.hitPoints;
+            attribute :>> strength = Lord::town.forest.redDragon.strength;
+            attribute :>> breath = Lord::town.forest.redDragon.breath;
+        }
+    }
 }
 
 // What holds of a warrior, and what a solver can say about the dragon, the shops,
@@ -2751,11 +2914,11 @@ package LordViews {
     }
 
     view forestFight : ActionFlowView {
-        expose LordPlay::Warrior::fight;
+        expose LordPlay::Warrior::strike;
     }
 
-    view dragonFight : ActionFlowView {
-        expose LordPlay::Warrior::fightDragon;
+    view foesTurn : ActionFlowView {
+        expose LordPlay::Warrior::foeStrikes;
     }
 
     view slaughter : ActionFlowView {

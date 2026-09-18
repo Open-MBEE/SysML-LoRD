@@ -55,6 +55,8 @@ var signalMenus = map[string]signalMenu{
 	"EnterForest":            {"F", "Forest"},
 	"LookForSomethingToKill": {"L", "Look for something to kill"},
 	"SeekTheDragon":          {"D", "Seek the Red Dragon"},
+	"AttackTheFoe":           {"A", "Attack"},
+	"RunAway":                {"R", "Run away"},
 	"MeetYourGuild":          {"G", "Meet your guild for a lesson"},
 	"MeetTheOldHag":          {"H", "Meet the Old Hag (a gem for healing)"},
 	"CatchAFairy":            {"C", "Catch a fairy"},
@@ -80,6 +82,7 @@ var signalMenus = map[string]signalMenu{
 var stateTitles = map[string]string{
 	"townSquare":      "The Town Square",
 	"forest":          "The Forest",
+	"fighting":        "A Fight in the Forest",
 	"darkCloakTavern": "The Dark Cloak Tavern",
 	"healersHut":      "The Healer's Hut",
 	"bank":            "King Arthur's Bank",
@@ -98,6 +101,9 @@ var stateTitles = map[string]string{
 type actionMenu struct {
 	state, key, label, action, signal string
 	params                            []paramSpec
+	// payload sends the inputs as the signal's attributes, so the day machine
+	// runs the action and takes the transitions that follow it.
+	payload bool
 }
 
 // paramSpec says where a parameter's options come from: the parts of a definition
@@ -132,6 +138,8 @@ var actionMenus = []actionMenu{
 	{state: "slaughter", key: "M", label: "Choose your favoured move", params: []paramSpec{moveParam}},
 	{state: "forest", key: "A", label: "Ask the fairies for a blessing", action: "askTheFairies", signal: "AskTheFairies", params: []paramSpec{
 		{name: "blessing", prompt: "Which blessing?", sources: enumeration("Blessing")}}},
+	{state: "fighting", key: "S", label: "Use a skill", signal: "UseASkill", payload: true, params: []paramSpec{
+		{name: "move", prompt: "Which skill?", sources: enumeration("Move")}}},
 	{state: "bank", key: "D", label: "Deposit gold", action: "deposit", params: []paramSpec{{name: "amount", prompt: "How much to deposit?", integer: true}}},
 	{state: "bank", key: "W", label: "Withdraw gold", action: "withdraw", params: []paramSpec{{name: "amount", prompt: "How much to withdraw?", integer: true}}},
 	{state: "healersHut", key: "H", label: "Heal your wounds", action: "heal"},
@@ -191,7 +199,14 @@ func (g *Game) Menu() (*Screen, error) {
 			if err != nil {
 				return nil, err
 			}
-			screen.Choices = append(screen.Choices, Choice{Key: freeKey(taken, direct.key, direct.label), Label: direct.label, Action: direct.action, Params: params, Enabled: enabled})
+			choice := Choice{Key: freeKey(taken, direct.key, direct.label), Label: direct.label, Action: direct.action, Params: params, Enabled: enabled}
+			if direct.payload {
+				choice.Signal = signal
+				if choice.Enabled, err = g.offered(signal, choice.Params); err != nil {
+					return nil, err
+				}
+			}
+			screen.Choices = append(screen.Choices, choice)
 			continue
 		}
 		screen.Choices = append(screen.Choices, Choice{Key: freeKey(taken, menu.key, signal), Label: menu.label, Signal: signal, Enabled: enabled})
@@ -211,7 +226,13 @@ func (g *Game) Menu() (*Screen, error) {
 
 // accepts reports whether the day machine would take the signal now.
 func (g *Game) accepts(signal string) (bool, error) {
-	acceptance, err := g.session.Accepts(g.hero, playPackage+"::"+signal, nil)
+	return g.acceptsWith(signal, nil)
+}
+
+// acceptsWith reports whether the day machine would take the signal now with the
+// given payload bound.
+func (g *Game) acceptsWith(signal string, args map[string]opensysml.Value) (bool, error) {
+	acceptance, err := g.session.Accepts(g.hero, playPackage+"::"+signal, args)
 	if err != nil {
 		if errors.Is(err, opensysml.ErrFailure) {
 			return false, fmt.Errorf("%w: %s accepts a signal %s the model does not declare", ErrModelInvalid, g.Location(), signal)
@@ -219,6 +240,30 @@ func (g *Game) accepts(signal string) (bool, error) {
 		return false, err
 	}
 	return acceptance.Accepted && acceptance.Enabled(), nil
+}
+
+// offered narrows a payload signal's single parameter to the options whose guard
+// holds now, and reports whether any is left to offer.
+func (g *Game) offered(signal string, params []Param) (bool, error) {
+	if len(params) != 1 {
+		return false, fmt.Errorf("%w: signal %s carries %d parameters, not one", ErrModelInvalid, signal, len(params))
+	}
+	var kept []Option
+	for _, option := range params[0].Options {
+		value, err := g.Eval(option.Value)
+		if err != nil {
+			return false, err
+		}
+		ok, err := g.acceptsWith(signal, map[string]opensysml.Value{params[0].Name: value})
+		if err != nil {
+			return false, err
+		}
+		if ok {
+			kept = append(kept, option)
+		}
+	}
+	params[0].Options = kept
+	return len(kept) > 0, nil
 }
 
 // params reads a menu's parameter options from the model.
@@ -318,16 +363,20 @@ func (g *Game) play(key string, inputs map[string]string) (*Outcome, error) {
 		if !choice.Enabled {
 			return nil, fmt.Errorf("%w: %s", ErrRefused, choice.Label)
 		}
-		if choice.Signal != "" {
-			return g.Send(choice.Signal)
+		args, err := g.bindAll(choice, inputs)
+		if err != nil {
+			return nil, err
 		}
-		return g.perform(choice, inputs)
+		if choice.Signal != "" {
+			return g.SendWith(choice.Signal, args)
+		}
+		return g.perform(choice, args)
 	}
 	return nil, fmt.Errorf("%w: %q is not on this menu", ErrNoSuchCommand, key)
 }
 
-// perform binds a direct action's inputs and invokes it, or writes a preference.
-func (g *Game) perform(choice Choice, inputs map[string]string) (*Outcome, error) {
+// bindAll binds the player's inputs to the choice's parameters.
+func (g *Game) bindAll(choice Choice, inputs map[string]string) (map[string]opensysml.Value, error) {
 	args := map[string]opensysml.Value{}
 	for _, param := range choice.Params {
 		text, given := inputs[param.Name]
@@ -340,6 +389,11 @@ func (g *Game) perform(choice Choice, inputs map[string]string) (*Outcome, error
 		}
 		args[param.Name] = v
 	}
+	return args, nil
+}
+
+// perform invokes a direct action with its bound inputs, or writes a preference.
+func (g *Game) perform(choice Choice, args map[string]opensysml.Value) (*Outcome, error) {
 	if choice.Action != "" {
 		return g.Invoke(choice.Action, args)
 	}

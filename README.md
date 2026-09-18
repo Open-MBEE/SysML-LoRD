@@ -12,7 +12,8 @@ warrior's invariants hold however it is reached. [Played in the browser](#in-the
 it looks like the door game did — a black screen, the menus, a warrior's stats —
 with the page pressing the model's keys and no rule of its own. What it still is
 not is the bulletin board: a warrior is saved in the browser that made them, and
-no other players are on the line.
+no other players are on the line. The game can be finished: the tests play
+[a whole game](#a-whole-game), from the boat to the dragon, for each guild.
 Every output below is what the commands print.
 
 The model is written for [OpenSysML](https://github.com/Open-MBEE/OpenSysML),
@@ -28,9 +29,9 @@ The four packages:
 | Package | What it holds |
 | --- | --- |
 | `Lord` | the realm: `Fighter` and the `Monster`, `Dragon` and `Master` kinds of it, `Weapon` and `Armour`, King Arthur's Weapons and Abdul's Armour with their thirteen items each, Turgon's hall with its eleven masters, the forest with all twelve levels of monsters, the Red Dragon, the Dark Cloak Tavern and the fairy glade, the bank, the healer, the Red Dragon Inn with Violet's and Seth Able's favours, and the `Town` that holds them |
-| `LordPlay` | a `Warrior` with the stats screen's attributes, fourteen constraints the game never breaks, one action per deed the realm offers (`fight`, `fightDragon`, `attack`, `heal`, `deposit`, `withdraw`, `robTheBank`, `buyWeapon`, `buyArmour`, `train`, `learnSkill`, `meetTheOldHag`, `askTheFairies`, `catchAFairy`, `changeProfession`, `gamble`, `buyRoom`, `bribeTheBartender`, `tradeGems`, `flirt`, `divorce`, `listenToTheBard`, `newDay`), the `day` state machine that is the game's menu, and four warriors: `hero`, fresh off the boat; `heroine`, of the other sex and charming enough for the bard; `rival`, whom the slaughter menu offers; and `champion`, at level twelve with the best of both shops and a Death Knight master |
+| `LordPlay` | a `Warrior` with the stats screen's attributes and the `Foe` before him, fourteen constraints the game never breaks, one action per deed the realm offers (`meet`, `meetTheDragon`, `strike`, `useSkill`, `run`, `win`, `attack`, `heal`, `deposit`, `withdraw`, `robTheBank`, `buyWeapon`, `buyArmour`, `train`, `learnSkill`, `meetTheOldHag`, `askTheFairies`, `catchAFairy`, `changeProfession`, `gamble`, `buyRoom`, `bribeTheBartender`, `tradeGems`, `flirt`, `divorce`, `listenToTheBard`, `newDay`), the `day` state machine that is the game's menu, and six warriors: `hero`, fresh off the boat; `heroine`, of the other sex and charming enough for the bard; `rival`, whom the slaughter menu offers; `champion`, at level twelve with the best of both shops and a Death Knight master; and `cornered` and `dragonslayer`, the hero and the champion a round into a fight, for the checker |
 | `LordOdds` | requirements a warrior is checked against — for the dragon, for a wedding, for a slaughter — two the solver is asked to satisfy, one it is asked to explain, and four analyses it is asked to minimize |
-| `LordViews` | the menu as a state diagram, the forest fight, the dragon fight, a slaughter and a flirt as flows, the town as a tree, and *The Daily Happenings*, a document with the warrior's standing, both shops' price lists, the masters, both sweethearts' favours and two levels of the forest |
+| `LordViews` | the menu as a state diagram, the warrior's swing, the foe's answer, a slaughter and a flirt as flows, the town and the forest as trees, and *The Daily Happenings*, a document with the warrior's standing, both shops' price lists, the masters, both sweethearts' favours and two levels of the forest |
 
 ## From the command line
 
@@ -48,14 +49,22 @@ go tool sysml lord.sysml -validate
 ✓ lord.sysml: no errors
 ```
 
-**A blow.** `Blow` is the game's damage rule — strength less defense, never
-less than one — and `BlowsToKill` counts how many of them a target takes.
-`Shielded` halves a blow behind a Mystical Light Shield, `RoomPrice` is the
-inn's rate by level, `SkillUses` turns skill points into a day's uses, and
-`Interest` is what the bank adds overnight.
+**A blow.** `Hit` is the game's damage rule. A swing lands with a weight the
+dice give it, `quarters`, nought to four: half the striker's strength, plus
+that many eighths of it, less the target's defense, never below nought — so
+a mighty blow is the full strength less defense and a weak one half of it,
+and a foe of enough defense turns the weak ones away. `Blow` is the mighty
+blow, never less than one, the bound the analyses reason with, and
+`BlowsToKill` counts how many of them a target takes. `Shielded` halves a
+blow behind a Mystical Light Shield, `RoomPrice` is the inn's rate by level,
+`SkillUses` turns skill points into a day's uses, and `Interest` is what the
+bank adds overnight.
 
 ```bash
 go tool sysml lord.sysml \
+  -calc "LordPlay::Hit(10, 0, 0)" \
+  -calc "LordPlay::Hit(10, 0, 4)" \
+  -calc "LordPlay::Hit(6, 1, 2)" \
   -calc "LordPlay::Blow(10, 3)" \
   -calc "LordOdds::BlowsToKill(1100, 0, 15000)" \
   -calc "LordPlay::Shielded(2000, true)" \
@@ -65,152 +74,129 @@ go tool sysml lord.sysml \
 ```
 
 ```
+✓ LordPlay::Hit(10, 0, 0)
+  = 5
+  standing: value (observed: 1 run under reverse)
+✓ LordPlay::Hit(10, 0, 4)
+  = 10
+  standing: value (observed: 1 run under reverse)
+✓ LordPlay::Hit(6, 1, 2)
+  = 3
+  standing: value (observed: 1 run under reverse)
 ✓ LordPlay::Blow(10, 3)
   = 7
+  standing: value (observed: 1 run under reverse)
 ✓ LordOdds::BlowsToKill(1100, 0, 15000)
   = 14
+  standing: value (observed: 1 run under reverse)
 ✓ LordPlay::Shielded(2000, true)
   = 1000
+  standing: value (observed: 1 run under reverse)
 ✓ LordPlay::RoomPrice(12)
   = 4800
+  standing: value (observed: 1 run under reverse)
 ✓ LordPlay::SkillUses(40, 4)
   = 10
+  standing: value (observed: 1 run under reverse)
 ✓ LordPlay::Interest(1500, 10)
   = 150
+  standing: value (observed: 1 run under reverse)
 ```
 
-**A fight.** `fight` is one forest encounter, against the Small Thief unless
-its `foe` parameter names another monster of the warrior's level, opened with
-the warrior's favoured move unless `move` names one. Each round the warrior
-swings; whether the swing lands is the game's dice roll, and the model leaves
-that roll to the schedule as a decision with two open guards — as it leaves
-the monster's chance of dropping a gem. `-instantiate` creates the warrior and
-`-action "<action> <object>"` performs the fight on it, so the gold and the
-experience land on the hero:
-
-```bash
-go tool sysml lord.sysml \
-  -instantiate LordPlay::hero -action "LordPlay::Warrior::fight hero"
-```
-
-```
-✓ Created instance of LordPlay::hero
-  ID: 1
-✓ Action completed
-  Final state: Completed
-  2 choice points; %trace on to see them
-  Results:
-    foe = Instance(ID: 7)
-    foeLeft = -1
-    incoming = 0
-    move = Move::attack
-    rounds = 1
-    skillReady = false
-```
-
-Under the default schedule the first swing lands and the thief dies in one
-round. `-engine check` searches every schedule instead — every sequence of
-hits and misses, gem or no gem — and reports what the fight can end as.
-`-check-diverge` names the hero's features to compare across outcomes,
-`-check-property` names the constraints to hold at every step, and
-`-check-witness` writes the schedule that reaches each outcome:
+**A fight.** A forest fight is a round at a time, as the game's menu had it.
+`meet` picks a monster of the warrior's level and copies it into `foe` — the
+warrior carries the foe before him as a part, `present` while the fight
+lasts. `strike` is one round: the dice weigh the swing, `Hit` takes it off
+the foe, and if the foe still stands `foeStrikes` answers in kind — a blow
+of its own weight, and where the foe is the dragon one of its four attacks.
+`useSkill` is the round opened with a skill instead, `run` the attempt to
+leave, `win` the spoils of a fallen foe. Each roll is a decision the model
+leaves to the schedule with several open guards, as it leaves the monster's
+chance of dropping a gem. `cornered` is the hero a round into a fight, the
+Small Thief before him and neither yet touched; `-instantiate` creates him
+and `-action "<action> <object>"` performs one action on him. `-engine check`
+searches every schedule of that action — every way its dice can fall — and
+reports what it can end as. `-check-diverge` names the features to compare
+across outcomes and `-check-property` the constraints to hold at every step:
 
 ```bash
 go tool sysml lord.sysml -engine check \
-  -instantiate LordPlay::hero -action "LordPlay::Warrior::fight hero" \
-  -check-diverge this.alive -check-diverge this.gold -check-diverge this.gems \
+  -instantiate LordPlay::cornered -action "LordPlay::Warrior::strike cornered" \
+  -check-diverge quarters \
   -check-property LordPlay::Warrior::theDeadHaveNoHitPoints \
-  -check-property LordPlay::Warrior::noDebt \
-  -check-property LordPlay::Warrior::gemsNotOwed \
-  -check-property LordPlay::Warrior::fightsNotOverdrawn \
-  -check-witness witnesses
+  -check-property LordPlay::Warrior::hitPointsWithinMaximum
+go tool sysml lord.sysml -engine check \
+  -instantiate LordPlay::cornered -action "LordPlay::Warrior::foeStrikes cornered" \
+  -check-diverge this.hitPoints -check-diverge this.alive \
+  -check-property LordPlay::Warrior::theDeadHaveNoHitPoints \
+  -check-property LordPlay::Warrior::hitPointsWithinMaximum
 ```
 
 ```
-✗ Action LordPlay::Warrior::fight: divergent (43 states, 42 moves, depth 22)
-  divergent: this.alive ends as false or true
-    this.alive = false (witness witnesses/LordPlay.Warrior.fight@hero-this.alive-1.witness)
-    this.alive = true (witness witnesses/LordPlay.Warrior.fight@hero-this.alive-2.witness)
-  divergent: this.gems ends as 0 or 1
-    this.gems = 0 (witness witnesses/LordPlay.Warrior.fight@hero-this.gems-1.witness)
-    this.gems = 1 (witness witnesses/LordPlay.Warrior.fight@hero-this.gems-2.witness)
-  divergent: this.gold ends as 0 or 556
-    this.gold = 0 (witness witnesses/LordPlay.Warrior.fight@hero-this.gold-1.witness)
-    this.gold = 556 (witness witnesses/LordPlay.Warrior.fight@hero-this.gold-2.witness)
-  outcome: foe = Lord::Forest::level1::smallThief#1{…}; foeLeft = -1; incoming = 0; move = Move::attack; rounds = 1; skillReady = false; this.alive = true; this.gems = 0; this.gold = 556
-  outcome: foe = Lord::Forest::level1::smallThief#1{…}; foeLeft = -1; incoming = 0; move = Move::attack; rounds = 1; skillReady = false; this.alive = true; this.gems = 1; this.gold = 556
-  …
-  outcome: foe = Lord::Forest::level1::smallThief#1{…}; foeLeft = 9; incoming = 5; move = Move::attack; rounds = 2; skillReady = false; this.alive = false; this.gems = 0; this.gold = 0
-  standing: sensitive (witnessed: 43 states, 42 moves searched, witness of 2 choices replayed)
+✗ Action LordPlay::Warrior::strike: divergent (44 states, 43 moves, depth 11)
+  divergent: quarters ends as 0 or 1 or 2 or 3 or 4
+    quarters = 0
+    quarters = 1
+    quarters = 2
+    quarters = 3
+    quarters = 4
+  standing: sensitive (witnessed: 44 states, 43 moves searched, witness of 5 choices replayed)
+✗ Action LordPlay::Warrior::foeStrikes: divergent (47 states, 46 moves, depth 10)
+  divergent: this.hitPoints ends as 15 or 16 or 17 or 18
+    this.hitPoints = 15
+    this.hitPoints = 16
+    this.hitPoints = 17
+    this.hitPoints = 18
+  standing: sensitive (witnessed: 47 states, 46 moves searched, witness of 4 choices replayed)
 ```
 
-Five outcomes: the thief dies on the first or the second swing, with or
-without a gem in his pockets, or two misses in a row and his dagger — five
-points a stab through the hero's single point of defense — kill a
-ten-hit-point warrior, who wakes tomorrow with no gold. No property was
-violated on any of the 43 states. The witness for the death is the two misses,
-and `-schedule replay:` runs it again:
+Five weights to the hero's swing, from five to the full ten of his strength
+against a thief with no defense; the thief's dagger, six points through the
+hero's one of defense, takes two to five of his twenty hit points, and
+`this.alive` did not diverge — no answer of the thief's kills a fresh hero
+in one blow. No property was violated on any state. `-check-witness <dir>`
+writes the schedule that reaches each outcome, and `-schedule replay:<file>`
+runs one again.
 
-```bash
-cat witnesses/LordPlay.Warrior.fight@hero-this.alive-1.witness
-go tool sysml lord.sysml \
-  -instantiate LordPlay::hero -action "LordPlay::Warrior::fight hero" \
-  -schedule replay:witnesses/LordPlay.Warrior.fight@hero-this.alive-1.witness
-```
-
-```
-step 7: decision swing -> 2->miss
-step 15: decision swing -> 2->miss
-…
-✓ Action completed
-  Final state: Completed
-  2 choice points; %trace on to see them
-  Results:
-    …
-    foeLeft = 9
-    rounds = 2
-```
-
-**The dragon.** `fightDragon` is the fight the game is named for. Only a
-twelfth-level warrior with fights left is let near it; each round the warrior
-strikes, or spends a skill use on a power move, a sneak attack or one of the
-Mystical arts, and the dragon answers with one of its four attacks — the
-flaming breath no armour blunts, a stomp, a huge claw or a swish of its tail —
-the choice being the dice's. A child of the warrior's may take a blow, a caught
-fairy revives the fallen once, and the slayer is born again at level one,
-keeping skills, charm, gems, family and the kill. The champion opens with the
-Death Knights' power move, three blows for a use:
-
-```bash
-go tool sysml lord.sysml \
-  -instantiate LordPlay::champion -action "LordPlay::Warrior::fightDragon champion"
-```
-
-Under the default schedule the dragon breathes every round, the champion's
-4500 hit points take four breaths, and the fifth power move fells it.
-`-engine check` says the dice can do worse:
+**The dragon.** The dragon is the fight the game is named for. `meetTheDragon`
+lets only a twelfth-level warrior with fights left near it; each round the
+warrior strikes, or spends a skill use on a power move, a sneak attack or one
+of the Mystical arts, and the dragon answers with one of its four attacks —
+the flaming breath no armour blunts, a stomp, a huge claw or a swish of its
+tail — the choice, and the weight of it, being the dice's. A child of the
+warrior's may take a blow, a caught fairy revives the fallen once, and the
+slayer is born again at level one, keeping skills, charm, gems, family and
+the kill. `dragonslayer` is the champion at the dragon's throat; the dragon's
+answer to him has ten outcomes:
 
 ```bash
 go tool sysml lord.sysml -engine check \
-  -instantiate LordPlay::champion -action "LordPlay::Warrior::fightDragon champion" \
-  -check-diverge this.alive -check-diverge this.dragonKills \
-  -check-property LordPlay::Warrior::levelInRange \
-  -check-property LordPlay::Warrior::theDeadHaveNoHitPoints \
-  -check-property LordPlay::Warrior::skillsWithinMastery
+  -instantiate LordPlay::dragonslayer \
+  -action "LordPlay::Warrior::foeStrikes dragonslayer" \
+  -check-diverge this.hitPoints -check-diverge this.alive
 ```
 
 ```
-✗ Action LordPlay::Warrior::fightDragon: divergent (1811 states, 1958 moves, depth 60)
-  divergent: this.alive ends as false or true
-  divergent: this.dragonKills ends as 0 or 1
-  …
-  standing: sensitive (witnessed: 1811 states, 1958 moves searched, witness of 4 choices replayed)
+✗ Action LordPlay::Warrior::foeStrikes: divergent (137 states, 136 moves, depth 10)
+  divergent: this.hitPoints ends as 3100 or 3350 or 3500 or 3600 or 3850 or 4100 or 4225 or 4350 or 4475 or 4500
+    this.hitPoints = 3100
+    this.hitPoints = 3350
+    this.hitPoints = 3500
+    this.hitPoints = 3600
+    this.hitPoints = 3850
+    this.hitPoints = 4100
+    this.hitPoints = 4225
+    this.hitPoints = 4350
+    this.hitPoints = 4475
+    this.hitPoints = 4500
+  standing: sensitive (witnessed: 137 states, 136 moves searched, witness of 8 choices replayed)
 ```
 
-Two stomps among the four answers — 1400 each through the champion's 600
-defense, more than the breath — and the champion falls in the fourth round;
-any gentler four and the dragon does. No property was violated on any of the
-1811 states.
+The breath is a thousand whatever the dice say; the stomp, two thousand
+strength through the champion's six hundred of defense, is four hundred to
+fourteen hundred; the claw, at half the strength, nothing to four hundred;
+and the tail, at a quarter, never gets through. [The REPL section](#the-dragon-1)
+plays the fight out.
 
 **Who may face the dragon.** `-satisfy` evaluates the `assert satisfy`
 statements one element makes. `dragonFights` asserts `readyForTheDragon` — a
@@ -223,24 +209,30 @@ go tool sysml lord.sysml -satisfy=LordOdds::dragonFights
 
 ```
 ✓ satisfy readyForTheDragon by champion holds (on LordPlay::champion ID: 1)
-✗ satisfy readyForTheDragon by hero fails (on LordPlay::hero ID: 3)
+  standing: holds (observed: 1 run under reverse)
+✗ satisfy readyForTheDragon by hero fails (on LordPlay::hero ID: 13)
   Required condition evaluated to false: warrior.level == 12
+  standing: violated (witnessed: 1 run under reverse)
 ✗ satisfy outlastTheDragon by champion fails (on LordPlay::champion ID: 1)
   Required condition evaluated to false: warrior.hitPoints + Blow(dragonStrength, warrior.defense) > Blow(dragonStrength, warrior.defense) * BlowsToKill(warrior.strength, 0, dragonHitPoints)
+  standing: violated (witnessed: 1 run under reverse)
 ✗ satisfy outlastTheBreath by champion fails (on LordPlay::champion ID: 1)
   Required condition evaluated to false: warrior.hitPoints + breath > breath * BlowsToKill(warrior.strength, 0, dragonHitPoints)
+  standing: violated (witnessed: 1 run under reverse)
 ✗ satisfy slayWithPowerMoves by champion fails (on LordPlay::champion ID: 1)
   Required condition evaluated to false: warrior.hitPoints + max(breath, Blow(dragonStrength, warrior.defense)) > max(breath, Blow(dragonStrength, warrior.defense)) * BlowsToKill(3 * warrior.strength, 0, dragonHitPoints)
+  standing: violated (witnessed: 1 run under reverse)
 ```
 
-`outlastTheDragon` is a straight brawl, every blow landing and the warrior
-swinging first: fourteen blows of 1100 fell the dragon, and thirteen stomps of
-1400 land in the meantime. `outlastTheBreath` is the same brawl against the
-breath alone. `slayWithPowerMoves` is the Death Knights' way, five power moves
-against the dragon's hardest answer every round — the guarantee the checker
-above found wanting. The champion's 4500 hit points satisfy none of them; the
-solver section below says what would. `weddings` and `slaughter` check the
-inn's and the slaughter menu's requirements the same way.
+`outlastTheDragon` is a straight brawl of mighty blows, the warrior swinging
+first: fourteen blows of 1100 fell the dragon, and thirteen stomps of 1400
+land in the meantime. `outlastTheBreath` is the same brawl against the breath
+alone. `slayWithPowerMoves` is the Death Knights' way, five power moves of
+three blows against the dragon's hardest answer every round. The champion's
+4500 hit points guarantee none of them — the dice must be kinder than the
+worst, and [below](#the-dragon-1) they are, and are not; the solver section
+says what would need no luck. `weddings` and `slaughter` check the inn's and
+the slaughter menu's requirements the same way.
 
 **The views.** `-render` writes a view in the form its definition names.
 `townSquare` is the game's menu as a state diagram, one state per place and
@@ -258,66 +250,74 @@ stateDiagram-v2
   state "LordPlay::Warrior::day<br>«exhibit state»" as n0 {
     state "townSquare<br>«state»<br>initial" as n1
     state "forest<br>«state»" as n2
-    state "darkCloakTavern<br>«state»" as n3
-    state "healersHut<br>«state»" as n4
-    state "bank<br>«state»" as n5
-    state "trainingHall<br>«state»" as n6
-    state "inn<br>«state»" as n7
-    state "asleep<br>«state»" as n8
-    state "slaughter<br>«state»" as n9
-    state "otherPlaces<br>«state»" as n10
-    state "slain<br>«state»" as n11
+    state "fighting<br>«state»" as n3
+    state "darkCloakTavern<br>«state»" as n4
+    state "healersHut<br>«state»" as n5
+    state "bank<br>«state»" as n6
+    state "trainingHall<br>«state»" as n7
+    state "inn<br>«state»" as n8
+    state "asleep<br>«state»" as n9
+    state "slaughter<br>«state»" as n10
+    state "otherPlaces<br>«state»" as n11
+    state "slain<br>«state»" as n12
     [*] --> n1
   }
   n1 --> n2 : townSquare_forest: accept EnterForest
-  n1 --> n4 : townSquare_healer: accept VisitTheHealer / healing
-  n1 --> n5 : townSquare_bank: accept VisitTheBank
-  n1 --> n6 : townSquare_training: accept VisitTheTrainingHall / training
-  n1 --> n7 : townSquare_inn: accept VisitTheInn
-  n1 --> n9 : townSquare_slaughter: accept SlaughterOtherPlayers
-  n1 --> n10 : townSquare_otherPlaces: accept OtherPlaces
+  n1 --> n5 : townSquare_healer: accept VisitTheHealer / healing
+  n1 --> n6 : townSquare_bank: accept VisitTheBank
+  n1 --> n7 : townSquare_training: accept VisitTheTrainingHall / training
+  n1 --> n8 : townSquare_inn: accept VisitTheInn
+  n1 --> n10 : townSquare_slaughter: accept SlaughterOtherPlayers
+  n1 --> n11 : townSquare_otherPlaces: accept OtherPlaces
   n1 --> n1 : townSquare_midnight: accept NewDay / midnight
-  n2 --> n2 : forest_fight: accept LookForSomethingToKill [forestFightsLeft #gt; 0 and alive] / fighting
-  n2 --> n2 : forest_dragon: accept SeekTheDragon [forestFightsLeft #gt; 0 and alive and level == 12] / braving
+  n2 --> n3 : forest_fight: accept LookForSomethingToKill [forestFightsLeft #gt; 0 and alive] / hunting
+  n2 --> n3 : forest_dragon: accept SeekTheDragon [forestFightsLeft #gt; 0 and alive and level == 12] / braving
   n2 --> n2 : forest_guild: accept MeetYourGuild [alive] / learning
   n2 --> n2 : forest_hag: accept MeetTheOldHag [alive and gems #gt;= 1] / bargaining
-  n2 --> n2 : forest_fairies: accept AskTheFairies [alive] / asking
-  n2 --> n2 : forest_catch: accept CatchAFairy [alive and not fairy] / grabbing
-  n2 --> n3 : forest_tavern: accept FindTheDarkCloakTavern [alive]
-  n2 --> n11 : forest_slain: [not alive]
+  n2 --> n2 : forest_fairies: accept AskTheFairies [alive and not blessedToday] / asking
+  n2 --> n2 : forest_catch: accept CatchAFairy [alive and not fairy and not grabbedToday] / grabbing
+  n2 --> n4 : forest_tavern: accept FindTheDarkCloakTavern [alive]
+  n2 --> n12 : forest_slain: [not alive]
   n2 --> n1 : forest_town: accept ReturnToTown
-  n3 --> n3 : tavern_gamble: accept Gamble [alive and gold #gt;= 100] / betting
-  n3 --> n3 : tavern_profession: accept ChangeProfession [alive] / retraining
-  n3 --> n2 : tavern_forest: accept ReturnToTheForest
-  n4 --> n1 : healer_town: accept ReturnToTown
-  n5 --> n5 : bank_rob: accept RobTheBank [alive and class == CharacterClass::thievingSkills and fairy] / robbing
-  n5 --> n1 : bank_town: accept ReturnToTown
-  n6 --> n1 : training_town: accept ReturnToTown
-  n7 --> n7 : inn_flirt: accept FlirtAtTheInn [alive and not flirtedToday] / flirting
-  n7 --> n7 : inn_divorce: accept AskForADivorce [alive and spouse != Spouse::nobody] / divorcing
-  n7 --> n7 : inn_bard: accept ListenToTheBard [alive and not heardTheBard] / listening
-  n7 --> n7 : inn_bribe: accept BribeTheBartender [alive and level #gt;= 2 and not bribed and gold #gt;= BribePrice(level)] / bribing
-  n7 --> n7 : inn_gems: accept TradeGems [alive and level #gt;= 2 and gems #gt;= town.inn.gemsPerStatPoint] / trading
-  n7 --> n8 : inn_room: accept BuyARoom [alive and not innRoom and (charm #gt;= town.inn.charmForAFreeRoom or gold #gt;= RoomPrice(level))] / lodging
-  n7 --> n1 : inn_town: accept ReturnToTown
-  n8 --> n1 : asleep_midnight: accept NewDay / midnight
-  n9 --> n9 : slaughter_attack: accept AttackAWarrior [playerFightsLeft #gt; 0 and alive] / attacking
-  n9 --> n11 : slaughter_slain: [not alive]
-  n9 --> n1 : slaughter_town: accept ReturnToTown
-  n10 --> n1 : otherPlaces_town: accept ReturnToTown
-  n11 --> n1 : slain_midnight: accept NewDay / midnight
+  n3 --> n3 : fighting_attack: accept AttackTheFoe [alive and foe.present and foe.hitPoints #gt; 0] / striking
+  n3 --> n3 : fighting_skill: accept UseASkill [alive and foe.present and foe.hitPoints #gt; 0 and SkillReady(s.move, deathKnightUses, thievingUses, mysticalUses, lightShield)] / casting
+  n3 --> n3 : fighting_run: accept RunAway [alive and foe.present and foe.hitPoints #gt; 0] / fleeing
+  n3 --> n2 : fighting_won: [alive and foe.present and foe.hitPoints #lt;= 0] / claiming
+  n3 --> n2 : fighting_fled: [alive and not foe.present]
+  n3 --> n12 : fighting_slain: [not alive]
+  n4 --> n4 : tavern_gamble: accept Gamble [alive and gold #gt;= 100] / betting
+  n4 --> n4 : tavern_profession: accept ChangeProfession [alive] / retraining
+  n4 --> n2 : tavern_forest: accept ReturnToTheForest
+  n5 --> n1 : healer_town: accept ReturnToTown
+  n6 --> n6 : bank_rob: accept RobTheBank [alive and class == CharacterClass::thievingSkills and fairy] / robbing
+  n6 --> n1 : bank_town: accept ReturnToTown
+  n7 --> n1 : training_town: accept ReturnToTown
+  n8 --> n8 : inn_flirt: accept FlirtAtTheInn [alive and not flirtedToday] / flirting
+  n8 --> n8 : inn_divorce: accept AskForADivorce [alive and spouse != Spouse::nobody] / divorcing
+  n8 --> n8 : inn_bard: accept ListenToTheBard [alive and not heardTheBard] / listening
+  n8 --> n8 : inn_bribe: accept BribeTheBartender [alive and level #gt;= 2 and not bribed and gold #gt;= BribePrice(level)] / bribing
+  n8 --> n8 : inn_gems: accept TradeGems [alive and level #gt;= 2 and gems #gt;= town.inn.gemsPerStatPoint] / trading
+  n8 --> n9 : inn_room: accept BuyARoom [alive and not innRoom and (charm #gt;= town.inn.charmForAFreeRoom or gold #gt;= RoomPrice(level))] / lodging
+  n8 --> n1 : inn_town: accept ReturnToTown
+  n9 --> n1 : asleep_midnight: accept NewDay / midnight
+  n10 --> n10 : slaughter_attack: accept AttackAWarrior [playerFightsLeft #gt; 0 and alive] / attacking
+  n10 --> n12 : slaughter_slain: [not alive]
+  n10 --> n1 : slaughter_town: accept ReturnToTown
+  n11 --> n1 : otherPlaces_town: accept ReturnToTown
+  n12 --> n1 : slain_midnight: accept NewDay / midnight
 ```
 
-`forestFight`, `dragonFight`, `slaughter` and `flirting` are the fights and the
-flirt as flowcharts, with the merges the rounds loop through and the decisions
-the dice make, and `theTown` is the town as a tree:
+`forestFight` and `foesTurn` are the warrior's swing and the foe's answer as
+flowcharts, with the decisions the dice make; `slaughter` and `flirting` are
+the slaughter and the flirt; `theTown` and `theForest` are trees:
 
 ```bash
 go tool sysml lord.sysml -render LordViews::forestFight
-go tool sysml lord.sysml -render LordViews::dragonFight
+go tool sysml lord.sysml -render LordViews::foesTurn
 go tool sysml lord.sysml -render LordViews::slaughter
 go tool sysml lord.sysml -render LordViews::flirting
 go tool sysml lord.sysml -render LordViews::theTown
+go tool sysml lord.sysml -render LordViews::theForest
 ```
 
 **The Daily Happenings.** `-render-document` compiles a document definition,
@@ -415,13 +415,12 @@ object numbers in its output are the ones shown.
 `%instantiate` creates the hero and starts the `day` machine the warrior
 exhibits, in `townSquare`. `%state` binds the debugger to that running
 machine; `%send` queues one of the menu's signals and `%advance 1` dispatches
-it and lets the effect it triggers — a fight, a night's sleep, the stroke of
-midnight — run to completion. (`%step` dispatches one event at a time; a
-transition whose effect runs a fight takes two.) Looking for something to
-kill rolls among the monsters of the warrior's own level — a schedule
-decision, so `-engine check` reaches every one of them, and the default
-schedule takes the first: the Small Thief for a first-level hero, the
-Corinthian Giant for the twelfth-level champion:
+it and lets the effect it triggers — a round of a fight, a night's sleep, the
+stroke of midnight — run to completion. (`%step` dispatches one event at a
+time; a transition whose effect runs a deed takes two.) Looking for something
+to kill puts the hero in `fighting`, before whatever monster of his level the
+dice serve; each `AttackTheFoe` is a round, and the machine leaves the fight
+of itself when the foe falls, taking the spoils on the way out:
 
 ```
 %instantiate LordPlay::hero
@@ -430,60 +429,157 @@ Corinthian Giant for the twelfth-level champion:
 %advance 1
 %send LookForSomethingToKill
 %advance 1
+%eval in LordPlay::hero : foe.name
+%eval in LordPlay::hero : foe.hitPoints
+%send AttackTheFoe
+%advance 1
+%eval in LordPlay::hero : foe.hitPoints
+%eval in LordPlay::hero : hitPoints
+%send AttackTheFoe
+%advance 1
 %eval in LordPlay::hero : gold
+%eval in LordPlay::hero : experience
 %eval in LordPlay::hero : forestFightsLeft
+```
+
+```
+✓ Created instance of LordPlay::hero
+  ID: 1
+✓ Debugging state machine "day" exhibited by object #1 of "LordPlay::hero"
+  Current state: townSquare
+✓ Sent EnterForest to object #1 of "LordPlay::hero"
+  Accepted by state machine "day" in state townSquare: transition townSquare_forest fires on it
+✓ Advanced to 1.0 (2 event(s) processed)
+  Current state: forest
+✓ Sent LookForSomethingToKill to object #1 of "LordPlay::hero"
+  Accepted by state machine "day" in state forest: transition forest_fight fires on it
+✓ Advanced to 2.0 (2 event(s) processed)
+  Current state: fighting
+  1 choice point; %trace on to see them
+✓ foe.name (on LordPlay::hero ID: 1)
+  = "Small Thief"
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 9
+✓ Sent AttackTheFoe to object #1 of "LordPlay::hero"
+  Accepted by state machine "day" in state fighting: transition fighting_attack fires on it
+✓ Advanced to 3.0 (2 event(s) processed)
+  Current state: fighting
+  2 choice points; %trace on to see them
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 4
+✓ hitPoints (on LordPlay::hero ID: 1)
+  = 18
+✓ Sent AttackTheFoe to object #1 of "LordPlay::hero"
+  Accepted by state machine "day" in state fighting: transition fighting_attack fires on it
+✓ Advanced to 4.0 (3 event(s) processed)
+  Current state: forest
+  2 choice points; %trace on to see them
+✓ gold (on LordPlay::hero ID: 1)
+  = 556
+✓ experience (on LordPlay::hero ID: 1)
+  = 2
+✓ forestFightsLeft (on LordPlay::hero ID: 1)
+  = 14
+```
+
+Under the default schedule the dice fall the same way every run: the forest
+serves the Small Thief, the hero's swing is the weak one, five of his ten
+strength, and the thief's answer is weak too, two through the hero's
+defense. Two rounds, and the thief's fifty-six gold and two experience are
+the hero's. The champion, at level twelve, is served a monster of his own
+level, and a warrior who would rather not finish may `RunAway` — the dice
+say whether the foe lets him:
+
+```
 %instantiate LordPlay::champion
 %state LordPlay::champion
 %send EnterForest
 %advance 1
 %send LookForSomethingToKill
 %advance 1
-%eval in LordPlay::champion : gold
-%state LordPlay::hero
+%eval in LordPlay::champion : foe.name
+%eval in LordPlay::champion : foe.hitPoints
+%send AttackTheFoe
+%advance 1
+%eval in LordPlay::champion : foe.hitPoints
+%eval in LordPlay::champion : hitPoints
+%send RunAway
+%advance 1
+%eval in LordPlay::champion : foe.present
 ```
 
 ```
-✓ Sent LookForSomethingToKill to object #1 of "LordPlay::hero"
-  Accepted by state machine "day" in state forest: transition forest_fight fires on it
-✓ Advanced to 2.0 (2 event(s) processed)
+✓ Created instance of LordPlay::champion
+  ID: 17
+✓ Debugging state machine "day" exhibited by object #17 of "LordPlay::champion"
+  Current state: townSquare
+✓ Sent EnterForest to object #17 of "LordPlay::champion"
+  Accepted by state machine "day" in state townSquare: transition townSquare_forest fires on it
+✓ Advanced to 5.0 (2 event(s) processed)
   Current state: forest
-  3 choice points; %trace on to see them
-✓ gold (on LordPlay::hero ID: 1)
-  = 556
-✓ forestFightsLeft (on LordPlay::hero ID: 1)
-  = 14
-…
-✓ Sent LookForSomethingToKill to object #7 of "LordPlay::champion"
+✓ Sent LookForSomethingToKill to object #17 of "LordPlay::champion"
   Accepted by state machine "day" in state forest: transition forest_fight fires on it
-✓ Advanced to 4.0 (2 event(s) processed)
-  Current state: forest
+✓ Advanced to 6.0 (2 event(s) processed)
+  Current state: fighting
+  1 choice point; %trace on to see them
+✓ foe.name (on LordPlay::champion ID: 17)
+  = "Corinthian Giant"
+✓ foe.hitPoints (on LordPlay::champion ID: 17)
+  = 2544
+✓ Sent AttackTheFoe to object #17 of "LordPlay::champion"
+  Accepted by state machine "day" in state fighting: transition fighting_attack fires on it
+✓ Advanced to 7.0 (2 event(s) processed)
+  Current state: fighting
   2 choice points; %trace on to see them
-✓ gold (on LordPlay::champion ID: 7)
-  = 337143
+✓ foe.hitPoints (on LordPlay::champion ID: 17)
+  = 1994
+✓ hitPoints (on LordPlay::champion ID: 17)
+  = 3900
+✓ Sent RunAway to object #17 of "LordPlay::champion"
+  Accepted by state machine "day" in state fighting: transition fighting_run fires on it
+✓ Advanced to 8.0 (3 event(s) processed)
+  Current state: forest
+  1 choice point; %trace on to see them
+✓ foe.present (on LordPlay::champion ID: 17)
+  = false
 ```
 
-The roll is a decision like the dice, so the checker can be pointed at the
-transition's effect to see every monster of the level come out of the trees:
+Which monster the forest serves is the first of those choice points, and
+`-engine check` on the deed the `forest_fight` transition performs walks all
+of them:
 
 ```bash
 go tool sysml lord.sysml -engine check \
   -instantiate LordPlay::hero \
-  -action "LordPlay::Warrior::day::forest_fight::fighting hero" \
-  -check-diverge this.gold
+  -action "LordPlay::Warrior::day::forest_fight::hunting hero" \
+  -check-diverge this.foe
 ```
 
 ```
-✗ Action LordPlay::Warrior::day::forest_fight::fighting: divergent (82 states, 81 moves, depth 11)
-  divergent: this.gold ends as 0 or 507 or 532 or 546 or 556 or 558 or 573 or 576 or 587 or 609 or 654
+✗ Action LordPlay::Warrior::day::forest_fight::hunting: divergent (82 states, 81 moves, depth 11)
+  divergent: this.foe ends as LordPlay::Foe#1{… name = "Small Bear" …}
+    this.foe = LordPlay::Foe#1{… name = "Large Green Rat" …}
+    this.foe = LordPlay::Foe#1{… name = "Bran The Warrior" …}
+    this.foe = LordPlay::Foe#1{… name = "Large Mosquito" …}
+    this.foe = LordPlay::Foe#1{… name = "Small Thief" …}
+    this.foe = LordPlay::Foe#1{… name = "Rude Boy" …}
+    this.foe = LordPlay::Foe#1{… name = "Evil Wretch" …}
+    this.foe = LordPlay::Foe#1{… name = "Ugly Old Hag" …}
+    this.foe = LordPlay::Foe#1{… name = "Old Man" …}
+    this.foe = LordPlay::Foe#1{… name = "Wild Boar" …}
+    this.foe = LordPlay::Foe#1{… name = "Small Troll" …}
+    this.foe = LordPlay::Foe#1{… name = "Small Bear" …}
+  standing: sensitive (witnessed: 82 states, 81 moves searched, witness of 4 choices replayed)
 ```
 
-Ten purses for the ten level-one monsters a fresh hero can beat, and nothing
-for the hero who ran into Bran the Warrior.
+Eleven foes (each witness line abridged to the monster's name), the eleven
+monsters of the first level, Bran the Warrior among them.
 
 Back to town with the hero, a room at the inn for the night, and midnight
-gives the fights back and turns the guest out:
+gives the fights and the hit points back and turns the guest out:
 
 ```
+%state LordPlay::hero
 %send ReturnToTown
 %advance 1
 %send VisitTheInn
@@ -493,6 +589,7 @@ gives the fights back and turns the guest out:
 %eval in LordPlay::hero : gold
 %send NewDay
 %advance 1
+%eval in LordPlay::hero : hitPoints
 %eval in LordPlay::hero : forestFightsLeft
 %eval in LordPlay::hero : innRoom
 ```
@@ -500,15 +597,17 @@ gives the fights back and turns the guest out:
 ```
 ✓ Sent BuyARoom to object #1 of "LordPlay::hero"
   Accepted by state machine "day" in state inn: transition inn_room fires on it
-✓ Advanced to 7.0 (1 event(s) processed)
+✓ Advanced to 11.0 (1 event(s) processed)
   Current state: asleep
 ✓ gold (on LordPlay::hero ID: 1)
   = 156
 ✓ Sent NewDay to object #1 of "LordPlay::hero"
   Accepted by state machine "day" in state asleep: transition asleep_midnight fires on it
-✓ Advanced to 8.0 (1 event(s) processed)
+✓ Advanced to 12.0 (1 event(s) processed)
   Current state: townSquare
   1 choice point; %trace on to see them
+✓ hitPoints (on LordPlay::hero ID: 1)
+  = 20
 ✓ forestFightsLeft (on LordPlay::hero ID: 1)
   = 15
 ✓ innRoom (on LordPlay::hero ID: 1)
@@ -519,8 +618,9 @@ A signal the current state does not accept is refused naming the state: in
 `townSquare`, `%send LookForSomethingToKill` reports `accepts no signal
 LookForSomethingToKill now: state machine "day" in state townSquare`. A
 signal the state accepts but whose every transition is guarded off — `RobTheBank`
-at the bank without a fairy, `TradeGems` with one gem — is refused too, before
-it is queued: `would fire no transition on RobTheBank now, so it was not sent:
+at the bank without a fairy, `TradeGems` with one gem, `UseASkill` naming a
+spell the warrior lacks the uses for — is refused too, before it is queued:
+`would fire no transition on RobTheBank now, so it was not sent:
 ... the guard of every transition RobTheBank triggers is false`.
 
 The training hall dispatches the same way: `VisitTheTrainingHall` puts the
@@ -559,40 +659,143 @@ package Probe {
 ```
 
 ```
-✓ Sent VisitTheTrainingHall to object #1 of "LordPlay::hero"
-  Accepted by state machine "day" in state townSquare: transition townSquare_training fires on it
-✓ Advanced to 1.0 (1 event(s) processed)
-  Current state: trainingHall
 ✓ level (on LordPlay::hero ID: 1)
   = 1
-✓ Sent VisitTheTrainingHall to object #6 of "Probe::squire"
-  Accepted by state machine "day" in state townSquare: transition townSquare_training fires on it
-✓ Advanced to 2.0 (1 event(s) processed)
-  Current state: trainingHall
-✓ level (on Probe::squire ID: 6)
+✓ level (on Probe::squire ID: 16)
   = 3
-✓ Sent VisitTheTrainingHall to object #9 of "Probe::veteran"
-  Accepted by state machine "day" in state townSquare: transition townSquare_training fires on it
-✓ Advanced to 3.0 (1 event(s) processed)
-  Current state: trainingHall
-✓ level (on Probe::veteran ID: 9)
+✓ level (on Probe::veteran ID: 29)
   = 12
 ```
 
-### The town's deeds, one at a time
+### The dragon
 
-`%invoke` performs one of the warrior's actions on the object directly, with
-its parameters named — the monster, the master, the weapon, the favour are the
-realm's parts. The Old Man is two blows' work for a first-level warrior and
-lands one cane blow of four in between; the healer charges five gold a point
-per level; Halder, the first master, turns away a warrior short of a hundred
-experience; the bank pays ten percent overnight; the weapon shop refuses a
-sale the gold on hand does not cover:
+`%schedule seed:<n>` makes the dice a seeded run instead of the first branch
+every time, which is how the browser plays. `SeekTheDragon` is the forest's
+key for a twelfth-level warrior, and `UseASkill(move=…)` opens a round with a
+skill: the Death Knights' power move is three blows for a use, and the
+champion has ten. Under seed one the seventh fells the dragon, the machine
+takes the kill on its way back to the forest, and the champion wakes a
+first-level warrior of twenty hit points and five hundred gold with his
+forty skill points kept:
 
 ```
+%clear
+%load lord.sysml
+%schedule seed:1
+%instantiate LordPlay::champion
+%state LordPlay::champion
+%send EnterForest
+%advance 1
+%send SeekTheDragon
+%advance 1
+%eval in LordPlay::champion : foe.hitPoints
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%eval in LordPlay::champion : foe.hitPoints
+%eval in LordPlay::champion : hitPoints
+%eval in LordPlay::champion : deathKnightUses
+```
+
+```
+✓ Sent SeekTheDragon to object #1 of "LordPlay::champion"
+  Accepted by state machine "day" in state forest: transition forest_dragon fires on it
+✓ Advanced to 2.0 (2 event(s) processed)
+  Current state: fighting
+✓ foe.hitPoints (on LordPlay::champion ID: 1)
+  = 15000
+✓ Sent UseASkill(move=Move::deathKnight) to object #1 of "LordPlay::champion"
+  Accepted by state machine "day" in state fighting: transition fighting_skill fires on it
+✓ Advanced to 3.0 (2 event(s) processed)
+  Current state: fighting
+  3 choice points; %trace on to see them
+✓ foe.hitPoints (on LordPlay::champion ID: 1)
+  = 12525
+✓ hitPoints (on LordPlay::champion ID: 1)
+  = 4500
+✓ deathKnightUses (on LordPlay::champion ID: 1)
+  = 9
+```
+
+Three blows of 825 — solid ones, half the strength and two eighths — and the
+dragon's tail, which never gets through. Five more rounds the same way, and
+the seventh:
+
+```
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%eval in LordPlay::champion : foe.hitPoints
+%eval in LordPlay::champion : hitPoints
+%send UseASkill(move=Lord::Move::deathKnight)
+%advance 1
+%eval in LordPlay::champion : dragonKills
+%eval in LordPlay::champion : level
+%eval in LordPlay::champion : hitPoints
+%eval in LordPlay::champion : deathKnightPoints
+%eval in LordPlay::champion : gold
+```
+
+```
+✓ foe.hitPoints (on LordPlay::champion ID: 1)
+  = 564
+✓ hitPoints (on LordPlay::champion ID: 1)
+  = 2175
+✓ Sent UseASkill(move=Move::deathKnight) to object #1 of "LordPlay::champion"
+  Accepted by state machine "day" in state fighting: transition fighting_skill fires on it
+✓ Advanced to 9.0 (3 event(s) processed)
+  Current state: forest
+  1 choice point; %trace on to see them
+✓ dragonKills (on LordPlay::champion ID: 1)
+  = 1
+✓ level (on LordPlay::champion ID: 1)
+  = 1
+✓ hitPoints (on LordPlay::champion ID: 1)
+  = 20
+✓ deathKnightPoints (on LordPlay::champion ID: 1)
+  = 40
+✓ gold (on LordPlay::champion ID: 1)
+  = 500
+```
+
+The same ten sends under `%schedule seed:6` end in `slain` after the seventh:
+the dragon's answers fall harder, the champion's 4500 hit points run out
+first, and the eighth `UseASkill` is refused — `accepts no signal UseASkill
+now: state machine "day" in state slain`. He wakes at midnight, level twelve
+still, and may try again.
+
+### Every deed on its own
+
+`%invoke <object> <action> [<parameter>=<expression> ...]` performs one of the
+warrior's actions directly, outside the `day` machine, so a deed can be tried
+on its own or a fight played a round at a time. A round is `strike`; the
+fallen foe's spoils are `win`, which the machine performs of itself and a
+direct fight must ask for. `%schedule reverse` puts the default schedule back
+after the seeded dragon fight. The Old Man has thirteen hit points and a
+cane, and under that schedule is three weak blows' work:
+
+```
+%clear
+%load lord.sysml
+%schedule reverse
 %instantiate LordPlay::hero
-%invoke LordPlay::hero fight foe=Lord::town.forest.level1.oldMan
+%invoke LordPlay::hero meet monster=Lord::town.forest.level1.oldMan
+%eval in LordPlay::hero : foe.hitPoints
+%invoke LordPlay::hero strike
+%eval in LordPlay::hero : foe.hitPoints
 %eval in LordPlay::hero : hitPoints
+%invoke LordPlay::hero strike
+%invoke LordPlay::hero strike
+%eval in LordPlay::hero : foe.hitPoints
+%eval in LordPlay::hero : hitPoints
+%invoke LordPlay::hero win
+%eval in LordPlay::hero : foe.present
 %eval in LordPlay::hero : gold
 %invoke LordPlay::hero heal
 %eval in LordPlay::hero : hitPoints
@@ -602,22 +805,36 @@ sale the gold on hand does not cover:
 %invoke LordPlay::hero deposit amount=300
 %invoke LordPlay::hero newDay
 %eval in LordPlay::hero : bankGold
-%invoke LordPlay::hero buyWeapon weapon=Lord::town.weapons.shortSword
+%invoke LordPlay::hero buyWeapon weapon=Lord::town.weapons.stick
 %eval in LordPlay::hero : gold
 %constraint LordPlay::hero::noDebt
 ```
 
 ```
-✓ Invoked fight on object #1 of "LordPlay::hero"
+✓ Invoked meet on object #1 of "LordPlay::hero"
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 13
+✓ Invoked strike on object #1 of "LordPlay::hero"
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 8
 ✓ hitPoints (on LordPlay::hero ID: 1)
-  = 6
+  = 19
+✓ Invoked strike on object #1 of "LordPlay::hero"
+✓ Invoked strike on object #1 of "LordPlay::hero"
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 0
+✓ hitPoints (on LordPlay::hero ID: 1)
+  = 18
+✓ Invoked win on object #1 of "LordPlay::hero"
+✓ foe.present (on LordPlay::hero ID: 1)
+  = false
 ✓ gold (on LordPlay::hero ID: 1)
   = 573
 ✓ Invoked heal on object #1 of "LordPlay::hero"
 ✓ hitPoints (on LordPlay::hero ID: 1)
-  = 10
+  = 20
 ✓ gold (on LordPlay::hero ID: 1)
-  = 553
+  = 563
 ✓ Invoked train on object #1 of "LordPlay::hero"
 ✓ level (on LordPlay::hero ID: 1)
   = 1
@@ -627,54 +844,67 @@ sale the gold on hand does not cover:
   = 330
 ✓ Invoked buyWeapon on object #1 of "LordPlay::hero"
 ✓ gold (on LordPlay::hero ID: 1)
-  = 253
+  = 63
 ✓ Constraint LordPlay::hero::noDebt passed (on LordPlay::hero ID: 1)
   standing: holds (observed: 1 run under reverse)
 ```
 
-Every deed checks its own preconditions, so the warrior's invariants hold
-whichever way it is reached — through the `day` machine's guarded transitions
-or directly here — and whatever its parameters say. The forest turns away a
-dead warrior or one whose fights are spent, so `forestFightsLeft` never goes
-below zero, and a monster of another level or the dragon, so a first-level
-warrior never meets the Corinthian Giant and the champion neither preys on
-the Small Thief nor meets the dragon outside its lair; the healer and the
-masters turn away the dead, so the slain keep
-no hit points until morning; the bank moves only gold the warrior has, and
-pays interest but never charges it; a shop refuses a price below zero, the
-forest a foe with negative stats or gold, and the hall a master with no hit
-points to take; a master refuses a twelfth-level warrior, so `train` never
-makes a level thirteen; and a warrior may not slaughter himself:
+The healer charges five gold a hit point a level, the bank pays a tenth
+overnight, and the Stick is two hundred. Every deed checks its own
+preconditions, so the warrior's invariants hold whichever way it is reached —
+through the `day` machine's guarded transitions or directly here — and
+whatever its parameters say. The forest turns away a dead warrior or one
+whose fights are spent, so `forestFightsLeft` never goes below zero, and a
+monster of another level, so a first-level warrior never meets the Corinthian
+Giant and the champion does not prey on the Small Thief; the dragon receives
+the champion and no one else; the healer and the masters turn away the dead,
+so the slain keep no hit points until morning; the bank moves only gold the
+warrior has, and pays interest but never charges it; a shop refuses a price
+below zero, the forest a foe with negative stats or gold, and the hall a
+master with no hit points to take; a master refuses a twelfth-level warrior,
+so `train` never makes a level thirteen; and a warrior may not slaughter
+himself:
 
 ```
 %instantiate LordPlay::champion
 %invoke LordPlay::champion train master=Lord::town.training.turgon
 %eval in LordPlay::champion : level
-%invoke LordPlay::hero fight foe=Lord::town.forest.level12.corinthianGiant
-%eval in LordPlay::hero : hitPoints
-%invoke LordPlay::champion fight foe=Lord::town.forest.level1.smallThief
-%invoke LordPlay::champion fight foe=Lord::town.forest.redDragon
+%invoke LordPlay::hero meet monster=Lord::town.forest.level12.corinthianGiant
+%eval in LordPlay::hero : foe.present
+%invoke LordPlay::champion meet monster=Lord::town.forest.level1.smallThief
+%eval in LordPlay::champion : foe.present
+%invoke LordPlay::hero meetTheDragon
+%eval in LordPlay::hero : foe.present
+%invoke LordPlay::champion meetTheDragon
+%eval in LordPlay::champion : foe.name
 %eval in LordPlay::champion : forestFightsLeft
 %invoke LordPlay::hero deposit amount=1000
 %eval in LordPlay::hero : gold
-%invoke LordPlay::hero attack foe=LordPlay::hero
+%invoke LordPlay::hero attack victim=LordPlay::hero
 %eval in LordPlay::hero : playerFightsLeft
 ```
 
 ```
-✓ Invoked train on object #11 of "LordPlay::champion"
-✓ level (on LordPlay::champion ID: 11)
+✓ Invoked train on object #21 of "LordPlay::champion"
+✓ level (on LordPlay::champion ID: 21)
   = 12
-✓ Invoked fight on object #1 of "LordPlay::hero"
-✓ hitPoints (on LordPlay::hero ID: 1)
-  = 10
-✓ Invoked fight on object #11 of "LordPlay::champion"
-✓ Invoked fight on object #11 of "LordPlay::champion"
-✓ forestFightsLeft (on LordPlay::champion ID: 11)
-  = 15
+✓ Invoked meet on object #1 of "LordPlay::hero"
+✓ foe.present (on LordPlay::hero ID: 1)
+  = false
+✓ Invoked meet on object #21 of "LordPlay::champion"
+✓ foe.present (on LordPlay::champion ID: 21)
+  = false
+✓ Invoked meetTheDragon on object #1 of "LordPlay::hero"
+✓ foe.present (on LordPlay::hero ID: 1)
+  = false
+✓ Invoked meetTheDragon on object #21 of "LordPlay::champion"
+✓ foe.name (on LordPlay::champion ID: 21)
+  = "The Red Dragon"
+✓ forestFightsLeft (on LordPlay::champion ID: 21)
+  = 14
 ✓ Invoked deposit on object #1 of "LordPlay::hero"
 ✓ gold (on LordPlay::hero ID: 1)
-  = 253
+  = 63
 ✓ Invoked attack on object #1 of "LordPlay::hero"
 ✓ playerFightsLeft (on LordPlay::hero ID: 1)
   = 3
@@ -688,11 +918,12 @@ gem for the lesson. Whether the castle judges rightly is the dice, so the
 default schedule grants the point; a second visit the same day is refused.
 Forty points is mastery, and the master turns away a master. Midnight turns
 points into uses — one per four points for the Death Knights and the thieves,
-one per point for the mystics — and `fight` and `fightDragon` spend them when
-`move` names a skill the warrior has the uses for, or swing the sword when it
-does not:
+one per point for the mystics — and `useSkill` spends them when `move` names
+a skill the warrior has the uses for, and does nothing when it does not:
 
 ```
+%clear
+%load lord.sysml
 %instantiate LordPlay::hero
 %invoke LordPlay::hero learnSkill
 %eval in LordPlay::hero : deathKnightPoints
@@ -700,7 +931,9 @@ does not:
 %eval in LordPlay::hero : deathKnightPoints
 %invoke LordPlay::hero newDay
 %eval in LordPlay::hero : deathKnightUses
-%invoke LordPlay::hero fight foe=Lord::town.forest.level1.oldMan move=Lord::Move::deathKnight
+%invoke LordPlay::hero meet monster=Lord::town.forest.level1.oldMan
+%invoke LordPlay::hero useSkill move=Lord::Move::deathKnight
+%eval in LordPlay::hero : foe.hitPoints
 %eval in LordPlay::hero : hitPoints
 %instantiate LordPlay::champion
 %invoke LordPlay::champion learnSkill
@@ -709,9 +942,13 @@ does not:
 %invoke LordPlay::heroine learnSkill
 %invoke LordPlay::heroine newDay
 %eval in LordPlay::heroine : mysticalUses
-%invoke LordPlay::heroine fight foe=Lord::town.forest.level1.oldMan move=Lord::Move::pinchRealHard
+%invoke LordPlay::heroine meet monster=Lord::town.forest.level1.oldMan
+%invoke LordPlay::heroine useSkill move=Lord::Move::pinchRealHard
+%eval in LordPlay::heroine : foe.hitPoints
 %eval in LordPlay::heroine : hitPoints
 %eval in LordPlay::heroine : mysticalUses
+%invoke LordPlay::heroine useSkill move=Lord::Move::pinchRealHard
+%eval in LordPlay::heroine : foe.hitPoints
 ```
 
 ```
@@ -721,25 +958,33 @@ does not:
   = 1
 ✓ deathKnightUses (on LordPlay::hero ID: 1)
   = 0
+✓ foe.hitPoints (on LordPlay::hero ID: 1)
+  = 13
 ✓ hitPoints (on LordPlay::hero ID: 1)
-  = 6
-✓ taughtToday (on LordPlay::champion ID: 7)
+  = 20
+✓ taughtToday (on LordPlay::champion ID: 17)
   = false
-✓ mysticalUses (on LordPlay::heroine ID: 9)
+✓ mysticalUses (on LordPlay::heroine ID: 29)
   = 1
-✓ hitPoints (on LordPlay::heroine ID: 9)
-  = 10
-✓ mysticalUses (on LordPlay::heroine ID: 9)
+✓ foe.hitPoints (on LordPlay::heroine ID: 29)
+  = 3
+✓ hitPoints (on LordPlay::heroine ID: 29)
+  = 19
+✓ mysticalUses (on LordPlay::heroine ID: 29)
   = 0
+✓ foe.hitPoints (on LordPlay::heroine ID: 29)
+  = 3
 ```
 
-One point is no use, so the hero swung the sword and took the cane; the
-champion's forty points leave nothing to teach; the heroine's one use was
-Pinch Real Hard, two blows in one, and the Old Man fell before he could
-answer. The spells cost their uses in the game's order — one to pinch, four
-to disappear, eight for the heat wave, twelve for the light shield that
-halves every blow until the fight ends, sixteen to shatter, twenty for the
-mind heal.
+One point is no use, so the hero's power move is turned away and the Old Man
+untouched; the champion's forty points leave nothing to teach; the heroine's
+one use was Pinch Real Hard, two blows in one, ten off the Old Man, who
+answered with his cane, and her second pinch, with no use left, did nothing.
+The spells cost their uses in the game's order — one to pinch, four to
+disappear, which always gets away, eight for the heat wave, twelve for the
+light shield that halves every blow until the fight ends, sixteen to shatter,
+twenty for the mind heal. The `day` machine asks the same of `UseASkill`, so
+the browser dims a spell the warrior cannot afford.
 
 ### At the inn
 
@@ -753,10 +998,16 @@ at the inn is free to a warrior of 101 charm; a divorce leaves the bard's
 bride with thirty:
 
 ```
+%clear
+%load lord.sysml
 %instantiate LordPlay::heroine
 %invoke LordPlay::heroine flirt favour=Lord::town.inn.sethAble.wink
 %eval in LordPlay::heroine : charm
-%invoke LordPlay::heroine fight foe=Lord::town.forest.level1.wildBoar
+%invoke LordPlay::heroine meet monster=Lord::town.forest.level1.wildBoar
+%invoke LordPlay::heroine strike
+%invoke LordPlay::heroine strike
+%invoke LordPlay::heroine win
+%eval in LordPlay::heroine : experience
 %invoke LordPlay::heroine flirt favour=Lord::town.inn.sethAble.wink
 %eval in LordPlay::heroine : charm
 %invoke LordPlay::heroine flirt favour=Lord::town.inn.sethAble.marryHim
@@ -773,6 +1024,8 @@ bride with thirty:
 ```
 ✓ charm (on LordPlay::heroine ID: 1)
   = 125
+✓ experience (on LordPlay::heroine ID: 1)
+  = 5
 ✓ charm (on LordPlay::heroine ID: 1)
   = 126
 ✓ spouse (on LordPlay::heroine ID: 1)
@@ -804,28 +1057,30 @@ before level two or trade gems he does not have:
 ```
 
 ```
-✓ spouse (on LordPlay::hero ID: 11)
+✓ spouse (on LordPlay::hero ID: 21)
   = Spouse::nobody
-✓ charm (on LordPlay::hero ID: 11)
+✓ charm (on LordPlay::hero ID: 21)
   = 1
-✓ gold (on LordPlay::hero ID: 11)
+✓ gold (on LordPlay::hero ID: 21)
   = 100
-✓ bribed (on LordPlay::hero ID: 11)
+✓ bribed (on LordPlay::hero ID: 21)
   = false
-✓ maxHitPoints (on LordPlay::hero ID: 11)
-  = 10
+✓ maxHitPoints (on LordPlay::hero ID: 21)
+  = 20
 ```
 
 ### The slaughter
 
 `attack` is a fight with another warrior, three a day, against the `rival`
-unless `foe` names another. The loser's gold and a tenth of the loser's
+unless `victim` names another. The loser's gold and a tenth of the loser's
 experience go to the winner, who counts the kill — a slain sleeper's gems too,
 though an attacker who dies keeps his — and the slain lie until morning. A warrior
 asleep at the inn is out of reach unless the attacker has bribed the
 bartender and is within a level of the sleeper:
 
 ```
+%clear
+%load lord.sysml
 %instantiate LordPlay::hero
 %instantiate LordPlay::rival
 %invoke LordPlay::hero attack
@@ -838,7 +1093,7 @@ bartender and is within a level of the sleeper:
 %eval in LordPlay::hero : playerFightsLeft
 %instantiate LordPlay::heroine
 %invoke LordPlay::heroine buyRoom
-%invoke LordPlay::hero attack foe=LordPlay::heroine
+%invoke LordPlay::hero attack victim=LordPlay::heroine
 %eval in LordPlay::hero : playerFightsLeft
 ```
 
@@ -851,7 +1106,7 @@ bartender and is within a level of the sleeper:
   = 5
 ✓ playerKills (on LordPlay::hero ID: 1)
   = 1
-✓ alive (on LordPlay::rival ID: 3)
+✓ alive (on LordPlay::rival ID: 13)
   = false
 ✓ playerFightsLeft (on LordPlay::hero ID: 1)
   = 2
@@ -865,7 +1120,7 @@ and the rewards go the other way with it:
 
 ```
 %instantiate LordPlay::champion
-%invoke LordPlay::hero attack foe=LordPlay::champion
+%invoke LordPlay::hero attack victim=LordPlay::champion
 %eval in LordPlay::hero : alive
 %eval in LordPlay::hero : gold
 %eval in LordPlay::champion : gold
@@ -877,23 +1132,26 @@ and the rewards go the other way with it:
   = false
 ✓ gold (on LordPlay::hero ID: 1)
   = 0
-✓ gold (on LordPlay::champion ID: 9)
+✓ gold (on LordPlay::champion ID: 39)
   = 1120
-✓ playerKills (on LordPlay::champion ID: 9)
+✓ playerKills (on LordPlay::champion ID: 39)
   = 1
 ```
 
 ### Other places
 
-Off the town square: the fairies grant a blessing to whoever asks — a kiss
-that heals, a horse, a sad story worth a gem, or lore — and one may be caught
-and carried, to revive the warrior once in the forest or at the dragon's feet,
-or to open the bank's vault to a thief. The Dark Cloak Tavern changes a
-warrior's profession and takes wagers; the Old Hag trades a gem for a hit
-point and a full heal. Midnight pays the bank's interest, gives the fights
-and the uses back, and the town crier's news is the dice:
+Off the town square: the fairies grant a blessing to whoever asks, once a
+day — a kiss that heals, a horse, a sad story worth a gem, or lore — and one
+may be caught and carried, once a day too, to revive the warrior once in the
+forest or at the dragon's feet, or to open the bank's vault to a thief. The
+Dark Cloak Tavern changes a warrior's profession and takes wagers; the Old
+Hag trades a gem for a hit point and a full heal. Midnight pays the bank's
+interest, gives the fights and the uses back, and the town crier's news is
+the dice:
 
 ```
+%clear
+%load lord.sysml
 %instantiate LordPlay::hero
 %invoke LordPlay::hero deposit amount=400
 %invoke LordPlay::hero catchAFairy
@@ -947,33 +1205,37 @@ asks for the Long Sword:
 ```
 
 ```
-✓ Requirement FirstDayShopping is satisfiable (z3, 9ms)
+✓ Requirement FirstDayShopping is satisfiable (z3, 11ms)
   LordOdds::FirstDayShopping::forestGold = 500
   LordOdds::FirstDayShopping::startingGold = 500
   LordOdds::FirstDayShopping::weaponPrice = 1000
-✓ Requirement FirstDayShopping has values satisfying it (z3, 9ms)
+  standing: satisfiable (witnessed: 1 query by solve)
+✓ Requirement FirstDayShopping has values satisfying it (z3, 8ms)
   Synthesised:
     LordOdds::FirstDayShopping::forestGold = 500
     LordOdds::FirstDayShopping::startingGold = 500
     LordOdds::FirstDayShopping::weaponPrice = 1000
   One witness: a solver may answer with any of the assignments that satisfy it.
+  standing: satisfiable (witnessed: 1 query by solve)
 ✗ Requirement FirstDayLongSword is unsatisfiable (z3, 8ms)
-✗ Requirement FirstDayLongSword is unsatisfiable: 4 conditions conflict (z3, 42ms)
+  standing: unsatisfiable (proved over inputs: 1 query by solve)
+✗ Requirement FirstDayLongSword is unsatisfiable: 4 conditions conflict (z3, 40ms)
   Every condition below is needed: dropping any one leaves the rest satisfiable.
   1. required condition: `startingGold == 500` …
   2. required condition: `forestGold <= 15 * 110` …
   3. required condition: `weaponPrice <= startingGold + forestGold` …
   4. required condition: `weaponPrice >= 10000` …
+  standing: unsatisfiable (proved over inputs: 1 query by solve)
 ```
 
 A Dagger on the first day, yes; a Long Sword, no, and the four conditions that
 rule it out are named.
 
 `%optimize` minimizes an analysis case's objective. `ToughEnough` asks the
-fewest hit points that win the straight brawl with the dragon, holding the
-best of both shops; `ToughEnoughWithPowerMoves` asks the same of a Death
-Knight who opens every round with a power move and takes the dragon's hardest
-answer every round:
+fewest hit points that win the straight brawl with the dragon — mighty blows
+both ways — holding the best of both shops; `ToughEnoughWithPowerMoves` asks
+the same of a Death Knight who opens every round with a power move and takes
+the dragon's hardest answer every round:
 
 ```
 %optimize LordOdds::ToughEnough
@@ -981,29 +1243,61 @@ answer every round:
 ```
 
 ```
-✓ Analysis ToughEnough is optimized (z3, 9ms)
+✓ Analysis ToughEnough is optimized (z3, 7ms)
   minimize fewestHitPoints = `hitPoints`: 18201
   LordOdds::ToughEnough::defense = 600
   LordOdds::ToughEnough::hitPoints = 18201
   LordOdds::ToughEnough::roundsToKill = 14
   LordOdds::ToughEnough::strength = 1100
+  standing: satisfiable (witnessed: 1 query by solve)
 ✓ Analysis ToughEnoughWithPowerMoves is optimized (z3, 9ms)
   minimize fewestHitPoints = `hitPoints`: 5601
   LordOdds::ToughEnoughWithPowerMoves::defense = 600
   LordOdds::ToughEnoughWithPowerMoves::hitPoints = 5601
   LordOdds::ToughEnoughWithPowerMoves::roundsToKill = 5
   LordOdds::ToughEnoughWithPowerMoves::strength = 1100
+  standing: satisfiable (witnessed: 1 query by solve)
 ```
 
 18201 hit points: no warrior in the game has them, which is why the game
-gives its warriors skills. Five power moves need 5601 — the four stomps of
-1400 a champion of 600 defense may take before the fifth move lands, and one
-more — and a champion of 5601 hit points passes `-engine check` on
-`fightDragon` with every outcome a kill. The shipped champion has 4500 and
-wins when the dragon breathes, which the checker's defeat witness above shows
-it need not. `PowerMoves` asks the fewest lessons that give three uses to a
-warrior who will gain five levels, and `GemsForDefense` the gems for five
-points of defense: seven and ten.
+gives its warriors skills. Five mighty power moves need 5601 — the four
+stomps of 1400 a champion of 600 defense may take before the fifth move
+lands, and one more. The shipped champion has 4500 and ten power moves, and
+wins or dies by how the dice weigh them, as the two seeds above show.
+`PowerMoves` asks the fewest lessons that give three uses to a warrior who
+will gain five levels, and `GemsForDefense` the gems for five points of
+defense: seven and ten.
+
+## A whole game
+
+The game can be won from the boat. `TestAWarriorCanSlayTheDragon` in
+[`web/lord`](web/lord/) plays the model through the same `Game` the browser
+uses — the menu's keys, nothing else — with a plain strategy: hunt while the
+fights and the hit points last, run when a foe is winning, heal, bank the
+gold, buy the best weapon and armour in reach, train when the master will
+have you, learn the guild's skill daily, sleep at the inn, and seek the
+dragon at level twelve. It plays a Death Knight, a Mystical and a Thieving
+warrior under three seeds each to the kill and fails if any deed the
+strategy relies on is refused or the dragon is not slain within the days it
+allows:
+
+```bash
+go test ./web/lord -run TestAWarriorCanSlayTheDragon -v
+```
+
+```
+=== RUN   TestAWarriorCanSlayTheDragon/seed1_deathKnight
+    playthrough_test.go:333: dragon slain on day 107 after 11024 moves; level 12, 1587 gold banked, born again at level 1
+=== RUN   TestAWarriorCanSlayTheDragon/seed2_mysticalSkills
+    playthrough_test.go:333: dragon slain on day 135 after 14771 moves; level 12, 1389 gold banked, born again at level 1
+=== RUN   TestAWarriorCanSlayTheDragon/seed3_thievingSkills
+    playthrough_test.go:333: dragon slain on day 97 after 10555 moves; level 12, 1510 gold banked, born again at level 1
+```
+
+A hundred days or so, as the game took its players; the day-by-day log the
+test keeps (`-v` prints it) is where a rule that stalls a warrior — a level
+he cannot earn, a foe he cannot survive, a purse he cannot refill — shows
+up first.
 
 ## In the browser
 
@@ -1021,9 +1315,11 @@ python3 -m http.server -d build/web 8000
 
 Open <http://localhost:8000/>, name your warrior, choose a sex and a skill
 guild, and the town square is drawn. Press a menu's key or click its line; a
-choice that needs more — how much to deposit, which weapon, which blessing —
-asks for it, and <kbd>Esc</kbd> takes the question back. The page is the
-model's, not a copy of it:
+choice that needs more — how much to deposit, which weapon, which blessing,
+which skill — asks for it, and <kbd>Esc</kbd> takes the question back. A
+fight is a round a key: the foe's name, weapon and hit points stand in the
+heading while it lasts, and the menu is attack, skill and run until it ends.
+The page is the model's, not a copy of it:
 
 - **Each browser plays its own model.** The page fetches `lord.sysml` and hands it
   to the runtime in `lord.wasm`, which parses and checks it, instantiates
@@ -1043,18 +1339,21 @@ model's, not a copy of it:
 - **The menu is the state machine.** Each key is one of the `accept` triggers
   of the transitions out of the current state; a choice the guard refuses
   (*Seek the Red Dragon* at level one, robbing the bank untrained, a room with
-  no gold) is drawn dimmed and, pressed, is refused by the machine, not the
-  page. Where a transition's deed takes an argument — the fairies' blessing,
-  a wager, a profession, a favour, a stat for the gems — the page asks for it
-  and performs the action with the argument bound to the model's own value
-  (`Blessing::horse`, `town.inn.violet.wink`), with the same guard deciding.
+  no gold, a spell without the uses) is drawn dimmed and, pressed, is refused
+  by the machine, not the page. Where a transition's deed takes an argument —
+  the fairies' blessing, a wager, a profession, a favour, a stat for the gems,
+  the skill to use — the page asks for it and sends the signal or performs
+  the action with the argument bound to the model's own value
+  (`Blessing::horse`, `town.inn.violet.wink`, `Move::heatWave`), with the same
+  guard deciding.
 - **The stats are the warrior's features.** Name, level, hit points, gold in
-  hand and in the bank, experience, gems, charm, the fights left and the
-  skill points are read from the instance after every command; the page
-  never adds or subtracts.
-- **What happened is what the schedule decided.** The foe the forest served
-  and the blows that landed are the run's recorded choices; every other line
-  of the log is a difference between the warrior before and after.
+  hand and in the bank, experience, gems, charm, the fights left, the
+  skill points and the foe before the warrior are read from the instance
+  after every command; the page never adds or subtracts.
+- **What happened is what the schedule decided.** The foe the forest served,
+  how hard each blow landed and which attack the dragon chose are the run's
+  recorded choices; every other line of the log is a difference between the
+  warrior before and after.
 
 `make web` assembles `build/web/` (`WEB_OUT` to put it
 elsewhere): `lord.wasm` built from [`web/main.go`](web/main.go) with
@@ -1080,39 +1379,47 @@ with `ParseSource`, and plays it in a `Session` (`opensysml.OpenSession`), the
 API's persistent shape: the session keeps the hero it instantiated, the day
 machine's state, the clock and the seeded schedule between keys. The menu is
 `Session.Transitions` filtered to the signal triggers out of the active state,
-each dimmed or lit by `Session.Accepts`; a key is `Session.Send` followed by
-`Session.Advance`, which runs the deed and the completion transitions after it;
-an argument-taking choice is `Session.Perform` on the hero, refused when its
-`Performance.TurnedAway()` — the opening decision left by its else branch — and
-narrated from its `ChoicePoint`s; the stats are `Session.Feature` reads, and
-the values a choice binds (`Blessing::horse`, `town.inn.violet.wink`) are
+each dimmed or lit by `Session.Accepts` — asked with the very arguments the
+key would send, so a spell is lit only when the machine would take it; a key
+is `Session.Send` followed by `Session.Advance`, which runs the deed and the
+completion transitions after it; an argument-taking choice is
+`Session.Perform` on the hero, refused when its `Performance.TurnedAway()` —
+the opening decision left by its else branch — and narrated from its
+`ChoicePoint`s; the stats are `Session.Feature` reads, and the values a
+choice binds (`Blessing::horse`, `town.inn.violet.wink`) are
 `Session.Evaluate` in the hero's scope. Each direct deed rolls under a seed of
 its own that the game's seed determines (`Session.SetSchedule`), so a seed and
 a sequence of keys replay the same day.
 
 ## What the model leaves open, and where it guesses
 
-The dice are the schedule. The game rolls whether a swing lands, which
-attack the dragon answers with, what the fairies grant, whether a monster
-drops a gem, whether the castle judges rightly, whether a night upstairs
-leaves a child, which song the bard sings and what the crier calls; the model
-leaves each open as a decision with several true guards, and lets the
-executor, the checker or a replayed witness make it.
+The dice are the schedule. The game rolls which monster the forest serves,
+how hard each swing lands, which attack the dragon answers with, whether a
+foe lets a warrior run, what the fairies grant, whether a monster drops a
+gem, whether the castle judges rightly, whether a night upstairs leaves a
+child, which song the bard sings and what the crier calls; the model leaves
+each open as a decision with several true guards, and lets the executor, the
+checker or a replayed witness make it.
 
 The numbers are the game's where the game published them — the shops, the
 masters, the monsters' names, weapons, hit points, strength, gold and
 experience, the dragon's 15000 and 2000, the inn's 400 a level, Violet's 100
-charm and Seth Able's 125, the forty points of mastery. Where it did not, the
-model says so in a comment and picks: forest monsters have no published
-defense and are given none; the dragon's breath is set at a thousand points
-through any armour, the stomp, claw and tail at its strength less the
+charm and Seth Able's 125, the forty points of mastery, the twenty hit points
+a warrior starts with and the hit points, strength and defense each level
+adds. Where it did not, the model says so in a comment and picks: a blow is
+half the striker's strength plus the dice's eighths of it, less the target's
+defense; forest monsters have no published defense and are given none; the
+dragon's breath is set at a thousand points through any armour, the stomp at
+its strength, the claw at half and the tail at a quarter, each less the
 warrior's defense; a skill point is one use per four points for the Death
 Knights and the thieves and one per point for the mystics; a bribe is four
 times a room; a bank robbery takes a thousand gold a level; a child grows up
-at once to take a blow. None of these is a rule of the executor — each is an
+at once to take a blow; the dragon's slayer, born again, is given a full
+day's forest fights along with the level-one stats. None of these is a rule
+of the executor — each is an
 attribute or a calculation in `lord.sysml`, changed by editing it.
 
 The game had a screen, a modem and a hundred players on one bulletin board;
-the model has warriors, and `attack` takes one of them as its `foe`. There is
-no character file: a warrior lives as long as the REPL session, the
+the model has warriors, and `attack` takes one of them as its `victim`. There
+is no character file: a warrior lives as long as the REPL session, the
 `-instantiate` that made it, or the browser tab that plays it.

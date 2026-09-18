@@ -22,16 +22,11 @@ type Outcome struct {
 // Moved reports whether the day machine changed state.
 func (o *Outcome) Moved() bool { return o.From != o.To }
 
-// Narrate tells the outcome as the game's screens did: the foe the forest
-// served, the blows, and every change to the warrior's standing.
+// Narrate tells the outcome as the game's screens did: the foe met, each side's
+// blow, and every change to the warrior's standing.
 func (o *Outcome) Narrate(g *Game) []string {
 	var lines []string
-	if foe := o.foeName(g); foe != "" {
-		lines = append(lines, fmt.Sprintf("You have encountered %s!", foe))
-	}
-	if hits, misses := o.blows(); hits+misses > 0 {
-		lines = append(lines, blowsLine(hits, misses))
-	}
+	lines = append(lines, o.fightLines()...)
 	lines = append(lines, o.changes()...)
 	if master := o.masterLine(g); master != "" {
 		lines = append(lines, master)
@@ -99,43 +94,128 @@ func wholeFeature(g *Game, inst opensysml.InstanceID, attribute string) (int64, 
 	return whole(attribute, v)
 }
 
-// foeName names the monster the forest's roll picked, read from the level's part;
-// a roll that is no monster's (the fairies', the dice) names none.
-func (o *Outcome) foeName(g *Game) string {
-	for _, c := range o.Choices {
-		if c.Kind != opensysml.ChoiceDecisionBranch || c.Where != "decision roll" || c.Taken >= len(c.Alternatives) {
-			continue
+// fightLines tell a round of a fight from the foe before and after and the dice
+// the run drew: the meeting, the warrior's blow, the escape, the foe's answer, the kill.
+func (o *Outcome) fightLines() []string {
+	b, a := o.Before.Foe, o.After.Foe
+	var lines []string
+	add := func(format string, args ...any) { lines = append(lines, fmt.Sprintf(format, args...)) }
+	if !b.Present && a.Present {
+		add("You have encountered %s!! It wields %s.", a.Name, a.Weapon)
+		return lines
+	}
+	if !b.Present {
+		return lines
+	}
+	switch o.skill() {
+	case "deathKnight":
+		add("You call on the power of the Death Knights!")
+	case "thieving":
+		add("You slip behind %s for a sneak attack!", b.Name)
+	case "pinchRealHard":
+		add("You pinch %s real hard!", b.Name)
+	case "heatWave":
+		add("A heat wave rolls over %s!", b.Name)
+	case "shatter":
+		add("Your spell shatters against %s!", b.Name)
+	case "disappear":
+		add("You disappear before %s's eyes and slip away.", b.Name)
+	case "lightShield":
+		add("A shield of light forms around you.")
+	case "mindHeal":
+		add("Your mind knits your wounds closed.")
+	}
+	if o.decided("decision swing") {
+		if d := b.HitPoints - a.HitPoints; d > 0 {
+			add("You hit %s for %s!", b.Name, plural(d, "point"))
+		} else {
+			add("You swing at %s and miss!", b.Name)
 		}
-		_, part, ok := strings.Cut(c.Alternatives[c.Taken], "->")
-		if !ok {
-			continue
+	}
+	switch {
+	case o.took("decision flee", "->escape"):
+		add("You run away from %s like a coward!", b.Name)
+	case o.took("decision flee", "->caught"):
+		add("You try to run, but %s cuts you off!", b.Name)
+	}
+	if o.decided("decision foeSwing") {
+		switch {
+		case o.took("decision foeAttacks", "->flamingBreath"):
+			add("%s breathes fire over you!", b.Name)
+		case o.took("decision foeAttacks", "->stomp"):
+			add("%s stomps you!", b.Name)
+		case o.took("decision foeAttacks", "->hugeClaw"):
+			add("%s rakes you with a huge claw!", b.Name)
+		case o.took("decision foeAttacks", "->swishingTail"):
+			add("%s swats you with its tail!", b.Name)
 		}
-		v, err := g.Eval(fmt.Sprintf("town.forest.level%d.%s.name", o.Before.Level, part))
-		if name, ok := v.(opensysml.String); err == nil && ok {
-			return string(name)
+		had := o.Before.HitPoints
+		if o.skill() == "mindHeal" {
+			had = o.After.MaxHitPoints
 		}
+		if d := had - o.After.HitPoints; d > 0 && o.After.Alive {
+			add("%s hits you for %s!", b.Name, plural(d, "point"))
+		} else if !o.After.Alive {
+			add("%s strikes the killing blow.", b.Name)
+		} else if d <= 0 {
+			add("%s swings at you and misses!", b.Name)
+		}
+	}
+	if b.HitPoints > 0 && a.HitPoints <= 0 {
+		add("You have killed %s!", b.Name)
+	}
+	return lines
+}
+
+// skill names the move a round spent skill uses on, or "" for a plain round; a
+// mystical move is told by what it costs.
+func (o *Outcome) skill() string {
+	b, a := o.Before, o.After
+	if !b.Foe.Present {
+		return ""
+	}
+	switch {
+	case a.DeathKnightUses < b.DeathKnightUses:
+		return "deathKnight"
+	case a.ThievingUses < b.ThievingUses:
+		return "thieving"
+	}
+	switch b.MysticalUses - a.MysticalUses {
+	case 1:
+		return "pinchRealHard"
+	case 4:
+		return "disappear"
+	case 8:
+		return "heatWave"
+	case 12:
+		return "lightShield"
+	case 16:
+		return "shatter"
+	case 20:
+		return "mindHeal"
 	}
 	return ""
 }
 
-// blows counts the sword swings the run decided, landed and missed.
-func (o *Outcome) blows() (hits, misses int) {
+// decided reports whether the run passed the named decision.
+func (o *Outcome) decided(where string) bool {
 	for _, c := range o.Choices {
-		if c.Kind != opensysml.ChoiceDecisionBranch || c.Where != "decision swing" || c.Taken >= len(c.Alternatives) {
-			continue
-		}
-		switch {
-		case strings.HasSuffix(c.Alternatives[c.Taken], "->strike"):
-			hits++
-		case strings.HasSuffix(c.Alternatives[c.Taken], "->miss"):
-			misses++
+		if c.Kind == opensysml.ChoiceDecisionBranch && c.Where == where {
+			return true
 		}
 	}
-	return hits, misses
+	return false
 }
 
-func blowsLine(hits, misses int) string {
-	return fmt.Sprintf("You swing %s: %s land, %s go wide.", plural(int64(hits+misses), "time"), count(hits), count(misses))
+// took reports whether the run took a branch of the named decision ending in suffix.
+func (o *Outcome) took(where, suffix string) bool {
+	for _, c := range o.Choices {
+		if c.Kind == opensysml.ChoiceDecisionBranch && c.Where == where && c.Taken < len(c.Alternatives) &&
+			strings.HasSuffix(c.Alternatives[c.Taken], suffix) {
+			return true
+		}
+	}
+	return false
 }
 
 // changes lists every difference between the warrior before and after.
@@ -173,9 +253,9 @@ func (o *Outcome) changes() []string {
 	} else if d < 0 {
 		add("You lose %s.", plural(-d, "experience point"))
 	}
-	if d := a.HitPoints - b.HitPoints; d < 0 && a.Alive {
+	if d := a.HitPoints - b.HitPoints; d < 0 && a.Alive && !o.decided("decision foeSwing") {
 		add("You lose %s.", plural(-d, "hit point"))
-	} else if d > 0 {
+	} else if d > 0 && o.skill() != "mindHeal" {
 		add("You are healed for %s.", plural(d, "hit point"))
 	}
 	if a.MaxHitPoints != b.MaxHitPoints {
@@ -264,13 +344,6 @@ func plural(n int64, noun string) string {
 		return fmt.Sprintf("1 %s", noun)
 	}
 	return fmt.Sprintf("%d %ss", n, noun)
-}
-
-func count(n int) string {
-	if n == 0 {
-		return "none"
-	}
-	return fmt.Sprint(n)
 }
 
 // className spells a CharacterClass literal as the guild names itself.

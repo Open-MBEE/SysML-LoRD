@@ -16,11 +16,12 @@ func TestResumeReplaysTheGameToTheSameState(t *testing.T) {
 	play(t, g, "R", nil)
 	play(t, g, "F", nil)
 	play(t, g, "L", nil)
+	play(t, g, "A", nil)
 	if _, err := g.Play("Z", nil); !errors.Is(err, ErrNoSuchCommand) {
 		t.Fatalf("Z: %v", err)
 	}
 	saved := g.Save()
-	if saved.Seed != 42 || saved.Character.Name != "Lady Jane" || len(saved.Moves) != 6 {
+	if saved.Seed != 42 || saved.Character.Name != "Lady Jane" || len(saved.Moves) != 7 {
 		t.Fatalf("save = %+v", *saved)
 	}
 
@@ -46,8 +47,12 @@ func TestResumeReplaysTheGameToTheSameState(t *testing.T) {
 	if again, _ := json.Marshal(r.Save()); string(again) != string(data) {
 		t.Fatalf("the resumed game saves as\n%s\nwant\n%s", again, data)
 	}
-	o1 := play(t, g, "L", nil)
-	o2 := play(t, r, "L", nil)
+	next := "L"
+	if g.Location() == "fighting" {
+		next = "A"
+	}
+	o1 := play(t, g, next, nil)
+	o2 := play(t, r, next, nil)
 	if *o1.After != *o2.After {
 		t.Fatalf("the dice diverged after the resume:\n%+v\n%+v", *o1.After, *o2.After)
 	}

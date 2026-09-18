@@ -30,6 +30,25 @@ func newGame(t *testing.T, seed uint64, c Character) *Game {
 	return g
 }
 
+// fightOut hunts once and attacks until the foe falls, the warrior does, or the
+// day machine leaves the fight; it returns the last outcome.
+func fightOut(t *testing.T, g *Game) *Outcome {
+	t.Helper()
+	o, err := g.Send("LookForSomethingToKill")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for rounds := 0; g.Location() == "fighting"; rounds++ {
+		if rounds == 1000 {
+			t.Fatalf("still fighting %s after %d rounds", o.After.Foe.Name, rounds)
+		}
+		if o, err = g.Send("AttackTheFoe"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return o
+}
+
 func snapshot(t *testing.T, g *Game) *Snapshot {
 	t.Helper()
 	s, err := g.Snapshot()
@@ -46,7 +65,7 @@ func TestNewGameStartsADayInTheTownSquare(t *testing.T) {
 	}
 	s := snapshot(t, g)
 	want := Snapshot{
-		Name: "Sir Devin", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 10, MaxHitPoints: 10,
+		Name: "Sir Devin", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 20, MaxHitPoints: 20,
 		Strength: 10, Defense: 1, Weapon: "Fists", Armour: "Nothing!", Gold: 500, Charm: 1,
 		FavouredMove: "attack", ForestFightsLeft: 15, PlayerFightsLeft: 3, Day: 1, Alive: true, Spouse: "nobody",
 	}
@@ -88,18 +107,31 @@ func TestSendDrivesTheDayMachine(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if o.After.ForestFightsLeft != 14 {
-		t.Fatalf("forest fights left = %d, want 14", o.After.ForestFightsLeft)
+	if o.To != "fighting" || o.After.ForestFightsLeft != 14 || !o.After.Foe.Present || o.After.Foe.HitPoints <= 0 {
+		t.Fatalf("hunting went to %s with %d fights left and foe %+v", o.To, o.After.ForestFightsLeft, o.After.Foe)
 	}
 	if len(o.Choices) == 0 {
-		t.Fatal("a fight rolled no dice")
+		t.Fatal("the forest rolled no dice for the monster")
 	}
 	lines := o.Narrate(g)
-	if len(lines) == 0 || !strings.HasPrefix(lines[0], "You have encountered ") {
+	if len(lines) == 0 || !strings.HasPrefix(lines[0], "You have encountered "+o.After.Foe.Name+"!!") {
 		t.Fatalf("narration = %q, want the foe named first", lines)
 	}
-	if o.After.Alive && (o.After.Gold <= 500 || o.After.Experience <= 0) {
-		t.Fatalf("a won fight left the warrior at %d gold, %d experience", o.After.Gold, o.After.Experience)
+	rounds := 0
+	for g.Location() == "fighting" {
+		if o, err = g.Send("AttackTheFoe"); err != nil {
+			t.Fatal(err)
+		}
+		if len(o.Choices) == 0 {
+			t.Fatal("a round rolled no dice")
+		}
+		rounds++
+	}
+	if rounds == 0 || o.After.Foe.Present {
+		t.Fatalf("the fight ended after %d rounds in %s with the foe %+v", rounds, o.To, o.After.Foe)
+	}
+	if o.After.Alive && (o.To != "forest" || o.After.Gold <= 500 || o.After.Experience <= 0) {
+		t.Fatalf("a won fight left the warrior in %s at %d gold, %d experience", o.To, o.After.Gold, o.After.Experience)
 	}
 	if !o.After.Alive && (o.To != "slain" || o.After.Gold != 0) {
 		t.Fatalf("a lost fight left the warrior in %s with %d gold", o.To, o.After.Gold)
@@ -191,10 +223,7 @@ func TestSeedsDrawDifferentDice(t *testing.T) {
 		if _, err := g.Send("EnterForest"); err != nil {
 			t.Fatal(err)
 		}
-		o, err := g.Send("LookForSomethingToKill")
-		if err != nil {
-			t.Fatal(err)
-		}
+		o := fightOut(t, g)
 		outcomes[strings.Join(o.Narrate(g), "\n")] = true
 	}
 	if len(outcomes) < 2 {
@@ -212,9 +241,7 @@ func TestADayEndsAtMidnight(t *testing.T) {
 		if s.ForestFightsLeft == 0 {
 			break
 		}
-		if _, err := g.Send("LookForSomethingToKill"); err != nil {
-			t.Fatal(err)
-		}
+		fightOut(t, g)
 	}
 	if g.Location() == "forest" {
 		if _, err := g.Send("LookForSomethingToKill"); !errors.Is(err, ErrRefused) {
