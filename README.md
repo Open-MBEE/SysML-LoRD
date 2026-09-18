@@ -141,13 +141,13 @@ go tool sysml lord.sysml -engine check \
     quarters = 3
     quarters = 4
   standing: sensitive (witnessed: 44 states, 43 moves searched, witness of 5 choices replayed)
-✗ Action LordPlay::Warrior::foeStrikes: divergent (47 states, 46 moves, depth 10)
+✗ Action LordPlay::Warrior::foeStrikes: divergent (48 states, 47 moves, depth 11)
   divergent: this.hitPoints ends as 15 or 16 or 17 or 18
     this.hitPoints = 15
     this.hitPoints = 16
     this.hitPoints = 17
     this.hitPoints = 18
-  standing: sensitive (witnessed: 47 states, 46 moves searched, witness of 4 choices replayed)
+  standing: sensitive (witnessed: 48 states, 47 moves searched, witness of 4 choices replayed)
 ```
 
 Five weights to the hero's swing, from five to the full ten of his strength
@@ -177,7 +177,7 @@ go tool sysml lord.sysml -engine check \
 ```
 
 ```
-✗ Action LordPlay::Warrior::foeStrikes: divergent (137 states, 136 moves, depth 10)
+✗ Action LordPlay::Warrior::foeStrikes: divergent (138 states, 137 moves, depth 11)
   divergent: this.hitPoints ends as 3100 or 3350 or 3500 or 3600 or 3850 or 4100 or 4225 or 4350 or 4475 or 4500
     this.hitPoints = 3100
     this.hitPoints = 3350
@@ -189,7 +189,7 @@ go tool sysml lord.sysml -engine check \
     this.hitPoints = 4350
     this.hitPoints = 4475
     this.hitPoints = 4500
-  standing: sensitive (witnessed: 137 states, 136 moves searched, witness of 8 choices replayed)
+  standing: sensitive (witnessed: 138 states, 137 moves searched, witness of 8 choices replayed)
 ```
 
 The breath is a thousand whatever the dice say; the stomp, two thousand
@@ -1074,7 +1074,9 @@ before level two or trade gems he does not have:
 `attack` is a fight with another warrior, three a day, against the `rival`
 unless `victim` names another. The loser's gold and a tenth of the loser's
 experience go to the winner, who counts the kill — a slain sleeper's gems too,
-though an attacker who dies keeps his — and the slain lie until morning. A warrior
+though an attacker who dies keeps his — and the slain lie until morning. Two
+warriors whose armour turns every blow of the other's, with no skill to call
+on, break off with nothing won or lost but the fight. A warrior
 asleep at the inn is out of reach unless the attacker has bribed the
 bartender and is within a level of the sleeper:
 

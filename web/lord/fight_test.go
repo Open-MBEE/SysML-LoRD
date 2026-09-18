@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 	"testing"
+
+	"github.com/Open-MBEE/OpenSysML/client/opensysml"
 )
 
 // set writes the warrior's attributes so a test can stage a fight.
@@ -230,5 +232,91 @@ func TestSlayingTheDragonStartsTheWarriorOver(t *testing.T) {
 	}
 	if c := find(t, menu(t, g), "D"); c.Enabled {
 		t.Fatalf("the reborn may seek the dragon again: %+v", c)
+	}
+}
+
+func TestTheFoeStrikesOnlyInAFight(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	o, err := g.Invoke("foeStrikes", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !o.Refused || o.After.HitPoints != o.Before.HitPoints {
+		t.Fatalf("struck by no foe: refused=%v hp %d->%d", o.Refused, o.Before.HitPoints, o.After.HitPoints)
+	}
+	set(t, g, map[string]int64{"strength": 0, "hitPoints": 1, "experience": 1000})
+	play(t, g, "F", nil)
+	slain := fightOut(t, g)
+	if slain.After.Alive || slain.After.Experience != 900 {
+		t.Fatalf("the death: alive=%v experience=%d", slain.After.Alive, slain.After.Experience)
+	}
+	if o, err = g.Invoke("foeStrikes", nil); err != nil {
+		t.Fatal(err)
+	}
+	if !o.Refused || o.After.Experience != 900 {
+		t.Fatalf("the dead struck again: refused=%v experience=%d", o.Refused, o.After.Experience)
+	}
+}
+
+func TestARescueIsNotAMiss(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	set(t, g, map[string]int64{"hitPoints": 1, "maxHitPoints": 30, "strength": 0, "defense": 0, "children": 1})
+	if err := g.SetPreference("fairy", opensysml.Bool(true)); err != nil {
+		t.Fatal(err)
+	}
+	hunt(t, g)
+	foe := snapshot(t, g).Foe.Name
+	// untilRescued attacks until the foe's blow lands, which the seeded foe cannot always manage.
+	untilRescued := func(saved func(*Snapshot) bool) *Outcome {
+		for rounds := 0; rounds < 100; rounds++ {
+			o := play(t, g, "A", nil)
+			if saved(o.After) {
+				return o
+			}
+			if o.After.HitPoints != o.Before.HitPoints || o.To != "fighting" {
+				t.Fatalf("round %d: %s hp %d->%d", rounds, o.To, o.Before.HitPoints, o.After.HitPoints)
+			}
+		}
+		t.Fatal("the foe never landed a blow in 100 rounds")
+		return nil
+	}
+	child := untilRescued(func(s *Snapshot) bool { return s.Children == 0 })
+	if child.After.Children != 0 || child.After.HitPoints != 1 {
+		t.Fatalf("the child's turn: children=%d hp=%d", child.After.Children, child.After.HitPoints)
+	}
+	lines := strings.Join(child.Narrate(g), "\n")
+	if strings.Contains(lines, "misses") || !strings.Contains(lines, foe+" aims a killing blow") || !strings.Contains(lines, "children took the blow") {
+		t.Fatalf("the child's rescue: %q", lines)
+	}
+	fairy := untilRescued(func(s *Snapshot) bool { return !s.Fairy })
+	if fairy.After.Fairy || fairy.After.HitPoints != 30 {
+		t.Fatalf("the fairy's turn: fairy=%v hp=%d", fairy.After.Fairy, fairy.After.HitPoints)
+	}
+	lines = strings.Join(fairy.Narrate(g), "\n")
+	if strings.Contains(lines, "misses") || !strings.Contains(lines, foe+" aims a killing blow") || !strings.Contains(lines, "fairy in your pocket flies free") {
+		t.Fatalf("the fairy's rescue: %q", lines)
+	}
+}
+
+func TestArmouredWarriorsBreakOffTheFight(t *testing.T) {
+	g := newGame(t, 1, Character{})
+	set(t, g, map[string]int64{"defense": 1000})
+	rival, err := g.Eval("rival")
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, ok := g.Instance(rival)
+	if !ok {
+		t.Fatalf("rival is %v, not an object", rival)
+	}
+	if err := g.session.SetFeature(id, "defense", IntValue(1000)); err != nil {
+		t.Fatal(err)
+	}
+	o, err := g.Invoke("attack", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if o.Refused || !o.After.Alive || o.After.PlayerFightsLeft != o.Before.PlayerFightsLeft-1 || o.After.PlayerKills != 0 {
+		t.Fatalf("the stand-off: refused=%v alive=%v fights %d->%d kills=%d", o.Refused, o.After.Alive, o.Before.PlayerFightsLeft, o.After.PlayerFightsLeft, o.After.PlayerKills)
 	}
 }
