@@ -153,11 +153,14 @@ func (o *Outcome) fightLines() []string {
 		if o.skill() == "mindHeal" {
 			had = o.After.MaxHitPoints
 		}
-		if d := had - o.After.HitPoints; d > 0 && o.After.Alive {
-			add("%s hits you for %s!", b.Name, plural(d, "point"))
-		} else if !o.After.Alive {
+		switch {
+		case o.After.Children < o.Before.Children, o.Before.Fairy && !o.After.Fairy:
+			add("%s aims a killing blow at you!", b.Name)
+		case !o.After.Alive:
 			add("%s strikes the killing blow.", b.Name)
-		} else if d <= 0 {
+		case had-o.After.HitPoints > 0:
+			add("%s hits you for %s!", b.Name, plural(had-o.After.HitPoints, "point"))
+		default:
 			add("%s swings at you and misses!", b.Name)
 		}
 	}

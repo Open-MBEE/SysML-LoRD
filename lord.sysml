@@ -692,19 +692,18 @@ package LordPlay {
             then done;
         }
 
-        // The foe's turn: its dice, its blow through the shield if one is up, and what is left
-        // of the warrior. The dragon breathes, stomps, claws or lashes; its breath burns whole.
+        // The foe's turn, while there is a fight: its dice, its blow through the shield if one is
+        // up, and what is left of the warrior. The dragon breathes, stomps, claws or lashes.
         action foeStrikes {
             attribute foeQuarters : Integer = 0;
             attribute incoming : Integer = 0;
 
             first start;
-            then decide foeSwing;
-            if true then foeWeakBlow;
-            if true then foeGlancingBlow;
-            if true then foeSolidBlow;
-            if true then foeHardBlow;
-            if true then foeMightyBlow;
+            then decide foeMayStrike;
+            if alive and foe.present and foe.hitPoints > 0 then foeSwing;
+            else done;
+
+            decide foeSwing;
 
             action foeWeakBlow { assign foeQuarters := 0; }
             action foeGlancingBlow { assign foeQuarters := 1; }
@@ -764,6 +763,11 @@ package LordPlay {
                 assign foe.present := false;
             }
 
+            first foeSwing if true then foeWeakBlow;
+            first foeSwing if true then foeGlancingBlow;
+            first foeSwing if true then foeSolidBlow;
+            first foeSwing if true then foeHardBlow;
+            first foeSwing if true then foeMightyBlow;
             succession first foeWeakBlow then foeRolled;
             succession first foeGlancingBlow then foeRolled;
             succession first foeSolidBlow then foeRolled;
@@ -1022,7 +1026,8 @@ package LordPlay {
         // Slaughter another warrior: three a day, none asleep at the inn unless the bartender
         // is bribed and the sleeper is at most a level below. Power moves need a higher-level
         // foe. The loser's gold and a tenth of the experience go to the winner, who counts the
-        // kill; a slain sleeper's gems go too, while an attacker who dies keeps the gems.
+        // kill; a slain sleeper's gems go too, while an attacker who dies keeps the gems. Two
+        // warriors neither of whom can mark the other, skills spent, break off the fight.
         action attack {
             in victim : Warrior = rival;
             in move : Move default = favouredMove;
@@ -1032,6 +1037,7 @@ package LordPlay {
             attribute victimQuarters : Integer = 0;
             attribute incoming : Integer = 0;
             attribute skillReady : Boolean = false;
+            attribute standOff : Boolean = false;
 
             first start;
             then decide mayAttack;
@@ -1052,9 +1058,13 @@ package LordPlay {
                 assign skillReady := victim.level > level
                     and ((move == Move::deathKnight and deathKnightUses >= 1)
                         or (move == Move::thieving and thievingUses >= 1));
+                assign standOff := not skillReady
+                    and Hit(strength, victim.defense, 4) <= 0
+                    and Hit(victim.strength, defense, 4) <= 0;
                 assign rounds := rounds + 1;
             }
 
+            decide fightOn;
             decide swing;
 
             action weakBlow { assign quarters := 0; }
@@ -1130,7 +1140,9 @@ package LordPlay {
 
             succession first engage then nextRound;
             succession first nextRound then ready;
-            succession first ready then swing;
+            succession first ready then fightOn;
+            first fightOn if standOff then done;
+            first fightOn if not standOff then swing;
             first swing if true then weakBlow;
             first swing if true then glancingBlow;
             first swing if true then solidBlow;
