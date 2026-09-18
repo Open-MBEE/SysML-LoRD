@@ -65,7 +65,7 @@ func TestNewGameStartsADayInTheTownSquare(t *testing.T) {
 	}
 	s := snapshot(t, g)
 	want := Snapshot{
-		Name: "Sir Devin", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 20, MaxHitPoints: 20,
+		Name: "Sir Ed", Sex: "male", Class: "deathKnight", Level: 1, HitPoints: 20, MaxHitPoints: 20,
 		Strength: 10, Defense: 1, Weapon: "Fists", Armour: "Nothing!", Gold: 500, Charm: 1,
 		ForestFightsLeft: 15, PlayerFightsLeft: 3, Day: 1, Alive: true, Spouse: "nobody",
 	}
