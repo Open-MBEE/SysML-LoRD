@@ -264,9 +264,12 @@
   // The name the page suggests, and gives a warrior who offers none.
   const suggestedName = (form) => (form.get("sex") === "female" ? "Dame Ed" : "Sir Ed");
 
-  $("character-form").addEventListener("change", (event) => {
-    $("name").placeholder = suggestedName(new FormData(event.currentTarget));
-  });
+  const characterForm = $("character-form");
+  const suggestName = () => {
+    $("name").placeholder = suggestedName(new FormData(characterForm));
+  };
+  characterForm.addEventListener("change", suggestName);
+  suggestName();
 
   $("character-form").addEventListener("submit", (event) => {
     event.preventDefault();
