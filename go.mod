@@ -4,7 +4,7 @@ go 1.25.0
 
 tool github.com/Open-MBEE/OpenSysML/cmd/sysml
 
-require github.com/Open-MBEE/OpenSysML v0.8.2-0.20260917170618-b9f75b0273db
+require github.com/Open-MBEE/OpenSysML v0.9.2
 
 require (
 	connectrpc.com/connect v1.20.0 // indirect

@@ -140,14 +140,14 @@ go tool sysml lord.sysml -engine check \
     quarters = 2
     quarters = 3
     quarters = 4
-  standing: sensitive (witnessed: 44 states, 43 moves searched, witness of 5 choices replayed)
+  standing: sensitive (witnessed: 44 states, 43 moves searched, witness of 2 choices replayed)
 ✗ Action LordPlay::Warrior::foeStrikes: divergent (48 states, 47 moves, depth 11)
   divergent: this.hitPoints ends as 15 or 16 or 17 or 18
     this.hitPoints = 15
     this.hitPoints = 16
     this.hitPoints = 17
     this.hitPoints = 18
-  standing: sensitive (witnessed: 48 states, 47 moves searched, witness of 4 choices replayed)
+  standing: sensitive (witnessed: 48 states, 47 moves searched, witness of 1 choice replayed)
 ```
 
 Five weights to the hero's swing, from five to the full ten of his strength
@@ -189,7 +189,7 @@ go tool sysml lord.sysml -engine check \
     this.hitPoints = 4350
     this.hitPoints = 4475
     this.hitPoints = 4500
-  standing: sensitive (witnessed: 138 states, 137 moves searched, witness of 8 choices replayed)
+  standing: sensitive (witnessed: 138 states, 137 moves searched, witness of 2 choices replayed)
 ```
 
 The breath is a thousand whatever the dice say; the stomp, two thousand
@@ -210,7 +210,7 @@ go tool sysml lord.sysml -satisfy=LordOdds::dragonFights
 ```
 ✓ satisfy readyForTheDragon by champion holds (on LordPlay::champion ID: 1)
   standing: holds (observed: 1 run under reverse)
-✗ satisfy readyForTheDragon by hero fails (on LordPlay::hero ID: 13)
+✗ satisfy readyForTheDragon by hero fails (on LordPlay::hero ID: 3)
   Required condition evaluated to false: warrior.level == 12
   standing: violated (witnessed: 1 run under reverse)
 ✗ satisfy outlastTheDragon by champion fails (on LordPlay::champion ID: 1)
@@ -247,7 +247,7 @@ go tool sysml lord.sysml -render LordViews::townSquare \
 
 ```
 stateDiagram-v2
-  state "LordPlay::Warrior::day<br>«exhibit state»" as n0 {
+  state "day<br>«exhibit state»" as n0 {
     state "townSquare<br>«state»<br>initial" as n1
     state "forest<br>«state»" as n2
     state "fighting<br>«state»" as n3
@@ -262,50 +262,50 @@ stateDiagram-v2
     state "slain<br>«state»" as n12
     [*] --> n1
   }
-  n1 --> n2 : townSquare_forest: accept EnterForest
-  n1 --> n5 : townSquare_healer: accept VisitTheHealer
-  n1 --> n6 : townSquare_bank: accept VisitTheBank
-  n1 --> n7 : townSquare_training: accept VisitTheTrainingHall / training
-  n1 --> n8 : townSquare_inn: accept VisitTheInn
-  n1 --> n10 : townSquare_slaughter: accept SlaughterOtherPlayers
-  n1 --> n11 : townSquare_otherPlaces: accept OtherPlaces
-  n1 --> n1 : townSquare_midnight: accept NewDay / midnight
-  n2 --> n3 : forest_fight: accept LookForSomethingToKill [forestFightsLeft #gt; 0 and alive] / hunting
-  n2 --> n3 : forest_dragon: accept SeekTheDragon [forestFightsLeft #gt; 0 and alive and level == 12] / braving
-  n2 --> n2 : forest_guild: accept MeetYourGuild [alive] / learning
-  n2 --> n2 : forest_hag: accept MeetTheOldHag [alive and gems #gt;= 1] / bargaining
-  n2 --> n2 : forest_fairies: accept AskTheFairies [alive and not blessedToday] / asking
-  n2 --> n2 : forest_catch: accept CatchAFairy [alive and not fairy and not grabbedToday] / grabbing
-  n2 --> n4 : forest_tavern: accept FindTheDarkCloakTavern [alive]
-  n2 --> n12 : forest_slain: [not alive]
-  n2 --> n1 : forest_town: accept ReturnToTown
-  n3 --> n3 : fighting_attack: accept AttackTheFoe [alive and foe.present and foe.hitPoints #gt; 0] / striking
-  n3 --> n3 : fighting_skill: accept UseASkill [alive and foe.present and foe.hitPoints #gt; 0 and SkillReady(s.move, deathKnightUses, thievingUses, mysticalUses, lightShield)] / casting
-  n3 --> n3 : fighting_run: accept RunAway [alive and foe.present and foe.hitPoints #gt; 0] / fleeing
-  n3 --> n2 : fighting_won: [alive and foe.present and foe.hitPoints #lt;= 0] / claiming
-  n3 --> n2 : fighting_fled: [alive and not foe.present]
-  n3 --> n12 : fighting_slain: [not alive]
-  n4 --> n4 : tavern_gamble: accept Gamble [alive and gold #gt;= 100] / betting
-  n4 --> n4 : tavern_profession: accept ChangeProfession [alive] / retraining
-  n4 --> n2 : tavern_forest: accept ReturnToTheForest
-  n5 --> n5 : healer_heal: accept HealYourWounds [alive and hitPoints #lt; maxHitPoints and gold #gt;= HealRate(level)] / healing
-  n5 --> n1 : healer_town: accept ReturnToTown
-  n6 --> n6 : bank_rob: accept RobTheBank [alive and class == CharacterClass::thievingSkills and fairy] / robbing
-  n6 --> n1 : bank_town: accept ReturnToTown
-  n7 --> n1 : training_town: accept ReturnToTown
-  n8 --> n8 : inn_flirt: accept FlirtAtTheInn [alive and not flirtedToday] / flirting
-  n8 --> n8 : inn_divorce: accept AskForADivorce [alive and spouse != Spouse::nobody] / divorcing
-  n8 --> n8 : inn_bard: accept ListenToTheBard [alive and not heardTheBard] / listening
-  n8 --> n8 : inn_bribe: accept BribeTheBartender [alive and level #gt;= 2 and not bribed and gold #gt;= BribePrice(level)] / bribing
-  n8 --> n8 : inn_gems: accept TradeGems [alive and level #gt;= 2 and gems #gt;= town.inn.gemsPerStatPoint] / trading
-  n8 --> n9 : inn_room: accept BuyARoom [alive and not innRoom and (charm #gt;= town.inn.charmForAFreeRoom or gold #gt;= RoomPrice(level))] / lodging
-  n8 --> n1 : inn_town: accept ReturnToTown
-  n9 --> n1 : asleep_midnight: accept NewDay / midnight
-  n10 --> n10 : slaughter_attack: accept AttackAWarrior [playerFightsLeft #gt; 0 and alive and rival.alive and (a.move == Move::attack or (rival.level #gt; level and ((a.move == Move::deathKnight and deathKnightUses #gt;= 1) or (a.move == Move::thieving and thievingUses #gt;= 1))))] / attacking
-  n10 --> n12 : slaughter_slain: [not alive]
-  n10 --> n1 : slaughter_town: accept ReturnToTown
-  n11 --> n1 : otherPlaces_town: accept ReturnToTown
-  n12 --> n1 : slain_midnight: accept NewDay / midnight
+  n1 --> n2 : accept EnterForest
+  n1 --> n5 : accept VisitTheHealer
+  n1 --> n6 : accept VisitTheBank
+  n1 --> n7 : accept VisitTheTrainingHall / training
+  n1 --> n8 : accept VisitTheInn
+  n1 --> n10 : accept SlaughterOtherPlayers
+  n1 --> n11 : accept OtherPlaces
+  n1 --> n1 : accept NewDay / midnight
+  n2 --> n3 : accept LookForSomethingToKill [forestFightsLeft #gt; 0 and alive] / hunting
+  n2 --> n3 : accept SeekTheDragon [forestFightsLeft #gt; 0 and alive and level == 12] / braving
+  n2 --> n2 : accept MeetYourGuild [alive] / learning
+  n2 --> n2 : accept MeetTheOldHag [alive and gems #gt;= 1] / bargaining
+  n2 --> n2 : accept AskTheFairies [alive and not blessedToday] / asking
+  n2 --> n2 : accept CatchAFairy [alive and not fairy and not grabbedToday] / grabbing
+  n2 --> n4 : accept FindTheDarkCloakTavern [alive]
+  n2 --> n12 : [not alive]
+  n2 --> n1 : accept ReturnToTown
+  n3 --> n3 : accept AttackTheFoe [alive and foe.present and foe.hitPoints #gt; 0] / striking
+  n3 --> n3 : accept s #58; UseASkill [alive and foe.present and foe.hitPoints #gt; 0 and SkillReady(s.move, deathKnightUses, thievingUses, mysticalUses, lightShield)] / casting
+  n3 --> n3 : accept RunAway [alive and foe.present and foe.hitPoints #gt; 0] / fleeing
+  n3 --> n2 : [alive and foe.present and foe.hitPoints #lt;= 0] / claiming
+  n3 --> n2 : [alive and not foe.present]
+  n3 --> n12 : [not alive]
+  n4 --> n4 : accept Gamble [alive and gold #gt;= 100] / betting
+  n4 --> n4 : accept ChangeProfession [alive] / retraining
+  n4 --> n2 : accept ReturnToTheForest
+  n5 --> n5 : accept HealYourWounds [alive and hitPoints #lt; maxHitPoints and gold #gt;= HealRate(level)] / healing
+  n5 --> n1 : accept ReturnToTown
+  n6 --> n6 : accept RobTheBank [alive and class == CharacterClass#58;#58;thievingSkills and fairy] / robbing
+  n6 --> n1 : accept ReturnToTown
+  n7 --> n1 : accept ReturnToTown
+  n8 --> n8 : accept FlirtAtTheInn [alive and not flirtedToday] / flirting
+  n8 --> n8 : accept AskForADivorce [alive and spouse != Spouse#58;#58;nobody] / divorcing
+  n8 --> n8 : accept ListenToTheBard [alive and not heardTheBard] / listening
+  n8 --> n8 : accept BribeTheBartender [alive and level #gt;= 2 and not bribed and gold #gt;= BribePrice(level)] / bribing
+  n8 --> n8 : accept TradeGems [alive and level #gt;= 2 and gems #gt;= town.inn.gemsPerStatPoint] / trading
+  n8 --> n9 : accept BuyARoom [alive and not innRoom and (charm #gt;= town.inn.charmForAFreeRoom or gold #gt;= RoomPrice(level))] / lodging
+  n8 --> n1 : accept ReturnToTown
+  n9 --> n1 : accept NewDay / midnight
+  n10 --> n10 : accept a #58; AttackAWarrior [playerFightsLeft #gt; 0 and alive and rival.alive and (a.move == Move#58;#58;attack or (rival.level #gt; level and ((a.move == Move#58;#58;deathKnight and deathKnightUses #gt;= 1) or (a.move == Move#58;#58;thieving and thievingUses #gt;= 1))))] / attacking
+  n10 --> n12 : [not alive]
+  n10 --> n1 : accept ReturnToTown
+  n11 --> n1 : accept ReturnToTown
+  n12 --> n1 : accept NewDay / midnight
 ```
 
 `forestFight` and `foesTurn` are the warrior's swing and the foe's answer as
@@ -570,7 +570,7 @@ go tool sysml lord.sysml -engine check \
     this.foe = LordPlay::Foe#1{… name = "Wild Boar" …}
     this.foe = LordPlay::Foe#1{… name = "Small Troll" …}
     this.foe = LordPlay::Foe#1{… name = "Small Bear" …}
-  standing: sensitive (witnessed: 82 states, 81 moves searched, witness of 4 choices replayed)
+  standing: sensitive (witnessed: 82 states, 81 moves searched, witness of 1 choice replayed)
 ```
 
 Eleven foes (each witness line abridged to the monster's name), the eleven
@@ -1365,7 +1365,7 @@ elsewhere): `lord.wasm` built from [`web/main.go`](web/main.go) with
 the model. The page needs an HTTP server only because browsers will not fetch
 WebAssembly from `file://`; the one above is Python's, and any other serves.
 The binary carries the whole SysML toolchain and its bundled standard library,
-so it is large — about 57 MB, 13 MB compressed — and a model that does not
+so it is large — about 71 MB, 16 MB compressed — and a model that does not
 play (one with errors, or without `LordPlay::hero` and its day machine) is
 refused when the page loads it, before any warrior is made.
 

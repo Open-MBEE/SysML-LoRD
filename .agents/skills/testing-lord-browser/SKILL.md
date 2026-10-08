@@ -54,6 +54,20 @@ None. No authentication or backend is involved.
 - Forest T then G wagers: the outcome reads "The old man rolls the dice..."
   with a win or loss. Inn B: Seth Able's song is named and its effect told;
   B dims afterwards.
+- Inn F flirts: Wink needs 5 experience as well as charm 1, and the
+  model refuses it at less XP without spending the day's flirt. Earn XP in
+  the forest, retry, and check the XP deduction, the charm increment and
+  that F dims afterwards. A room (inn R) costs 400 gold at level 1 unless
+  charm waives it, so keep gold back after healing and banking; reloading
+  while asleep is a good replay assertion for location, room flag and menu.
+- A dimmed choice ignores clicks and keys without a refusal line: prove it
+  by unchanged state. For an explicit refusal from the model, withdraw one
+  gold more than the bank holds and check the balances and the refusal text.
+- To time model readiness, install a MutationObserver at document start
+  (CDP `Page.enable` before `Page.addScriptToEvaluateOnNewDocument`, and
+  keep the connection open through the reload) and stamp when `#begin`
+  enables and `#game` shows; resource timing alone is only the download.
+  Label the figures as local warm reloads.
 - Read-only `lord.view()` returns JSON text for complete state/menu
   comparisons. Compare it and the `lord.save` localStorage entry across a
   UI reload, as well as the visible Welcome back message.
