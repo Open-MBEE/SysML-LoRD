@@ -1,7 +1,7 @@
 connectrpc.com/connect v1.20.0 h1:6TNDAB+WeNd2uolWNlYczB5E0KNNaVMNUEx8JEUsPmQ=
 connectrpc.com/connect v1.20.0/go.mod h1:A2ygJrukXwWy32vkCAAHNVguZrqZ+jeZ9rGRnGR4dN4=
-github.com/Open-MBEE/OpenSysML v0.8.2-0.20260917170618-b9f75b0273db h1:zgKg9TKTMrvEo3cOBrGdo9wFhA75G7ReKr2u5oCWVo4=
-github.com/Open-MBEE/OpenSysML v0.8.2-0.20260917170618-b9f75b0273db/go.mod h1:MdnGRoiRNHeg/GBV4l9AbgotGGKppRcNAO8EbEBJLuc=
+github.com/Open-MBEE/OpenSysML v0.9.2 h1:baVQ7VmyIiR9hfX30MvJNf9DFrv/kcBj+ELZD+9RHrQ=
+github.com/Open-MBEE/OpenSysML v0.9.2/go.mod h1:SZgzyl8RM+7U0EwjsS+NTp6Eekkh6X92RTa6M8zY+9M=
 github.com/chzyer/logex v1.2.1 h1:XHDu3E6q+gdHgsdTPH6ImJMIp436vR6MPtH8gP05QzM=
 github.com/chzyer/logex v1.2.1/go.mod h1:JLbx6lG2kDbNRFnfkgvh4eRJRPX1QCoOIWomwysCBrQ=
 github.com/chzyer/readline v1.5.1 h1:upd/6fQk4src78LMRzh5vItIt361/o4uq553V8B5sGI=
