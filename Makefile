@@ -21,8 +21,9 @@ serve: web ## Serve the built page on http://localhost:8000/
 validate: ## Check the model with the sysml command of the OpenSysML release go.mod pins
 	go tool sysml lord.sysml -validate
 
+# The whole-game playthroughs take about half an hour on OpenSysML v0.12.1.
 test: ## Run the game's tests
-	go test ./...
+	go test -timeout 120m ./...
 
 lint: ## gofmt, go vet (host and wasm) and staticcheck
 	@test -z "$$(gofmt -l .)" || { gofmt -l .; echo "gofmt: the files above need formatting"; exit 1; }

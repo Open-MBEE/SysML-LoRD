@@ -650,17 +650,17 @@ package LordPlay {
 
             action engage {
                 assign foe.present := true;
-                assign foe.dragon := false;
-                assign foe.name := monster.name;
-                assign foe.weapon := monster.weapon;
-                assign foe.hitPoints := monster.hitPoints;
-                assign foe.strength := monster.strength;
-                assign foe.defense := monster.defense;
-                assign foe.gold := monster.gold;
-                assign foe.experience := monster.experience;
-                assign foe.breath := 0;
-                assign forestFightsLeft := forestFightsLeft - 1;
-                assign lightShield := false;
+                then assign foe.dragon := false;
+                then assign foe.name := monster.name;
+                then assign foe.weapon := monster.weapon;
+                then assign foe.hitPoints := monster.hitPoints;
+                then assign foe.strength := monster.strength;
+                then assign foe.defense := monster.defense;
+                then assign foe.gold := monster.gold;
+                then assign foe.experience := monster.experience;
+                then assign foe.breath := 0;
+                then assign forestFightsLeft := forestFightsLeft - 1;
+                then assign lightShield := false;
             }
             then done;
         }
@@ -678,17 +678,17 @@ package LordPlay {
 
             action engage {
                 assign foe.present := true;
-                assign foe.dragon := true;
-                assign foe.name := dragon.name;
-                assign foe.weapon := dragon.weapon;
-                assign foe.hitPoints := dragon.hitPoints;
-                assign foe.strength := dragon.strength;
-                assign foe.defense := dragon.defense;
-                assign foe.gold := dragon.gold;
-                assign foe.experience := dragon.experience;
-                assign foe.breath := dragon.breath;
-                assign forestFightsLeft := forestFightsLeft - 1;
-                assign lightShield := false;
+                then assign foe.dragon := true;
+                then assign foe.name := dragon.name;
+                then assign foe.weapon := dragon.weapon;
+                then assign foe.hitPoints := dragon.hitPoints;
+                then assign foe.strength := dragon.strength;
+                then assign foe.defense := dragon.defense;
+                then assign foe.gold := dragon.gold;
+                then assign foe.experience := dragon.experience;
+                then assign foe.breath := dragon.breath;
+                then assign forestFightsLeft := forestFightsLeft - 1;
+                then assign lightShield := false;
             }
             then done;
         }
@@ -745,23 +745,23 @@ package LordPlay {
             // A grown child sneaks up on the foe and takes the killing blow instead.
             action childIntervenes {
                 assign children := children - 1;
-                assign foe.hitPoints := max(0, foe.hitPoints - Hit(strength, foe.defense, 4));
+                then assign foe.hitPoints := max(0, foe.hitPoints - Hit(strength, foe.defense, 4));
             }
 
             // A fairy caught today flies out of the pocket and revives the warrior once.
             action fairyRevives {
                 assign fairy := false;
-                assign hitPoints := maxHitPoints;
+                then assign hitPoints := maxHitPoints;
             }
 
             // Death costs the gold on hand, a tenth of the experience, and the day.
             action die {
                 assign alive := false;
-                assign hitPoints := 0;
-                assign gold := 0;
-                assign experience := experience - Tithe(experience);
-                assign lightShield := false;
-                assign foe.present := false;
+                then assign hitPoints := 0;
+                then assign gold := 0;
+                then assign experience := experience - Tithe(experience);
+                then assign lightShield := false;
+                then assign foe.present := false;
             }
 
             first foeSwing if true then foeWeakBlow;
@@ -874,44 +874,44 @@ package LordPlay {
 
             action powerMove {
                 assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
-                assign deathKnightUses := deathKnightUses - 1;
+                then assign deathKnightUses := deathKnightUses - 1;
             }
 
             action sneakAttack {
                 assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
-                assign thievingUses := thievingUses - 1;
+                then assign thievingUses := thievingUses - 1;
             }
 
             action pinch {
                 assign foe.hitPoints := max(0, foe.hitPoints - max(1, 2 * Hit(strength, foe.defense, quarters)));
-                assign mysticalUses := mysticalUses - 1;
+                then assign mysticalUses := mysticalUses - 1;
             }
 
             action heat {
                 assign foe.hitPoints := max(0, foe.hitPoints - max(1, 3 * Hit(strength, foe.defense, quarters)));
-                assign mysticalUses := mysticalUses - 8;
+                then assign mysticalUses := mysticalUses - 8;
             }
 
             action shatterBlow {
                 assign foe.hitPoints := max(0, foe.hitPoints - max(1, 6 * Hit(strength, foe.defense, quarters)));
-                assign mysticalUses := mysticalUses - 16;
+                then assign mysticalUses := mysticalUses - 16;
             }
 
             // Disappear never fails; the foe is left behind, spoils and all.
             action vanish {
                 assign mysticalUses := mysticalUses - 4;
-                assign lightShield := false;
-                assign foe.present := false;
+                then assign lightShield := false;
+                then assign foe.present := false;
             }
 
             action shield {
                 assign lightShield := true;
-                assign mysticalUses := mysticalUses - 12;
+                then assign mysticalUses := mysticalUses - 12;
             }
 
             action mend {
                 assign hitPoints := maxHitPoints;
-                assign mysticalUses := mysticalUses - 20;
+                then assign mysticalUses := mysticalUses - 20;
             }
 
             merge landed;
@@ -960,7 +960,7 @@ package LordPlay {
 
             action escape {
                 assign foe.present := false;
-                assign lightShield := false;
+                then assign lightShield := false;
             }
 
             action caught { first start; then perform foeStrikes; then done; }
@@ -981,9 +981,9 @@ package LordPlay {
 
             action claim {
                 assign gold := gold + foe.gold;
-                assign experience := experience + foe.experience;
-                assign lightShield := false;
-                assign foe.present := false;
+                then assign experience := experience + foe.experience;
+                then assign lightShield := false;
+                then assign foe.present := false;
             }
 
             decide spoils;
@@ -1000,18 +1000,18 @@ package LordPlay {
 
             action bornAgain {
                 assign level := 1;
-                assign experience := 0;
-                assign maxHitPoints := 20;
-                assign hitPoints := 20;
-                assign strength := 10;
-                assign defense := 1;
-                assign weaponTier := 0;
-                assign weaponStrength := 0;
-                assign armourTier := 0;
-                assign armourDefense := 0;
-                assign gold := 500;
-                assign bankGold := 0;
-                assign forestFightsLeft := 15 + children;
+                then assign experience := 0;
+                then assign maxHitPoints := 20;
+                then assign hitPoints := 20;
+                then assign strength := 10;
+                then assign defense := 1;
+                then assign weaponTier := 0;
+                then assign weaponStrength := 0;
+                then assign armourTier := 0;
+                then assign armourDefense := 0;
+                then assign gold := 500;
+                then assign bankGold := 0;
+                then assign forestFightsLeft := 15 + children;
             }
 
             succession first claim then spoils;
@@ -1050,7 +1050,7 @@ package LordPlay {
 
             action engage {
                 assign playerFightsLeft := playerFightsLeft - 1;
-                assign lightShield := false;
+                then assign lightShield := false;
             }
 
             merge nextRound;
@@ -1059,10 +1059,10 @@ package LordPlay {
                 assign skillReady := victim.level > level
                     and ((move == Move::deathKnight and deathKnightUses >= 1)
                         or (move == Move::thieving and thievingUses >= 1));
-                assign standOff := not skillReady
+                then assign standOff := not skillReady
                     and Hit(strength, victim.defense, 4) <= 0
                     and Hit(victim.strength, defense, 4) <= 0;
-                assign rounds := rounds + 1;
+                then assign rounds := rounds + 1;
             }
 
             decide fightOn;
@@ -1083,12 +1083,12 @@ package LordPlay {
 
             action powerMove {
                 assign victim.hitPoints := max(0, victim.hitPoints - max(1, 3 * Hit(strength, victim.defense, quarters)));
-                assign deathKnightUses := deathKnightUses - 1;
+                then assign deathKnightUses := deathKnightUses - 1;
             }
 
             action sneakAttack {
                 assign victim.hitPoints := max(0, victim.hitPoints - max(1, 3 * Hit(strength, victim.defense, quarters)));
-                assign thievingUses := thievingUses - 1;
+                then assign thievingUses := thievingUses - 1;
             }
 
             merge landed;
@@ -1115,28 +1115,28 @@ package LordPlay {
 
             action fairyRevives {
                 assign fairy := false;
-                assign hitPoints := maxHitPoints;
+                then assign hitPoints := maxHitPoints;
             }
 
             action slay {
                 assign victim.alive := false;
-                assign gold := gold + victim.gold;
-                assign victim.gold := 0;
-                assign gems := gems + victim.gems;
-                assign victim.gems := 0;
-                assign experience := experience + Tithe(victim.experience);
-                assign victim.experience := victim.experience - Tithe(victim.experience);
-                assign playerKills := playerKills + 1;
+                then assign gold := gold + victim.gold;
+                then assign victim.gold := 0;
+                then assign gems := gems + victim.gems;
+                then assign victim.gems := 0;
+                then assign experience := experience + Tithe(victim.experience);
+                then assign victim.experience := victim.experience - Tithe(victim.experience);
+                then assign playerKills := playerKills + 1;
             }
 
             action die {
                 assign victim.gold := victim.gold + gold;
-                assign victim.experience := victim.experience + Tithe(experience);
-                assign victim.playerKills := victim.playerKills + 1;
-                assign alive := false;
-                assign hitPoints := 0;
-                assign gold := 0;
-                assign experience := experience - Tithe(experience);
+                then assign victim.experience := victim.experience + Tithe(experience);
+                then assign victim.playerKills := victim.playerKills + 1;
+                then assign alive := false;
+                then assign hitPoints := 0;
+                then assign gold := 0;
+                then assign experience := experience - Tithe(experience);
             }
 
             succession first engage then nextRound;
@@ -1198,19 +1198,19 @@ package LordPlay {
 
             action price {
                 assign rate := HealRate(level);
-                assign affordable := floor(gold / rate);
+                then assign affordable := floor(gold / rate);
             }
 
             decide canAffordAll;
 
             action mendAll {
                 assign gold := gold - (maxHitPoints - hitPoints) * rate;
-                assign hitPoints := maxHitPoints;
+                then assign hitPoints := maxHitPoints;
             }
 
             action mendSome {
                 assign hitPoints := hitPoints + affordable;
-                assign gold := gold - affordable * rate;
+                then assign gold := gold - affordable * rate;
             }
 
             succession first price then canAffordAll;
@@ -1232,7 +1232,7 @@ package LordPlay {
 
             action move {
                 assign bankGold := bankGold + amount;
-                assign gold := gold - amount;
+                then assign gold := gold - amount;
             }
             then done;
         }
@@ -1247,7 +1247,7 @@ package LordPlay {
 
             action move {
                 assign bankGold := bankGold - amount;
-                assign gold := gold + amount;
+                then assign gold := gold + amount;
             }
             then done;
         }
@@ -1261,7 +1261,7 @@ package LordPlay {
 
             action pickTheLock {
                 assign gold := gold + town.bank.haulPerLevel * level;
-                assign fairy := false;
+                then assign fairy := false;
             }
             then done;
         }
@@ -1278,9 +1278,9 @@ package LordPlay {
 
             action pay {
                 assign gold := gold - weapon.price;
-                assign strength := strength - weaponStrength + weapon.strength;
-                assign weaponStrength := weapon.strength;
-                assign weaponTier := weapon.tier;
+                then assign strength := strength - weaponStrength + weapon.strength;
+                then assign weaponStrength := weapon.strength;
+                then assign weaponTier := weapon.tier;
             }
             then done;
         }
@@ -1296,9 +1296,9 @@ package LordPlay {
 
             action pay {
                 assign gold := gold - armour.price;
-                assign defense := defense - armourDefense + armour.defense;
-                assign armourDefense := armour.defense;
-                assign armourTier := armour.tier;
+                then assign defense := defense - armourDefense + armour.defense;
+                then assign armourDefense := armour.defense;
+                then assign armourTier := armour.tier;
             }
             then done;
         }
@@ -1323,10 +1323,10 @@ package LordPlay {
 
             action bout {
                 assign trainedToday := true;
-                assign masterLeft := master.hitPoints;
-                loop {
+                then assign masterLeft := master.hitPoints;
+                then loop {
                     assign masterLeft := masterLeft - Blow(strength, master.defense);
-                    assign hitPoints := if masterLeft > 0 ? max(1, hitPoints - Blow(master.strength, defense)) else hitPoints;
+                    then assign hitPoints := if masterLeft > 0 ? max(1, hitPoints - Blow(master.strength, defense)) else hitPoints;
                 } until masterLeft <= 0 or hitPoints <= 1;
             }
 
@@ -1336,14 +1336,14 @@ package LordPlay {
 
             action levelUp {
                 assign level := level + 1;
-                assign maxHitPoints := maxHitPoints + master.hitPointsTaught;
-                assign hitPoints := hitPoints + master.hitPointsTaught;
-                assign strength := strength + master.strengthTaught;
-                assign defense := defense + master.defenseTaught;
-                assign deathKnightPoints := if class == CharacterClass::deathKnight and deathKnightPoints < 40 ? deathKnightPoints + 1 else deathKnightPoints;
-                assign mysticalPoints := if class == CharacterClass::mysticalSkills and mysticalPoints < 40 ? mysticalPoints + 1 else mysticalPoints;
-                assign thievingPoints := if class == CharacterClass::thievingSkills and thievingPoints < 40 ? thievingPoints + 1 else thievingPoints;
-                assign promoted := true;
+                then assign maxHitPoints := maxHitPoints + master.hitPointsTaught;
+                then assign hitPoints := hitPoints + master.hitPointsTaught;
+                then assign strength := strength + master.strengthTaught;
+                then assign defense := defense + master.defenseTaught;
+                then assign deathKnightPoints := if class == CharacterClass::deathKnight and deathKnightPoints < 40 ? deathKnightPoints + 1 else deathKnightPoints;
+                then assign mysticalPoints := if class == CharacterClass::mysticalSkills and mysticalPoints < 40 ? mysticalPoints + 1 else mysticalPoints;
+                then assign thievingPoints := if class == CharacterClass::thievingSkills and thievingPoints < 40 ? thievingPoints + 1 else thievingPoints;
+                then assign promoted := true;
             }
 
             action beaten {
@@ -1393,8 +1393,8 @@ package LordPlay {
 
             action lesson {
                 assign taughtToday := true;
-                assign gems := gems - 1;
-                assign thievingPoints := thievingPoints + 1;
+                then assign gems := gems - 1;
+                then assign thievingPoints := thievingPoints + 1;
             }
 
             succession first castle then judgement;
@@ -1419,8 +1419,8 @@ package LordPlay {
 
             action bargain {
                 assign gems := gems - 1;
-                assign maxHitPoints := maxHitPoints + 1;
-                assign hitPoints := maxHitPoints;
+                then assign maxHitPoints := maxHitPoints + 1;
+                then assign hitPoints := maxHitPoints;
             }
             then done;
         }
@@ -1553,7 +1553,7 @@ package LordPlay {
 
             action stay {
                 assign gold := gold - price;
-                assign innRoom := true;
+                then assign innRoom := true;
             }
             then done;
         }
@@ -1567,7 +1567,7 @@ package LordPlay {
 
             action pay {
                 assign gold := gold - BribePrice(level);
-                assign bribed := true;
+                then assign bribed := true;
             }
             then done;
         }
@@ -1597,7 +1597,7 @@ package LordPlay {
 
             action moreHitPoints {
                 assign maxHitPoints := maxHitPoints + 1;
-                assign hitPoints := hitPoints + 1;
+                then assign hitPoints := hitPoints + 1;
             }
 
             succession first pay then which;
@@ -1629,7 +1629,7 @@ package LordPlay {
 
             action pay {
                 assign experience := experience - cost;
-                assign flirtedToday := true;
+                then assign flirtedToday := true;
             }
 
             decide favourKind;
@@ -1644,7 +1644,7 @@ package LordPlay {
 
             action bed {
                 assign lays := lays + 1;
-                assign charm := charm + 1;
+                then assign charm := charm + 1;
             }
 
             decide cradle;
@@ -1677,7 +1677,7 @@ package LordPlay {
 
             action separate {
                 assign charm := if spouse == Spouse::sethAble ? 30 else 50;
-                assign spouse := Spouse::nobody;
+                then assign spouse := Spouse::nobody;
             }
             then done;
         }
@@ -1718,7 +1718,7 @@ package LordPlay {
 
             action hitPointUp {
                 assign maxHitPoints := maxHitPoints + 1;
-                assign hitPoints := hitPoints + 1;
+                then assign hitPoints := hitPoints + 1;
             }
 
             action bankDoubled {
@@ -1757,25 +1757,25 @@ package LordPlay {
             first start;
             then action reset {
                 assign daysPlayed := daysPlayed + 1;
-                assign forestFightsLeft := 15 + children;
-                assign playerFightsLeft := 3;
-                assign foe.present := false;
-                assign deathKnightUses := SkillUses(deathKnightPoints, 4);
-                assign thievingUses := SkillUses(thievingPoints, 4);
-                assign mysticalUses := mysticalPoints;
-                assign bankGold := bankGold + Interest(bankGold, max(0, interestPercent));
-                assign hitPoints := maxHitPoints;
-                assign alive := true;
-                assign lightShield := false;
-                assign fairy := false;
-                assign innRoom := false;
-                assign bribed := false;
-                assign heardTheBard := false;
-                assign flirtedToday := false;
-                assign trainedToday := false;
-                assign taughtToday := false;
-                assign blessedToday := false;
-                assign grabbedToday := false;
+                then assign forestFightsLeft := 15 + children;
+                then assign playerFightsLeft := 3;
+                then assign foe.present := false;
+                then assign deathKnightUses := SkillUses(deathKnightPoints, 4);
+                then assign thievingUses := SkillUses(thievingPoints, 4);
+                then assign mysticalUses := mysticalPoints;
+                then assign bankGold := bankGold + Interest(bankGold, max(0, interestPercent));
+                then assign hitPoints := maxHitPoints;
+                then assign alive := true;
+                then assign lightShield := false;
+                then assign fairy := false;
+                then assign innRoom := false;
+                then assign bribed := false;
+                then assign heardTheBard := false;
+                then assign flirtedToday := false;
+                then assign trainedToday := false;
+                then assign taughtToday := false;
+                then assign blessedToday := false;
+                then assign grabbedToday := false;
             }
 
             decide crier;
