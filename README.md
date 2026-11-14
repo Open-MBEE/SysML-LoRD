@@ -18,7 +18,7 @@ Every output below is what the commands print.
 
 The model is written for [OpenSysML](https://github.com/Open-MBEE/OpenSysML),
 the SysML v2 implementation this repository depends on as a Go module: the
-browser game is a program on its public Go API, and `go tool sysml` (Go 1.25
+browser game is a program on its public Go API, and `go tool sysml` (Go 1.26
 or later) builds the `sysml` command of the release `go.mod` pins, so every
 command below runs from a clone with nothing else installed. The solver
 sections need `z3` on `PATH` — see
@@ -1285,7 +1285,7 @@ strategy relies on is refused or the dragon is not slain within the days it
 allows:
 
 ```bash
-go test ./web/lord -run TestAWarriorCanSlayTheDragon -v
+go test ./web/lord -run TestAWarriorCanSlayTheDragon -timeout 120m -v
 ```
 
 ```
